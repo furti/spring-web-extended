@@ -10,7 +10,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-import at.porscheinformatik.common.springangular.resources.ResourceType;
+import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.template.cache.AbstractTemplateCache;
 import at.porscheinformatik.common.springangular.template.cache.CacheUtils;
 import at.porscheinformatik.common.springangular.template.cache.TemplateEntryConfig;

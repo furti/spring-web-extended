@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContext;
 
 import at.porscheinformatik.common.springangular.config.ApplicationConfiguration;
-import at.porscheinformatik.common.springangular.resources.ResourceScanners;
+import at.porscheinformatik.common.springangular.io.ResourceScanners;
 import at.porscheinformatik.common.springangular.template.cache.style.StyleStacks;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;

@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources;
+package at.porscheinformatik.common.springangular.io;
 
 import java.io.IOException;
 import java.util.Map;
@@ -9,6 +9,8 @@ public interface ResourceScanner
 {
 
 	/**
+	 * Scans all resource
+	 * 
 	 * @param path
 	 * @return Map<relativePath, Resource>
 	 */
@@ -18,7 +20,7 @@ public interface ResourceScanner
 	 * @param string
 	 * @param file
 	 * @param scanSubDirectories
-	 * @return
+	 * @return Map<relativePath, Resource>
 	 */
 	Map<String, Resource> scanResources(String path, String file,
 			boolean scanSubDirectories) throws IOException;

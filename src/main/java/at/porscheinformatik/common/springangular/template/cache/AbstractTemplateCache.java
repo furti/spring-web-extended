@@ -13,9 +13,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.springangular.config.ApplicationConfiguration;
-import at.porscheinformatik.common.springangular.resources.ResourceScanners;
-import at.porscheinformatik.common.springangular.resources.ResourceType;
-import at.porscheinformatik.common.springangular.resources.ResourceUtils;
+import at.porscheinformatik.common.springangular.io.ResourceScanners;
+import at.porscheinformatik.common.springangular.io.ResourceType;
+import at.porscheinformatik.common.springangular.io.ResourceUtils;
 import at.porscheinformatik.common.springangular.template.Template;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.springangular.template.parboiled.ParboiledTemplate;

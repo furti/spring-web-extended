@@ -9,7 +9,7 @@ import java.util.Map;
 
 import ro.isdc.wro.model.resource.Resource;
 import ro.isdc.wro.model.resource.processor.ResourcePreProcessor;
-import at.porscheinformatik.common.springangular.resources.ResourceType;
+import at.porscheinformatik.common.springangular.io.ResourceType;
 
 public class OptimizerChain
 {

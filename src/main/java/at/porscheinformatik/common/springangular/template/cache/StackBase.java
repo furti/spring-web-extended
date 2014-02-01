@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-import at.porscheinformatik.common.springangular.resources.ResourceType;
-import at.porscheinformatik.common.springangular.resources.ResourceUtils;
+import at.porscheinformatik.common.springangular.io.ResourceType;
+import at.porscheinformatik.common.springangular.io.ResourceUtils;
 import at.porscheinformatik.common.springangular.template.Template;
 
 public abstract class StackBase extends AbstractTemplateCache

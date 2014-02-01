@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import ro.isdc.wro.model.resource.processor.ResourcePreProcessor;
-import at.porscheinformatik.common.springangular.resources.ResourceType;
+import at.porscheinformatik.common.springangular.io.ResourceType;
 
 public class DefaultOptimizerConfig implements OptimizerConfig
 {

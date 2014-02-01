@@ -2,8 +2,8 @@ package at.porscheinformatik.common.springangular.config;
 
 import java.util.Map;
 
+import at.porscheinformatik.common.springangular.io.ResourceScanner;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
-import at.porscheinformatik.common.springangular.resources.ResourceScanner;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
 import at.porscheinformatik.common.springangular.template.cache.TemplateConfig;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerConfig;
@@ -59,4 +59,9 @@ public abstract class SpringAngularConfigurerAdapter implements
 		// Subclasses may override this to add configurations
 	}
 
+	@Override
+	public void configureResourceScanners(Map<String, ResourceScanner> config)
+	{
+		// Subclasses may override this to add configurations
+	}
 }

@@ -16,7 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import at.porscheinformatik.common.springangular.resources.ResourceType;
+import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.template.BaseTemplate;
 import at.porscheinformatik.common.springangular.template.part.TemplatePart;
 

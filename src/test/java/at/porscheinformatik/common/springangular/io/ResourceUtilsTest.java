@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources;
+package at.porscheinformatik.common.springangular.io;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -10,7 +10,7 @@ import java.util.Locale;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import at.porscheinformatik.common.springangular.resources.ResourceUtils;
+import at.porscheinformatik.common.springangular.io.ResourceUtils;
 
 public class ResourceUtilsTest
 {

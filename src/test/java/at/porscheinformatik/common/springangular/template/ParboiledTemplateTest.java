@@ -10,7 +10,7 @@ import org.springframework.core.io.Resource;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import at.porscheinformatik.common.springangular.resources.ResourceType;
+import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.template.parboiled.ParboiledTemplate;
 import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 

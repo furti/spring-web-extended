@@ -3,7 +3,7 @@ package at.porscheinformatik.common.springangular.template.optimize;
 import java.util.List;
 
 import ro.isdc.wro.model.resource.processor.ResourcePreProcessor;
-import at.porscheinformatik.common.springangular.resources.ResourceType;
+import at.porscheinformatik.common.springangular.io.ResourceType;
 
 public interface OptimizerConfig
 {

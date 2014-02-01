@@ -28,21 +28,21 @@ import at.porscheinformatik.common.springangular.expression.ScriptExpressionHand
 import at.porscheinformatik.common.springangular.expression.StyleExpressionHandler;
 import at.porscheinformatik.common.springangular.expression.StyleExpressionHandlers;
 import at.porscheinformatik.common.springangular.expression.TemplateExpressionHandlers;
+import at.porscheinformatik.common.springangular.io.AngularResourceScanner;
+import at.porscheinformatik.common.springangular.io.ClasspathResourceScanner;
+import at.porscheinformatik.common.springangular.io.ContextResourceScanner;
+import at.porscheinformatik.common.springangular.io.LocalizedResourceLoader;
+import at.porscheinformatik.common.springangular.io.LocalizedResourceLoaderImpl;
+import at.porscheinformatik.common.springangular.io.ResourceScanner;
+import at.porscheinformatik.common.springangular.io.ResourceScanners;
+import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.locale.LocaleContextHolderBackedLocaleContext;
 import at.porscheinformatik.common.springangular.messagesource.DefaultMessageSourceConfig;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
-import at.porscheinformatik.common.springangular.resources.AngularResourceScanner;
-import at.porscheinformatik.common.springangular.resources.ClasspathResourceScanner;
-import at.porscheinformatik.common.springangular.resources.ContextResourceScanner;
-import at.porscheinformatik.common.springangular.resources.LocalizedResourceLoader;
-import at.porscheinformatik.common.springangular.resources.LocalizedResourceLoaderImpl;
-import at.porscheinformatik.common.springangular.resources.ResourceScanner;
-import at.porscheinformatik.common.springangular.resources.ResourceScanners;
-import at.porscheinformatik.common.springangular.resources.ResourceType;
 import at.porscheinformatik.common.springangular.template.cache.CacheRefreshTask;
+import at.porscheinformatik.common.springangular.template.cache.DefaultStackConfig;
 import at.porscheinformatik.common.springangular.template.cache.DefaultTemplateConfig;
 import at.porscheinformatik.common.springangular.template.cache.DefaultTemplateEntryConfig;
-import at.porscheinformatik.common.springangular.template.cache.DefaultStackConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
 import at.porscheinformatik.common.springangular.template.cache.TemplateConfig;
 import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateCache;
@@ -306,7 +306,7 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		scanners.put("classpath", classpathResourceScanner());
 		scanners.put("angular", angularResourceScanner());
 
-		// TODO: call configurer.configureScanners(config)
+		configurer.configureResourceScanners(scanners);
 
 		return scanners;
 	}

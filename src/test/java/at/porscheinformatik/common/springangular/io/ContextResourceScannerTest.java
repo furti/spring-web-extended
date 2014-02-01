@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources;
+package at.porscheinformatik.common.springangular.io;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -23,6 +23,8 @@ import org.springframework.util.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import at.porscheinformatik.common.springangular.io.ContextResourceScanner;
 
 public class ContextResourceScannerTest
 {

@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources;
+package at.porscheinformatik.common.springangular.io;
 
 import java.util.ArrayList;
 import java.util.Arrays;

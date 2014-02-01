@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.ServletContextAware;
 
-import at.porscheinformatik.common.springangular.resources.LocalizedResourceLoader;
+import at.porscheinformatik.common.springangular.io.LocalizedResourceLoader;
 import at.porscheinformatik.common.springangular.util.RequestUtils;
 import at.porscheinformatik.common.springangular.util.ResourceNotFoundException;
 
@@ -47,6 +47,7 @@ public class AssetController implements ServletContextAware
 		String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN);
 		String resourcePath = buildResourceFromPath(path);
 
+		// TODO: we should improve loading of resources
 		Resource resource = resourceLoader.getResource(resourcePath,
 				locale.getLocale());
 

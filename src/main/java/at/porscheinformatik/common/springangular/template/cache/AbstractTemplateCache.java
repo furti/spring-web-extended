@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources.cache;
+package at.porscheinformatik.common.springangular.template.cache;
 
 import java.io.IOException;
 import java.util.Date;
@@ -16,8 +16,8 @@ import at.porscheinformatik.common.springangular.config.ApplicationConfiguration
 import at.porscheinformatik.common.springangular.resources.ResourceScanners;
 import at.porscheinformatik.common.springangular.resources.ResourceType;
 import at.porscheinformatik.common.springangular.resources.ResourceUtils;
-import at.porscheinformatik.common.springangular.resources.optimize.OptimizerChain;
 import at.porscheinformatik.common.springangular.template.Template;
+import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.springangular.template.parboiled.ParboiledTemplate;
 import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 

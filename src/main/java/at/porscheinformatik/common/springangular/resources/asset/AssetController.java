@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources;
+package at.porscheinformatik.common.springangular.resources.asset;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.ServletContextAware;
 
+import at.porscheinformatik.common.springangular.resources.LocalizedResourceLoader;
 import at.porscheinformatik.common.springangular.util.RequestUtils;
 import at.porscheinformatik.common.springangular.util.ResourceNotFoundException;
 

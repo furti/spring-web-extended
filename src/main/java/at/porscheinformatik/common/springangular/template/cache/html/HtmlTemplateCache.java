@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources.cache.template;
+package at.porscheinformatik.common.springangular.template.cache.html;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -11,19 +11,19 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.springangular.resources.ResourceType;
-import at.porscheinformatik.common.springangular.resources.cache.AbstractTemplateCache;
-import at.porscheinformatik.common.springangular.resources.cache.CacheEntryConfig;
-import at.porscheinformatik.common.springangular.resources.cache.CacheUtils;
+import at.porscheinformatik.common.springangular.template.cache.AbstractTemplateCache;
+import at.porscheinformatik.common.springangular.template.cache.CacheUtils;
+import at.porscheinformatik.common.springangular.template.cache.TemplateEntryConfig;
 
 /**
  * @author Daniel Furtlehner
  * 
  */
-public class TemplateCache extends AbstractTemplateCache
+public class HtmlTemplateCache extends AbstractTemplateCache
 {
-	private Map<String, CacheEntryConfig> config;
+	private Map<String, TemplateEntryConfig> config;
 
-	public TemplateCache(Map<String, CacheEntryConfig> config)
+	public HtmlTemplateCache(Map<String, TemplateEntryConfig> config)
 	{
 		Assert.notEmpty(config,
 				"At least one templatecache configuration must be supplied");
@@ -35,9 +35,9 @@ public class TemplateCache extends AbstractTemplateCache
 	{
 		setupLastRefresh();
 
-		for (Entry<String, CacheEntryConfig> entry : config.entrySet())
+		for (Entry<String, TemplateEntryConfig> entry : config.entrySet())
 		{
-			CacheEntryConfig config = entry.getValue();
+			TemplateEntryConfig config = entry.getValue();
 
 			Assert.hasText(config.getLocationPrefix(),
 					"Locationprefix must not be empty");

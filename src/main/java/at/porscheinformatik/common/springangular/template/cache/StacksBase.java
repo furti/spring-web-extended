@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources.cache;
+package at.porscheinformatik.common.springangular.template.cache;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -13,9 +13,8 @@ import org.springframework.context.i18n.LocaleContext;
 
 import at.porscheinformatik.common.springangular.config.ApplicationConfiguration;
 import at.porscheinformatik.common.springangular.resources.ResourceScanners;
-import at.porscheinformatik.common.springangular.resources.StackEntry;
-import at.porscheinformatik.common.springangular.resources.cache.style.StyleStacks;
-import at.porscheinformatik.common.springangular.resources.optimize.OptimizerChain;
+import at.porscheinformatik.common.springangular.template.cache.style.StyleStacks;
+import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 
 public abstract class StacksBase<T extends StackBase>

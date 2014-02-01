@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources.optimize;
+package at.porscheinformatik.common.springangular.template.optimize;
 
 import java.util.ArrayList;
 import java.util.HashMap;

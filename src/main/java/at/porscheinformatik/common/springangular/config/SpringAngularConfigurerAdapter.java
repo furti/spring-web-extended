@@ -4,9 +4,9 @@ import java.util.Map;
 
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.resources.ResourceScanner;
-import at.porscheinformatik.common.springangular.resources.cache.CacheConfig;
-import at.porscheinformatik.common.springangular.resources.cache.StackConfig;
-import at.porscheinformatik.common.springangular.resources.optimize.OptimizerConfig;
+import at.porscheinformatik.common.springangular.template.cache.StackConfig;
+import at.porscheinformatik.common.springangular.template.cache.TemplateConfig;
+import at.porscheinformatik.common.springangular.template.optimize.OptimizerConfig;
 
 /**
  * @author Daniel Furtlehner
@@ -17,7 +17,7 @@ public abstract class SpringAngularConfigurerAdapter implements
 {
 
 	@Override
-	public void addTemplateCacheConfig(CacheConfig configuration)
+	public void addTemplateCacheConfig(TemplateConfig configuration)
 	{
 		// Subclasses may override this to add configurations
 	}

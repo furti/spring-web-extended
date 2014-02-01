@@ -6,13 +6,13 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import at.porscheinformatik.common.springangular.resources.cache.template.TemplateCache;
+import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateCache;
 
 public class InlineTemplateExpressionHandler implements ExpressionHandler
 {
 	private static final Pattern NEWLINE = Pattern.compile("\\r|\\n");
 
-	private TemplateCache templateCache;
+	private HtmlTemplateCache templateCache;
 
 	@Override
 	public String process(String value)
@@ -36,7 +36,7 @@ public class InlineTemplateExpressionHandler implements ExpressionHandler
 	}
 
 	@Autowired
-	public void setTemplateCache(TemplateCache templateCache)
+	public void setTemplateCache(HtmlTemplateCache templateCache)
 	{
 		this.templateCache = templateCache;
 	}

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.springangular.config.ApplicationConfiguration;
-import at.porscheinformatik.common.springangular.resources.cache.StackConfig;
+import at.porscheinformatik.common.springangular.template.cache.StackConfig;
 
 public class StyleExpressionHandler implements ExpressionHandler
 {

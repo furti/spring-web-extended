@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.template;
+package at.porscheinformatik.common.springangular.template.cache.html;
 
 import java.util.regex.Pattern;
 
@@ -10,21 +10,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import at.porscheinformatik.common.springangular.resources.cache.template.TemplateCache;
 import at.porscheinformatik.common.springangular.util.RequestUtils;
 import at.porscheinformatik.common.springangular.util.ResourceNotFoundException;
 
 @Controller
-public class TemplateController
+public class HtmlTemplateController
 {
 
 	private static final Pattern PATH_PATTERN = Pattern
 			.compile("^.*template/(.*)");
 
-	private TemplateCache cache;
+	private HtmlTemplateCache cache;
 	private Boolean fallbackToIndex;
 
-	public TemplateController(Boolean fallbackToIndex)
+	public HtmlTemplateController(Boolean fallbackToIndex)
 	{
 		this.fallbackToIndex = fallbackToIndex != null
 				? fallbackToIndex
@@ -63,7 +62,7 @@ public class TemplateController
 	}
 
 	@Autowired
-	public void setCache(TemplateCache cache)
+	public void setCache(HtmlTemplateCache cache)
 	{
 		this.cache = cache;
 	}

@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources.cache;
+package at.porscheinformatik.common.springangular.template.cache;
 
 import org.springframework.util.StringUtils;
 

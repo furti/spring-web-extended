@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources.optimize;
+package at.porscheinformatik.common.springangular.template.optimize;
 
 import java.io.IOException;
 import java.io.StringReader;

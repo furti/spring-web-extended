@@ -1,11 +1,12 @@
-package at.porscheinformatik.common.springangular.resources.cache;
+package at.porscheinformatik.common.springangular.template.cache;
 
-public class DefaultCacheEntryConfig implements CacheEntryConfig
+
+public class DefaultTemplateEntryConfig implements TemplateEntryConfig
 {
 
 	private String locationPrefix;
 
-	public DefaultCacheEntryConfig(String locationPrefix)
+	public DefaultTemplateEntryConfig(String locationPrefix)
 	{
 		super();
 		this.locationPrefix = locationPrefix;

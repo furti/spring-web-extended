@@ -39,18 +39,18 @@ import at.porscheinformatik.common.springangular.resources.LocalizedResourceLoad
 import at.porscheinformatik.common.springangular.resources.ResourceScanner;
 import at.porscheinformatik.common.springangular.resources.ResourceScanners;
 import at.porscheinformatik.common.springangular.resources.ResourceType;
-import at.porscheinformatik.common.springangular.resources.cache.CacheConfig;
-import at.porscheinformatik.common.springangular.resources.cache.CacheRefreshTask;
-import at.porscheinformatik.common.springangular.resources.cache.DefaultCacheConfig;
-import at.porscheinformatik.common.springangular.resources.cache.DefaultCacheEntryConfig;
-import at.porscheinformatik.common.springangular.resources.cache.DefaultStackConfig;
-import at.porscheinformatik.common.springangular.resources.cache.StackConfig;
-import at.porscheinformatik.common.springangular.resources.cache.script.ScriptStacks;
-import at.porscheinformatik.common.springangular.resources.cache.style.StyleStacks;
-import at.porscheinformatik.common.springangular.resources.cache.template.TemplateCache;
-import at.porscheinformatik.common.springangular.resources.optimize.DefaultOptimizerConfig;
-import at.porscheinformatik.common.springangular.resources.optimize.OptimizerChain;
-import at.porscheinformatik.common.springangular.resources.optimize.OptimizerConfig;
+import at.porscheinformatik.common.springangular.template.cache.CacheRefreshTask;
+import at.porscheinformatik.common.springangular.template.cache.DefaultTemplateConfig;
+import at.porscheinformatik.common.springangular.template.cache.DefaultTemplateEntryConfig;
+import at.porscheinformatik.common.springangular.template.cache.DefaultStackConfig;
+import at.porscheinformatik.common.springangular.template.cache.StackConfig;
+import at.porscheinformatik.common.springangular.template.cache.TemplateConfig;
+import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateCache;
+import at.porscheinformatik.common.springangular.template.cache.script.ScriptStacks;
+import at.porscheinformatik.common.springangular.template.cache.style.StyleStacks;
+import at.porscheinformatik.common.springangular.template.optimize.DefaultOptimizerConfig;
+import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
+import at.porscheinformatik.common.springangular.template.optimize.OptimizerConfig;
 import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 
 @Configuration
@@ -65,7 +65,7 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	// TODO: maybe we should add a handlerinterceptor that adds no-cache headers
 	// for json responses
 	private DelegatingSpringAngularConfiguerer configurer = new DelegatingSpringAngularConfiguerer();
-	private CacheConfig templateCacheConfig;
+	private TemplateConfig templateCacheConfig;
 	private DefaultStackConfig scriptConfig, styleConfig;
 
 	@Autowired(required = false)
@@ -75,10 +75,10 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	}
 
 	@Bean
-	public TemplateCache templateCache()
+	public HtmlTemplateCache templateCache()
 	{
-		CacheConfig config = getTemplateCacheConfig();
-		TemplateCache templateCache = new TemplateCache(
+		TemplateConfig config = getTemplateCacheConfig();
+		HtmlTemplateCache templateCache = new HtmlTemplateCache(
 				config.getTemplateConfig());
 		templateCache.setAppConfig(appConfig());
 		// templateCache.setHandlers(templateExpressionHandlers());
@@ -119,24 +119,12 @@ public class SpringAngularConfig implements SchedulingConfigurer
 				new StyleExpressionHandlers(getStyleExpressionHandlers()));
 	}
 
-	public TemplateParser templateParser(CacheConfig config)
+	public TemplateParser templateParser(TemplateConfig config)
 	{
 		Map<String, ExpressionHandler> expressionHandlers = getTemplateExpressionHandlers();
 
-		if (config.getExpressionSuffix() != null
-				&& config.getExpressionDelimiter() != null
-				&& config.getExpressionPrefix() != null)
-		{
-			return Parboiled.createParser(TemplateParser.class,
-					expressionHandlers, config.getExpressionPrefix(),
-					config.getExpressionSuffix(),
-					config.getExpressionDelimiter());
-		}
-		else
-		{
-			return Parboiled.createParser(TemplateParser.class,
-					new TemplateExpressionHandlers(expressionHandlers));
-		}
+		return Parboiled.createParser(TemplateParser.class,
+				new TemplateExpressionHandlers(expressionHandlers));
 	}
 
 	@Bean
@@ -323,15 +311,15 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		return scanners;
 	}
 
-	private CacheConfig getTemplateCacheConfig()
+	private TemplateConfig getTemplateCacheConfig()
 	{
 		if (templateCacheConfig == null)
 		{
-			templateCacheConfig = new DefaultCacheConfig();
+			templateCacheConfig = new DefaultTemplateConfig();
 			templateCacheConfig.setRefreshIntervall(DEFAULT_REFRESH_INTERVALL);
 
 			templateCacheConfig.addTemplateConfig("",
-					new DefaultCacheEntryConfig(
+					new DefaultTemplateEntryConfig(
 							"/templates"));
 
 			configurer.addTemplateCacheConfig(templateCacheConfig);
@@ -392,7 +380,7 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar)
 	{
-		CacheConfig config = getTemplateCacheConfig();
+		TemplateConfig config = getTemplateCacheConfig();
 
 		if (config.getRefreshIntervall() > 0)
 		{

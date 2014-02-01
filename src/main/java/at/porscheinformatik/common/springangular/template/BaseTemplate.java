@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import org.springframework.util.StringUtils;
 
 import at.porscheinformatik.common.springangular.resources.ResourceType;
-import at.porscheinformatik.common.springangular.resources.optimize.OptimizerChain;
+import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
 
 public abstract class BaseTemplate implements Template
 {

@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources.cache;
+package at.porscheinformatik.common.springangular.template.cache;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.springangular.resources.ResourceType;
 import at.porscheinformatik.common.springangular.resources.ResourceUtils;
-import at.porscheinformatik.common.springangular.resources.StackEntry;
 import at.porscheinformatik.common.springangular.template.Template;
 
 public abstract class StackBase extends AbstractTemplateCache

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import at.porscheinformatik.common.springangular.resources.cache.CacheUtils;
+import at.porscheinformatik.common.springangular.template.cache.CacheUtils;
 
 public class TemplateUtilsTest
 {

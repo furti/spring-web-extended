@@ -19,9 +19,9 @@ import at.porscheinformatik.common.springangular.expression.TemplateExpressionHa
 import at.porscheinformatik.common.springangular.resources.ClasspathResourceScanner;
 import at.porscheinformatik.common.springangular.resources.ResourceScanner;
 import at.porscheinformatik.common.springangular.resources.ResourceScanners;
-import at.porscheinformatik.common.springangular.resources.cache.CacheEntryConfig;
-import at.porscheinformatik.common.springangular.resources.cache.DefaultCacheEntryConfig;
-import at.porscheinformatik.common.springangular.resources.cache.template.TemplateCache;
+import at.porscheinformatik.common.springangular.template.cache.DefaultTemplateEntryConfig;
+import at.porscheinformatik.common.springangular.template.cache.TemplateEntryConfig;
+import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateCache;
 import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 
 public class TemplateCacheTest
@@ -30,7 +30,7 @@ public class TemplateCacheTest
 	@Test
 	public void hasTemplate() throws IOException
 	{
-		TemplateCache cache = new TemplateCache(getConfig());
+		HtmlTemplateCache cache = new HtmlTemplateCache(getConfig());
 		// cache.setHandlers(createExpressionHandlers());
 		cache.setParser(Parboiled.createParser(TemplateParser.class,
 				createExpressionHandlers()));
@@ -47,7 +47,7 @@ public class TemplateCacheTest
 	public void renderTemplate(String template, Locale locale, String expected)
 			throws IOException
 	{
-		TemplateCache cache = new TemplateCache(getConfig());
+		HtmlTemplateCache cache = new HtmlTemplateCache(getConfig());
 		// cache.setHandlers(createExpressionHandlers());
 		cache.setParser(Parboiled.createParser(TemplateParser.class,
 				createExpressionHandlers()));
@@ -88,12 +88,12 @@ public class TemplateCacheTest
 		return handlers;
 	}
 
-	private Map<String, CacheEntryConfig> getConfig()
+	private Map<String, TemplateEntryConfig> getConfig()
 	{
-		Map<String, CacheEntryConfig> config = new HashMap<String, CacheEntryConfig>();
+		Map<String, TemplateEntryConfig> config = new HashMap<String, TemplateEntryConfig>();
 		config.put(
 				"",
-				new DefaultCacheEntryConfig(
+				new DefaultTemplateEntryConfig(
 						"classpath:at/porscheinformatik/common/springangular/testtemplates"));
 		return config;
 	}

@@ -18,10 +18,10 @@ import org.springframework.context.ApplicationContext;
 public @interface TemplateControllerConfig
 {
 	/**
-	 * If set to true the default {@link TemplateController} is added to the
+	 * If set to true the default {@link HtmlTemplateController} is added to the
 	 * {@link ApplicationContext}
 	 * 
-	 * @return true if the default {@link TemplateController} should be
+	 * @return true if the default {@link HtmlTemplateController} should be
 	 *         registered, false otherwise
 	 */
 	boolean registerTemplateController() default true;

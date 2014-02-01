@@ -1,8 +1,8 @@
-package at.porscheinformatik.common.springangular.resources.cache;
+package at.porscheinformatik.common.springangular.template.cache;
 
 import java.util.Map;
 
-public interface CacheConfig
+public interface TemplateConfig
 {
 	/**
 	 * If the intervall is less than 1 no refresh will be performed.
@@ -19,13 +19,7 @@ public interface CacheConfig
 	 */
 	int getRefreshIntervall();
 
-	void addTemplateConfig(String name, CacheEntryConfig config);
+	void addTemplateConfig(String name, TemplateEntryConfig config);
 
-	Map<String, CacheEntryConfig> getTemplateConfig();
-
-	String getExpressionPrefix();
-
-	String getExpressionSuffix();
-
-	String getExpressionDelimiter();
+	Map<String, TemplateEntryConfig> getTemplateConfig();
 }

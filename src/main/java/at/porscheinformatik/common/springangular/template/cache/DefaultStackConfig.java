@@ -1,10 +1,8 @@
-package at.porscheinformatik.common.springangular.resources.cache;
+package at.porscheinformatik.common.springangular.template.cache;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import at.porscheinformatik.common.springangular.resources.StackEntry;
 
 public class DefaultStackConfig implements StackConfig
 {

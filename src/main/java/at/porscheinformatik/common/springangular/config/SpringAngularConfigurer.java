@@ -4,9 +4,9 @@ import java.util.Map;
 
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.resources.ResourceScanner;
-import at.porscheinformatik.common.springangular.resources.cache.CacheConfig;
-import at.porscheinformatik.common.springangular.resources.cache.StackConfig;
-import at.porscheinformatik.common.springangular.resources.optimize.OptimizerConfig;
+import at.porscheinformatik.common.springangular.template.cache.StackConfig;
+import at.porscheinformatik.common.springangular.template.cache.TemplateConfig;
+import at.porscheinformatik.common.springangular.template.optimize.OptimizerConfig;
 
 public interface SpringAngularConfigurer
 {
@@ -32,7 +32,7 @@ public interface SpringAngularConfigurer
 	 * @param configurations
 	 *            config
 	 */
-	void addTemplateCacheConfig(CacheConfig configurations);
+	void addTemplateCacheConfig(TemplateConfig configurations);
 
 	void addTemplateResourceScanner(Map<String, ResourceScanner> scanners);
 

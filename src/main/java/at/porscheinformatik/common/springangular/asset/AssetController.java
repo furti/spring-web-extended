@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.resources.asset;
+package at.porscheinformatik.common.springangular.asset;
 
 import java.io.IOException;
 import java.io.InputStream;

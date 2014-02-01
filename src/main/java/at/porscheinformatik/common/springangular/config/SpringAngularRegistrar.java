@@ -9,7 +9,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.springangular.annotation.EnableSpringAngular;
-import at.porscheinformatik.common.springangular.resources.asset.AssetController;
+import at.porscheinformatik.common.springangular.asset.AssetController;
 import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateController;
 import at.porscheinformatik.common.springangular.template.cache.script.ScriptController;
 import at.porscheinformatik.common.springangular.template.cache.style.StyleController;

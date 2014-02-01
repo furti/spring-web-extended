@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>${simple:title}</title>
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1.0">
+
+<base href="http://localhost:8080/portal/at/" />
+</head>
+
+<body class="pnet-content">
+	<h1>${simple:h1}</h1>
+	<p>A simple Paragraph with an ${simple:expression}</p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Table ${simple:Header}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Table ${simple:Body}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	And some mor static text that contains an ${simple:expression}. And
+	here are ${simple:some} more ${simple:expressions}
+</body>
+</html>

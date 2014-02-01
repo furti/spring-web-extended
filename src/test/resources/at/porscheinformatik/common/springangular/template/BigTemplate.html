@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>${simple:title}</title>
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1.0">
+
+<base href="http://localhost:8080/portal/at/" />
+</head>
+
+<body class="pnet-content">
+	<h1>${simple:h1}</h1>
+	<p>A simple Paragraph with an ${simple:expression}</p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Table ${simple:Header}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Table ${simple:Body}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	And some mor static text that contains an ${simple:expression}. And
+	here are ${simple:some} more ${simple:expressions}
+
+	<p>another line of static text</p>
+	<p>This line contains ${simple:an} expression.</p>
+	<div>and here is ${simple:another} one</div>
+
+
+	${simple:expression}
+
+	<p>And now we write a very long ${simple:text} that contains
+		${simple:some} expressions. The first sentence was ${simple:a} little
+		${simple:short} to be a very long text. So we ${simple:add} some more
+		words to be long enough. bla${simple:bla} blubblubblubblub</p>
+
+	and now lets repeat the previous ${simple:paragraph}
+	<p>And now we write a very long ${simple:text} that contains
+		${simple:some} expressions. The first sentence was ${simple:a} little
+		${simple:short} to be a very long text. So we ${simple:add} some more
+		words to be long enough. bla${simple:bla} blubblubblubblub</p>
+	<p>And now we write a very long ${simple:text} that contains
+		${simple:some} expressions. The first sentence was ${simple:a} little
+		${simple:short} to be a very long text. So we ${simple:add} some more
+		words to be long enough. bla${simple:bla} blubblubblubblub</p>
+	<p>And now we write a very long ${simple:text} that contains
+		${simple:some} expressions. The first sentence was ${simple:a} little
+		${simple:short} to be a very long text. So we ${simple:add} some more
+		words to be long enough. bla${simple:bla} blubblubblubblub</p>
+</body>
+</html>

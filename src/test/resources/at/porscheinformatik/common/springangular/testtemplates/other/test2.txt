@@ -1,0 +1,2 @@
+${message:abc} othertest noch mal
+test ${message:bcd}

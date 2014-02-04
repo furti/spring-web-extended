@@ -11,7 +11,7 @@ public interface StackConfig
 	 * @param intervall
 	 *            in seconds.
 	 */
-	void setRefreshIntervall(int intervall);
+	StackConfig setRefreshIntervall(int intervall);
 
 	/**
 	 * Defaults to 5 seconds
@@ -20,14 +20,16 @@ public interface StackConfig
 	 */
 	int getRefreshIntervall();
 
-	void removeStack(String stackName);
+	StackConfig removeStack(String stackName);
 
-	void addToStack(String stackName, String resourceName, String location);
+	StackConfig addToStack(String stackName, String resourceName,
+			String location);
 
-	void addToStack(String stackName, String resourceName, String location,
+	StackConfig addToStack(String stackName, String resourceName,
+			String location,
 			String minifiedLocation);
 
-	void removeFromStack(String stackName, String resourceName);
+	StackConfig removeFromStack(String stackName, String resourceName);
 
 	boolean hasStack(String stackName);
 

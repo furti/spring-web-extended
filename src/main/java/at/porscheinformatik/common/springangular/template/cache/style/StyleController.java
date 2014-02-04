@@ -14,6 +14,7 @@ import at.porscheinformatik.common.springangular.util.ResourceNotFoundException;
 public class StyleController
 {
 
+	// TODO: Caching der styles
 	private StyleStacks stacks;
 
 	@RequestMapping(value = "/single/{stackId}/{styleName}", method = RequestMethod.GET, produces = "text/css")

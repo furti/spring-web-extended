@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.io.ResourceUtils;
@@ -16,6 +17,7 @@ import at.porscheinformatik.common.springangular.template.Template;
 public abstract class StackBase extends AbstractTemplateCache
 {
 	private ResourceType resourceType;
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 
 	public StackBase(ResourceType resourceType)
 	{
@@ -42,8 +44,20 @@ public abstract class StackBase extends AbstractTemplateCache
 		Map<String, Resource> resources = scanners.scanResources(
 				pathAndFile[0], pathAndFile[1], false);
 
-		Assert.notEmpty(resources, "No Resources for name " + name
-				+ " and location " + location + " found");
+		/*
+		 * Spring does not log the message right if we only throw a
+		 * illegalargumentexception. So we log it manually here
+		 */
+		if (resources == null)
+		{
+			String message = "No Resources for name " + name
+					+ " and location " + location + " found";
+
+			IllegalArgumentException ex = new IllegalArgumentException(message);
+			logger.error(message, ex);
+
+			throw ex;
+		}
 
 		for (Entry<String, Resource> entry : resources.entrySet())
 		{

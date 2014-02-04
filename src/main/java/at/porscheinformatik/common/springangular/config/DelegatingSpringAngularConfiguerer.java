@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import at.porscheinformatik.common.springangular.expression.ExpressionHandler;
 import at.porscheinformatik.common.springangular.io.ResourceScanner;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
@@ -31,16 +32,6 @@ public class DelegatingSpringAngularConfiguerer implements
 		for (SpringAngularConfigurer configurer : configurers)
 		{
 			configurer.addTemplateCacheConfig(configurations);
-		}
-	}
-
-	@Override
-	public void addTemplateResourceScanner(
-			Map<String, ResourceScanner> scanners)
-	{
-		for (SpringAngularConfigurer configurer : configurers)
-		{
-			configurer.addTemplateResourceScanner(scanners);
 		}
 	}
 
@@ -95,6 +86,16 @@ public class DelegatingSpringAngularConfiguerer implements
 		for (SpringAngularConfigurer configurer : configurers)
 		{
 			configurer.configureResourceScanners(config);
+		}
+	}
+
+	@Override
+	public void configureTemplateExpressionHandlers(
+			Map<String, ExpressionHandler> config)
+	{
+		for (SpringAngularConfigurer configurer : configurers)
+		{
+			configurer.configureTemplateExpressionHandlers(config);
 		}
 	}
 }

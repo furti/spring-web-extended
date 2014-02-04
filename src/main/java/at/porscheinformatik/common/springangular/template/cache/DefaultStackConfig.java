@@ -15,9 +15,11 @@ public class DefaultStackConfig implements StackConfig
 	}
 
 	@Override
-	public void setRefreshIntervall(int intervall)
+	public StackConfig setRefreshIntervall(int intervall)
 	{
 		this.refreshIntervall = intervall;
+
+		return this;
 	}
 
 	@Override
@@ -27,27 +29,33 @@ public class DefaultStackConfig implements StackConfig
 	}
 
 	@Override
-	public void removeStack(String stackName)
+	public StackConfig removeStack(String stackName)
 	{
 		stacks.remove(stackName);
+
+		return this;
 	}
 
 	@Override
-	public void addToStack(String stackName, String resourceName,
+	public StackConfig addToStack(String stackName, String resourceName,
 			String location)
 	{
 		addToStack(stackName, resourceName, location, null);
+
+		return this;
 	}
 
 	@Override
-	public void removeFromStack(String stackName, String resourceName)
+	public StackConfig removeFromStack(String stackName, String resourceName)
 	{
 		if (!hasStack(stackName))
 		{
-			return;
+			return this;
 		}
 
 		stacks.get(stackName).remove(resourceName);
+
+		return this;
 	}
 
 	@Override
@@ -73,7 +81,7 @@ public class DefaultStackConfig implements StackConfig
 	}
 
 	@Override
-	public void addToStack(String stackName, String resourceName,
+	public StackConfig addToStack(String stackName, String resourceName,
 			String location, String minifiedLocation)
 	{
 		if (!hasStack(stackName))
@@ -83,5 +91,7 @@ public class DefaultStackConfig implements StackConfig
 
 		stacks.get(stackName).put(resourceName,
 				new StackEntry(location, minifiedLocation));
+
+		return this;
 	}
 }

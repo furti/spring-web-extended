@@ -2,6 +2,7 @@ package at.porscheinformatik.common.springangular.config;
 
 import java.util.Map;
 
+import at.porscheinformatik.common.springangular.expression.ExpressionHandler;
 import at.porscheinformatik.common.springangular.io.ResourceScanner;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
@@ -18,13 +19,6 @@ public abstract class SpringAngularConfigurerAdapter implements
 
 	@Override
 	public void addTemplateCacheConfig(TemplateConfig configuration)
-	{
-		// Subclasses may override this to add configurations
-	}
-
-	@Override
-	public void addTemplateResourceScanner(
-			Map<String, ResourceScanner> scanners)
 	{
 		// Subclasses may override this to add configurations
 	}
@@ -61,6 +55,13 @@ public abstract class SpringAngularConfigurerAdapter implements
 
 	@Override
 	public void configureResourceScanners(Map<String, ResourceScanner> config)
+	{
+		// Subclasses may override this to add configurations
+	}
+
+	@Override
+	public void configureTemplateExpressionHandlers(
+			Map<String, ExpressionHandler> config)
 	{
 		// Subclasses may override this to add configurations
 	}

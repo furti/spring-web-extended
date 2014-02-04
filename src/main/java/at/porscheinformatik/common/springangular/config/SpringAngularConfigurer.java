@@ -2,6 +2,7 @@ package at.porscheinformatik.common.springangular.config;
 
 import java.util.Map;
 
+import at.porscheinformatik.common.springangular.expression.ExpressionHandler;
 import at.porscheinformatik.common.springangular.io.ResourceScanner;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
@@ -34,8 +35,6 @@ public interface SpringAngularConfigurer
 	 */
 	void addTemplateCacheConfig(TemplateConfig configurations);
 
-	void addTemplateResourceScanner(Map<String, ResourceScanner> scanners);
-
 	void configureMessageSource(MessageSourceConfig config);
 
 	void configureStyles(StackConfig config);
@@ -47,4 +46,7 @@ public interface SpringAngularConfigurer
 	void configureOptimizers(OptimizerConfig config);
 
 	void configureResourceScanners(Map<String, ResourceScanner> config);
+
+	void configureTemplateExpressionHandlers(
+			Map<String, ExpressionHandler> config);
 }

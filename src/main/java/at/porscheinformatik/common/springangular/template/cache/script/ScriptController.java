@@ -14,6 +14,7 @@ import at.porscheinformatik.common.springangular.util.ResourceNotFoundException;
 public class ScriptController
 {
 
+	//TODO: caching der scripts
 	private ScriptStacks stacks;
 
 	@RequestMapping(value = "/single/{stackId}/{scriptName}", method = RequestMethod.GET, produces = "text/javascript")

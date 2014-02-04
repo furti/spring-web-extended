@@ -104,6 +104,11 @@ public class ContextResourceScanner implements ServletContextAware,
 
 		String contextPath = context.getRealPath("/");
 
+		/*
+		 * TODO: we should handle null response here if we start the app on an
+		 * embeddet tomcat. The root of the webapp is in a war file and we get a
+		 * null response from the servletcontext
+		 */
 		Assert.notNull(contextPath,
 				"Could not get contextPath from ServletContext");
 

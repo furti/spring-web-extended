@@ -81,7 +81,6 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		HtmlTemplateCache templateCache = new HtmlTemplateCache(
 				config.getTemplateConfig());
 		templateCache.setAppConfig(appConfig());
-		// templateCache.setHandlers(templateExpressionHandlers());
 		templateCache.setParser(templateParser(config));
 		templateCache.setLocaleContex(localeContext());
 		templateCache.setOptimizerChain(optimizerChain());
@@ -192,7 +191,6 @@ public class SpringAngularConfig implements SchedulingConfigurer
 
 		StyleStacks styleStacks = new StyleStacks(config);
 		styleStacks.setAppConfig(appConfig());
-		// styleStacks.setHandlers(styleExpressionHandlers());
 		styleStacks.setParser(styleParser(config));
 		styleStacks.setLocale(localeContext());
 		styleStacks.setOptimizerChain(optimizerChain());
@@ -206,7 +204,6 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		DefaultStackConfig config = getScriptConfig();
 		ScriptStacks scriptStacks = new ScriptStacks(config);
 		scriptStacks.setAppConfig(appConfig());
-		// scriptStacks.setHandlers(scriptExpressionHandlers());
 		scriptStacks.setParser(scriptParser(config));
 		scriptStacks.setLocale(localeContext());
 		scriptStacks.setOptimizerChain(optimizerChain());
@@ -239,7 +236,6 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		return new OptimizerChain(getOptimizerConfig());
 	}
 
-	// @Bean
 	public DefaultStackConfig getStyleConfig()
 	{
 		if (styleConfig == null)
@@ -248,9 +244,9 @@ public class SpringAngularConfig implements SchedulingConfigurer
 			// Default refresh intervall
 			styleConfig.setRefreshIntervall(DEFAULT_REFRESH_INTERVALL);
 
-			// styleConfig.addToStack("angular", "bootstrap",
-			// "angular:style/bootstrap.css",
-			// "angular:style/bootstrap.min.js");
+			styleConfig.addToStack("bootstrap", "bootstrap",
+					"angular:style/bootstrap.css",
+					"angular:style/bootstrap.min.css");
 
 			configurer.configureStyles(styleConfig);
 		}
@@ -335,6 +331,8 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		handlers.put("asset", assetExpressionHandler());
 		handlers.put("style", styleExpressionHandler());
 		handlers.put("script", scriptExpressionHandler());
+
+		configurer.configureTemplateExpressionHandlers(handlers);
 
 		return handlers;
 	}

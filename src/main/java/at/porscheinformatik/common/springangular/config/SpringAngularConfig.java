@@ -249,9 +249,14 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	{
 		if (styleConfig == null)
 		{
+			ApplicationConfiguration appConfig = appConfig();
+
 			styleConfig = new DefaultStackConfig();
 			// Default refresh intervall
-			styleConfig.setRefreshIntervall(DEFAULT_REFRESH_INTERVALL);
+			styleConfig.setRefreshIntervall(
+					appConfig.isOptimizeResources()
+							? -1
+							: DEFAULT_REFRESH_INTERVALL);
 
 			styleConfig.addToStack("bootstrap", "bootstrap",
 					"angular:style/bootstrap.css",
@@ -267,8 +272,12 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	{
 		if (htmlConfig == null)
 		{
+			ApplicationConfiguration appConfig = appConfig();
+
 			htmlConfig = new DefaultStackConfig();
-			htmlConfig.setRefreshIntervall(DEFAULT_REFRESH_INTERVALL);
+			htmlConfig.setRefreshIntervall(appConfig.isOptimizeResources()
+					? -1
+					: DEFAULT_REFRESH_INTERVALL);
 
 			htmlConfig.scanPath("", "templates");
 
@@ -282,9 +291,13 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	{
 		if (scriptConfig == null)
 		{
+			ApplicationConfiguration appConfig = appConfig();
+
 			scriptConfig = new DefaultStackConfig();
 			// Default refresh intervall
-			scriptConfig.setRefreshIntervall(DEFAULT_REFRESH_INTERVALL);
+			scriptConfig.setRefreshIntervall(appConfig.isOptimizeResources()
+					? -1
+					: DEFAULT_REFRESH_INTERVALL);
 
 			scriptConfig.addToStack("angular", "jquery",
 					"angular:script/jquery.js", "angular:script/jquery.min.js");
@@ -366,8 +379,15 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	private void configureMessageSource(
 			ReloadableResourceBundleMessageSource messageSource)
 	{
+		ApplicationConfiguration appConfig = appConfig();
+
 		MessageSourceConfig config = new DefaultMessageSourceConfig();
 		config.addBaseName("WEB-INF/messages/Messages");
+		config.setCacheSeconds(
+				appConfig.isOptimizeResources()
+						? -1
+						: DEFAULT_REFRESH_INTERVALL);
+
 		configurer.configureMessageSource(config);
 
 		messageSource.setCacheSeconds(config.getCacheSeconds() != null

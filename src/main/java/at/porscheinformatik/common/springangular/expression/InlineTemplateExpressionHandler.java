@@ -4,23 +4,42 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
-import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateCache;
+import at.porscheinformatik.common.springangular.io.ResourceUtils;
+import at.porscheinformatik.common.springangular.template.cache.html.HtmlStacks;
 
 public class InlineTemplateExpressionHandler implements ExpressionHandler
 {
 	private static final Pattern NEWLINE = Pattern.compile("\\r|\\n");
 
-	private HtmlTemplateCache templateCache;
+	private HtmlStacks stacks;
 
 	@Override
 	public String process(String value)
 	{
-		Assert.isTrue(templateCache.hasTemplate(value), "Template " + value
-				+ " not found");
+		String templateName = value.toLowerCase() + ".html";
 
-		return prepareResult(templateCache.renderTemplate(value));
+		if (isTemplate("", templateName))
+		{
+			return prepareResult(stacks.get("").renderTemplate(templateName));
+		}
+
+		String[] pathAndFile = ResourceUtils.pathAndFile(templateName);
+
+		if (isTemplate(pathAndFile[0], pathAndFile[1]))
+		{
+			return prepareResult(stacks.get(pathAndFile[0]).renderTemplate(
+					pathAndFile[1]));
+		}
+
+		throw new IllegalArgumentException("Template " + value
+				+ " not found");
+	}
+
+	private boolean isTemplate(String stackName, String templateName)
+	{
+		return stacks.hasStack(stackName)
+				&& stacks.get(stackName).hasTemplate(templateName);
 	}
 
 	private String prepareResult(String template)
@@ -31,14 +50,15 @@ public class InlineTemplateExpressionHandler implements ExpressionHandler
 		}
 
 		Matcher m = NEWLINE.matcher(template);
+		// TODO: tabs noch rauslöschen am zeilenanfang.
 
 		return m.replaceAll("");
 	}
 
 	@Autowired
-	public void setTemplateCache(HtmlTemplateCache templateCache)
+	public void setStacks(HtmlStacks stacks)
 	{
-		this.templateCache = templateCache;
+		this.stacks = stacks;
 	}
 
 }

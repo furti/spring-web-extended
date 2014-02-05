@@ -28,12 +28,6 @@ public class ScriptExpressionHandler implements ExpressionHandler
 		Assert.isTrue(scriptConfig.hasStack(value), "ScriptStack " + value
 				+ " not found");
 
-		/*
-		 * TODO: die ApplicationVersion sollte noch in die URL eingefügt werden
-		 * damit der Browser bei einer neuen Version der Applikation die Scripts
-		 * neu lädt.
-		 */
-
 		if (config.isOptimizeResources())
 		{
 			return buildScriptLink("script/stack/" + value);
@@ -68,7 +62,9 @@ public class ScriptExpressionHandler implements ExpressionHandler
 
 	private String buildScriptLink(String href)
 	{
-		String script = "<script src=\"" + href + "\" "
+		String script = "<script src=\""
+				+ config.getVersion() + "/" + href
+				+ "\" "
 				+ "type=\"text/javascript\"></script>";
 
 		return script;

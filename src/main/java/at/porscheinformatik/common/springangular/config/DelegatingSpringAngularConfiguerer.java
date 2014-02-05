@@ -9,7 +9,6 @@ import at.porscheinformatik.common.springangular.expression.ExpressionHandler;
 import at.porscheinformatik.common.springangular.io.ResourceScanner;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
-import at.porscheinformatik.common.springangular.template.cache.TemplateConfig;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerConfig;
 
 public class DelegatingSpringAngularConfiguerer implements
@@ -23,15 +22,6 @@ public class DelegatingSpringAngularConfiguerer implements
 		if (configurers != null)
 		{
 			this.configurers.addAll(configurers);
-		}
-	}
-
-	@Override
-	public void addTemplateCacheConfig(TemplateConfig configurations)
-	{
-		for (SpringAngularConfigurer configurer : configurers)
-		{
-			configurer.addTemplateCacheConfig(configurations);
 		}
 	}
 
@@ -96,6 +86,15 @@ public class DelegatingSpringAngularConfiguerer implements
 		for (SpringAngularConfigurer configurer : configurers)
 		{
 			configurer.configureTemplateExpressionHandlers(config);
+		}
+	}
+
+	@Override
+	public void configureHtmlTemplates(StackConfig config)
+	{
+		for (SpringAngularConfigurer configurer : configurers)
+		{
+			configurer.configureHtmlTemplates(config);
 		}
 	}
 }

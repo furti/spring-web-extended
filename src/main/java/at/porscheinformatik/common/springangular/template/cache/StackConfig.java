@@ -29,6 +29,17 @@ public interface StackConfig
 			String location,
 			String minifiedLocation);
 
+	/**
+	 * Scans all resources in a path and adds them to the stack. The ordering of
+	 * the resources is unspecified. Especially usefull for html template
+	 * scanning where the ordering of the resources does not matter
+	 * 
+	 * @param stackName
+	 * @param path
+	 * @return
+	 */
+	StackConfig scanPath(String stackName, String path);
+
 	StackConfig removeFromStack(String stackName, String resourceName);
 
 	boolean hasStack(String stackName);

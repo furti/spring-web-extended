@@ -112,11 +112,6 @@ public abstract class StacksBase<T extends StackBase>
 		this.scanners = scanners;
 	}
 
-	// public void setHandlers(ExpressionHandlers handlers)
-	// {
-	// this.handlers = handlers;
-	// }
-
 	public void setParser(TemplateParser parser)
 	{
 		this.parser = parser;

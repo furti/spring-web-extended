@@ -25,7 +25,7 @@ public class ParboiledTemplateTest
 				new TestExpressionHandlers());
 
 		String actual = new ParboiledTemplate(resource, parser,
-				ResourceType.TEMPLATE).render();
+				ResourceType.HTML).render();
 
 		assertThat(actual, equalTo(expected));
 	}
@@ -73,7 +73,7 @@ public class ParboiledTemplateTest
 				new TestExpressionHandlers(), "{{", "}}", "|");
 
 		String actual = new ParboiledTemplate(resource, parser,
-				ResourceType.TEMPLATE).render();
+				ResourceType.HTML).render();
 
 		assertThat(actual, equalTo(expected));
 	}

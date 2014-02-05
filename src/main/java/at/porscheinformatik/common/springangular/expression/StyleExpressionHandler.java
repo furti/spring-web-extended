@@ -28,11 +28,6 @@ public class StyleExpressionHandler implements ExpressionHandler
 		Assert.isTrue(styleConfig.hasStack(value), "StyleStack " + value
 				+ " not found");
 
-		/*
-		 * TODO: die ApplicationVersion sollte noch in die URL eingefügt werden
-		 * damit der Browser bei einer neuen Version der Applikation die Styles neu lädt.
-		 */
-		
 		if (config.isOptimizeResources())
 		{
 			return buildStyleLink("style/stack/" + value);
@@ -67,7 +62,8 @@ public class StyleExpressionHandler implements ExpressionHandler
 
 	private String buildStyleLink(String href)
 	{
-		String style = "<link href=\"" + href + "\" "
+		String style = "<link href=\""
+				+ config.getVersion() + "/" + href + "\" "
 				+ "type=\"text/css\" rel=\"stylesheet\"></link>";
 
 		return style;

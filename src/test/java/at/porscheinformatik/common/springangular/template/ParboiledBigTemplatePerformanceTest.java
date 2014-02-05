@@ -32,7 +32,7 @@ public class ParboiledBigTemplatePerformanceTest
 		template = new ParboiledTemplate(
 				new ClassPathResource(
 						"/at/porscheinformatik/common/springangular/template/BigTemplate.html"),
-				parser, ResourceType.TEMPLATE);
+				parser, ResourceType.HTML);
 
 		InputStream expectedStream = new ClassPathResource(
 				"/at/porscheinformatik/common/springangular/template/BigTemplateExpected.html")

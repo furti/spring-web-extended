@@ -7,7 +7,7 @@ import at.porscheinformatik.common.springangular.io.ResourceType;
 
 public interface OptimizerConfig
 {
-	// TODO: hier sollte noch die m�glichkeit rein das man die optimizer
+	// TODO: hier sollte noch die möglichkeit rein das man die optimizer
 	// sortieren kann. Sowas wie "before:anotheroptimizer"
 	void addOptimizer(ResourceType type, String name,
 			ResourcePreProcessor processor);

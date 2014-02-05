@@ -27,8 +27,38 @@ public abstract class StackBase extends AbstractTemplateCache
 
 	public void addResource(String name, StackEntry entry) throws IOException
 	{
-		addResource(name, entry.getLocation(), false);
-		addResource(name, entry.getMinifiedLocation(), true);
+		if (entry.isScanLocation())
+		{
+			scanResources(entry.getLocation());
+		}
+		else
+		{
+			addResource(name, entry.getLocation(), false);
+			addResource(name, entry.getMinifiedLocation(), true);
+		}
+	}
+
+	/**
+	 * Scan all resources in the location and add them to the stack
+	 * 
+	 * @param location
+	 * @throws IOException
+	 */
+	private void scanResources(String location) throws IOException
+	{
+		Map<String, Resource> resources = scanners.scanResources(location);
+
+		if (resources == null)
+		{
+			logger.warn("No resources found in location " + location);
+			return;
+		}
+
+		for (Entry<String, Resource> entry : resources.entrySet())
+		{
+			addTemplate(entry.getKey().toLowerCase(), entry.getValue(),
+					resourceType, false);
+		}
 	}
 
 	private void addResource(String name, String location,

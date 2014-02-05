@@ -3,6 +3,7 @@ package at.porscheinformatik.common.springangular.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.parboiled.Parboiled;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import ro.isdc.wro.extensions.processor.js.GoogleClosureCompressorProcessor;
 import ro.isdc.wro.model.resource.processor.impl.css.CssMinProcessor;
+import ro.isdc.wro.util.Base64;
 import at.porscheinformatik.common.springangular.expression.AssetExpressionHandler;
 import at.porscheinformatik.common.springangular.expression.ExpressionHandler;
 import at.porscheinformatik.common.springangular.expression.InlineTemplateExpressionHandler;
@@ -39,13 +41,10 @@ import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.locale.LocaleContextHolderBackedLocaleContext;
 import at.porscheinformatik.common.springangular.messagesource.DefaultMessageSourceConfig;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
-import at.porscheinformatik.common.springangular.template.cache.CacheRefreshTask;
 import at.porscheinformatik.common.springangular.template.cache.DefaultStackConfig;
-import at.porscheinformatik.common.springangular.template.cache.DefaultTemplateConfig;
-import at.porscheinformatik.common.springangular.template.cache.DefaultTemplateEntryConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
 import at.porscheinformatik.common.springangular.template.cache.TemplateConfig;
-import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateCache;
+import at.porscheinformatik.common.springangular.template.cache.html.HtmlStacks;
 import at.porscheinformatik.common.springangular.template.cache.script.ScriptStacks;
 import at.porscheinformatik.common.springangular.template.cache.style.StyleStacks;
 import at.porscheinformatik.common.springangular.template.optimize.DefaultOptimizerConfig;
@@ -55,6 +54,8 @@ import at.porscheinformatik.common.springangular.template.parboiled.TemplatePars
 
 @Configuration
 @EnableScheduling
+// TODO: maybe we should add a handlerinterceptor that adds no-cache headers
+// for json responses
 public class SpringAngularConfig implements SchedulingConfigurer
 {
 	private static final Integer DEFAULT_REFRESH_INTERVALL = Integer.valueOf(5);
@@ -62,30 +63,13 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	@Autowired
 	private Environment environment;
 
-	// TODO: maybe we should add a handlerinterceptor that adds no-cache headers
-	// for json responses
 	private DelegatingSpringAngularConfiguerer configurer = new DelegatingSpringAngularConfiguerer();
-	private TemplateConfig templateCacheConfig;
-	private DefaultStackConfig scriptConfig, styleConfig;
+	private DefaultStackConfig scriptConfig, styleConfig, htmlConfig;
 
 	@Autowired(required = false)
 	public void setConfigurers(List<SpringAngularConfigurer> configurers)
 	{
 		configurer.addConfigurers(configurers);
-	}
-
-	@Bean
-	public HtmlTemplateCache templateCache()
-	{
-		TemplateConfig config = getTemplateCacheConfig();
-		HtmlTemplateCache templateCache = new HtmlTemplateCache(
-				config.getTemplateConfig());
-		templateCache.setAppConfig(appConfig());
-		templateCache.setParser(templateParser(config));
-		templateCache.setLocaleContex(localeContext());
-		templateCache.setOptimizerChain(optimizerChain());
-		templateCache.setScanners(resourceScanners());
-		return templateCache;
 	}
 
 	@Bean
@@ -119,6 +103,14 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	}
 
 	public TemplateParser templateParser(TemplateConfig config)
+	{
+		Map<String, ExpressionHandler> expressionHandlers = getTemplateExpressionHandlers();
+
+		return Parboiled.createParser(TemplateParser.class,
+				new TemplateExpressionHandlers(expressionHandlers));
+	}
+
+	public TemplateParser htmlParser(StackConfig config)
 	{
 		Map<String, ExpressionHandler> expressionHandlers = getTemplateExpressionHandlers();
 
@@ -212,6 +204,20 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	}
 
 	@Bean
+	public HtmlStacks htmlStacks()
+	{
+		DefaultStackConfig config = getHtmlConfig();
+
+		HtmlStacks htmlStacks = new HtmlStacks(config);
+		htmlStacks.setAppConfig(appConfig());
+		htmlStacks.setParser(htmlParser(config));
+		htmlStacks.setLocale(localeContext());
+		htmlStacks.setOptimizerChain(optimizerChain());
+		htmlStacks.setScanners(resourceScanners());
+		return htmlStacks;
+	}
+
+	@Bean
 	public ApplicationConfiguration appConfig()
 	{
 		ApplicationConfiguration config = new DefaultApplicationConfiguration();
@@ -224,7 +230,10 @@ public class SpringAngularConfig implements SchedulingConfigurer
 
 		if (config.getVersion() == null)
 		{
-			// TODO: set the default application version here
+			byte[] bytes = new byte[15];
+			new Random().nextBytes(bytes);
+
+			config.setVersion(Base64.encodeBytes(bytes));
 		}
 
 		return config;
@@ -252,6 +261,21 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		}
 
 		return styleConfig;
+	}
+
+	public DefaultStackConfig getHtmlConfig()
+	{
+		if (htmlConfig == null)
+		{
+			htmlConfig = new DefaultStackConfig();
+			htmlConfig.setRefreshIntervall(DEFAULT_REFRESH_INTERVALL);
+
+			htmlConfig.scanPath("", "templates");
+
+			configurer.configureHtmlTemplates(htmlConfig);
+		}
+
+		return htmlConfig;
 	}
 
 	public DefaultStackConfig getScriptConfig()
@@ -305,23 +329,6 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		configurer.configureResourceScanners(scanners);
 
 		return scanners;
-	}
-
-	private TemplateConfig getTemplateCacheConfig()
-	{
-		if (templateCacheConfig == null)
-		{
-			templateCacheConfig = new DefaultTemplateConfig();
-			templateCacheConfig.setRefreshIntervall(DEFAULT_REFRESH_INTERVALL);
-
-			templateCacheConfig.addTemplateConfig("",
-					new DefaultTemplateEntryConfig(
-							"/templates"));
-
-			configurer.addTemplateCacheConfig(templateCacheConfig);
-		}
-
-		return templateCacheConfig;
 	}
 
 	private Map<String, ExpressionHandler> getTemplateExpressionHandlers()
@@ -378,13 +385,22 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar)
 	{
-		TemplateConfig config = getTemplateCacheConfig();
+		StackConfig htmlConfig = getHtmlConfig();
+		final HtmlStacks htmlStacks = htmlStacks();
 
-		if (config.getRefreshIntervall() > 0)
+		if (htmlConfig.getRefreshIntervall() > 0
+				&& htmlStacks != null)
 		{
 			taskRegistrar.addFixedDelayTask(
-					new CacheRefreshTask(templateCache()),
-					config.getRefreshIntervall() * 1000);
+					new Runnable() {
+
+						@Override
+						public void run()
+						{
+							htmlStacks.refresh();
+						}
+					},
+					htmlConfig.getRefreshIntervall() * 1000);
 		}
 
 		StackConfig styleConfig = getStyleConfig();

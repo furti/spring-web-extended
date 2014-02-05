@@ -94,4 +94,17 @@ public class DefaultStackConfig implements StackConfig
 
 		return this;
 	}
+
+	@Override
+	public StackConfig scanPath(String stackName, String path)
+	{
+		if (!hasStack(stackName))
+		{
+			stacks.put(stackName, new LinkedHashMap<String, StackEntry>());
+		}
+
+		stacks.get(stackName).put(path, new StackEntry(path, true));
+
+		return this;
+	}
 }

@@ -66,6 +66,8 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	private DelegatingSpringAngularConfiguerer configurer = new DelegatingSpringAngularConfiguerer();
 	private DefaultStackConfig scriptConfig, styleConfig, htmlConfig;
 
+	private HashMap<String, ExpressionHandler> handlers;
+
 	@Autowired(required = false)
 	public void setConfigurers(List<SpringAngularConfigurer> configurers)
 	{
@@ -93,18 +95,18 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	public TemplateParser scriptParser(StackConfig config)
 	{
 		return Parboiled.createParser(TemplateParser.class,
-				new ScriptExpressionHandlers(getScriptExpressionHandlers()));
+				new ScriptExpressionHandlers(getExpressionHandlers()));
 	}
 
 	public TemplateParser styleParser(StackConfig config)
 	{
 		return Parboiled.createParser(TemplateParser.class,
-				new StyleExpressionHandlers(getStyleExpressionHandlers()));
+				new StyleExpressionHandlers(getExpressionHandlers()));
 	}
 
 	public TemplateParser templateParser(TemplateConfig config)
 	{
-		Map<String, ExpressionHandler> expressionHandlers = getTemplateExpressionHandlers();
+		Map<String, ExpressionHandler> expressionHandlers = getExpressionHandlers();
 
 		return Parboiled.createParser(TemplateParser.class,
 				new TemplateExpressionHandlers(expressionHandlers));
@@ -112,7 +114,7 @@ public class SpringAngularConfig implements SchedulingConfigurer
 
 	public TemplateParser htmlParser(StackConfig config)
 	{
-		Map<String, ExpressionHandler> expressionHandlers = getTemplateExpressionHandlers();
+		Map<String, ExpressionHandler> expressionHandlers = getExpressionHandlers();
 
 		return Parboiled.createParser(TemplateParser.class,
 				new TemplateExpressionHandlers(expressionHandlers));
@@ -344,34 +346,20 @@ public class SpringAngularConfig implements SchedulingConfigurer
 		return scanners;
 	}
 
-	private Map<String, ExpressionHandler> getTemplateExpressionHandlers()
+	private Map<String, ExpressionHandler> getExpressionHandlers()
 	{
-		Map<String, ExpressionHandler> handlers = new HashMap<>();
-		handlers.put("message", messageExpressionHandler());
-		handlers.put("asset", assetExpressionHandler());
-		handlers.put("style", styleExpressionHandler());
-		handlers.put("script", scriptExpressionHandler());
+		if (handlers == null)
+		{
+			handlers = new HashMap<>();
+			handlers.put("message", messageExpressionHandler());
+			handlers.put("asset", assetExpressionHandler());
+			handlers.put("style", styleExpressionHandler());
+			handlers.put("script", scriptExpressionHandler());
+			handlers.put("asset", assetExpressionHandler());
+			handlers.put("inlinetemplate", inlineTemplateExpressionHandler());
 
-		configurer.configureTemplateExpressionHandlers(handlers);
-
-		return handlers;
-	}
-
-	private Map<String, ExpressionHandler> getScriptExpressionHandlers()
-	{
-		Map<String, ExpressionHandler> handlers = new HashMap<>();
-		handlers.put("message", messageExpressionHandler());
-		handlers.put("asset", assetExpressionHandler());
-		handlers.put("inlinetemplate", inlineTemplateExpressionHandler());
-
-		return handlers;
-	}
-
-	private Map<String, ExpressionHandler> getStyleExpressionHandlers()
-	{
-		Map<String, ExpressionHandler> handlers = new HashMap<>();
-		handlers.put("message", messageExpressionHandler());
-		handlers.put("asset", assetExpressionHandler());
+			configurer.configureExpressionHandlers(handlers);
+		}
 
 		return handlers;
 	}

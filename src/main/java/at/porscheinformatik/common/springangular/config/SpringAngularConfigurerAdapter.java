@@ -53,7 +53,7 @@ public abstract class SpringAngularConfigurerAdapter implements
 	}
 
 	@Override
-	public void configureTemplateExpressionHandlers(
+	public void configureExpressionHandlers(
 			Map<String, ExpressionHandler> config)
 	{
 		// Subclasses may override this to add configurations

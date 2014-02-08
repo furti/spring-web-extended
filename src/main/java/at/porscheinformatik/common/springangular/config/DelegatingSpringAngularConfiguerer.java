@@ -80,12 +80,12 @@ public class DelegatingSpringAngularConfiguerer implements
 	}
 
 	@Override
-	public void configureTemplateExpressionHandlers(
+	public void configureExpressionHandlers(
 			Map<String, ExpressionHandler> config)
 	{
 		for (SpringAngularConfigurer configurer : configurers)
 		{
-			configurer.configureTemplateExpressionHandlers(config);
+			configurer.configureExpressionHandlers(config);
 		}
 	}
 

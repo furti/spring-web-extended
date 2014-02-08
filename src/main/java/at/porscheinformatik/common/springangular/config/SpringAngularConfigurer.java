@@ -24,6 +24,5 @@ public interface SpringAngularConfigurer
 
 	void configureResourceScanners(Map<String, ResourceScanner> config);
 
-	void configureTemplateExpressionHandlers(
-			Map<String, ExpressionHandler> config);
+	void configureExpressionHandlers(Map<String, ExpressionHandler> config);
 }

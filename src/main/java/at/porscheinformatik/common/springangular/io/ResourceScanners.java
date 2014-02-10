@@ -32,7 +32,7 @@ public class ResourceScanners
 	}
 
 	public Map<String, Resource> scanResources(String location,
-			String filePrefix,
+			String file,
 			boolean scanSubDirectories) throws IOException
 	{
 		String[] split = SpringAngularUtils.parseExpression(location);
@@ -41,7 +41,7 @@ public class ResourceScanners
 		Assert.isTrue(scanners.containsKey(split[0]),
 				"Unknown expression prefix " + split[0]);
 
-		return scanners.get(split[0]).scanResources(split[1], filePrefix,
+		return scanners.get(split[0]).scanResources(split[1], file,
 				scanSubDirectories);
 	}
 }

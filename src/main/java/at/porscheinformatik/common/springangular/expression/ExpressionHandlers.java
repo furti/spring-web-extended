@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.util.Assert;
 
-public abstract class ExpressionHandlers
+public class ExpressionHandlers
 {
 
 	protected Map<String, ExpressionHandler> handlers;

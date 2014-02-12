@@ -23,13 +23,11 @@ import ro.isdc.wro.model.resource.processor.impl.css.CssMinProcessor;
 import ro.isdc.wro.util.Base64;
 import at.porscheinformatik.common.springangular.expression.AssetExpressionHandler;
 import at.porscheinformatik.common.springangular.expression.ExpressionHandler;
+import at.porscheinformatik.common.springangular.expression.ExpressionHandlers;
 import at.porscheinformatik.common.springangular.expression.InlineTemplateExpressionHandler;
 import at.porscheinformatik.common.springangular.expression.MessageExpressionHandler;
 import at.porscheinformatik.common.springangular.expression.ScriptExpressionHandler;
-import at.porscheinformatik.common.springangular.expression.ScriptExpressionHandlers;
 import at.porscheinformatik.common.springangular.expression.StyleExpressionHandler;
-import at.porscheinformatik.common.springangular.expression.StyleExpressionHandlers;
-import at.porscheinformatik.common.springangular.expression.TemplateExpressionHandlers;
 import at.porscheinformatik.common.springangular.io.AngularResourceScanner;
 import at.porscheinformatik.common.springangular.io.ClasspathResourceScanner;
 import at.porscheinformatik.common.springangular.io.ContextResourceScanner;
@@ -43,7 +41,6 @@ import at.porscheinformatik.common.springangular.messagesource.DefaultMessageSou
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.template.cache.DefaultStackConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
-import at.porscheinformatik.common.springangular.template.cache.TemplateConfig;
 import at.porscheinformatik.common.springangular.template.cache.html.HtmlStacks;
 import at.porscheinformatik.common.springangular.template.cache.script.ScriptStacks;
 import at.porscheinformatik.common.springangular.template.cache.style.StyleStacks;
@@ -95,29 +92,25 @@ public class SpringAngularConfig implements SchedulingConfigurer
 	public TemplateParser scriptParser(StackConfig config)
 	{
 		return Parboiled.createParser(TemplateParser.class,
-				new ScriptExpressionHandlers(getExpressionHandlers()));
+				expressionHandlers());
 	}
 
 	public TemplateParser styleParser(StackConfig config)
 	{
 		return Parboiled.createParser(TemplateParser.class,
-				new StyleExpressionHandlers(getExpressionHandlers()));
-	}
-
-	public TemplateParser templateParser(TemplateConfig config)
-	{
-		Map<String, ExpressionHandler> expressionHandlers = getExpressionHandlers();
-
-		return Parboiled.createParser(TemplateParser.class,
-				new TemplateExpressionHandlers(expressionHandlers));
+				expressionHandlers());
 	}
 
 	public TemplateParser htmlParser(StackConfig config)
 	{
-		Map<String, ExpressionHandler> expressionHandlers = getExpressionHandlers();
-
 		return Parboiled.createParser(TemplateParser.class,
-				new TemplateExpressionHandlers(expressionHandlers));
+				expressionHandlers());
+	}
+
+	@Bean
+	public ExpressionHandlers expressionHandlers()
+	{
+		return new ExpressionHandlers(getExpressionHandlers());
 	}
 
 	@Bean

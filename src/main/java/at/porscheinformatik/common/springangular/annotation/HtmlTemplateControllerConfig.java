@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 import org.springframework.context.ApplicationContext;
 
+import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateController;
+
 /**
  * Annotation used to configure the default template controller
  * 
@@ -15,7 +17,7 @@ import org.springframework.context.ApplicationContext;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface TemplateControllerConfig
+public @interface HtmlTemplateControllerConfig
 {
 	/**
 	 * If set to true the default {@link HtmlTemplateController} is added to the
@@ -24,7 +26,7 @@ public @interface TemplateControllerConfig
 	 * @return true if the default {@link HtmlTemplateController} should be
 	 *         registered, false otherwise
 	 */
-	boolean registerTemplateController() default true;
+	boolean registerHtmlTemplateController() default true;
 
 	/**
 	 * @return true if a fallback to the index template should be made if the

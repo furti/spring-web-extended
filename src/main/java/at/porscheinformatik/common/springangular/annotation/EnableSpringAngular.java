@@ -49,7 +49,7 @@ import at.porscheinformatik.common.springangular.config.SpringAngularRegistrar;
 public @interface EnableSpringAngular
 {
 
-	TemplateControllerConfig templateControllerConfig() default @TemplateControllerConfig;
+	HtmlTemplateControllerConfig htmlTemplateControllerConfig() default @HtmlTemplateControllerConfig;
 
 	/**
 	 * @return true if the default Assetcontroller should be registered

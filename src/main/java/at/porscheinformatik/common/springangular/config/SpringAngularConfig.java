@@ -1,5 +1,6 @@
 package at.porscheinformatik.common.springangular.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import ro.isdc.wro.extensions.processor.js.GoogleClosureCompressorProcessor;
 import ro.isdc.wro.model.resource.processor.impl.css.CssMinProcessor;
@@ -37,6 +41,8 @@ import at.porscheinformatik.common.springangular.io.ResourceScanner;
 import at.porscheinformatik.common.springangular.io.ResourceScanners;
 import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.locale.LocaleContextHolderBackedLocaleContext;
+import at.porscheinformatik.common.springangular.locale.LocaleHandlerInterceptor;
+import at.porscheinformatik.common.springangular.locale.LocaleSource;
 import at.porscheinformatik.common.springangular.messagesource.DefaultMessageSourceConfig;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.template.cache.DefaultStackConfig;
@@ -51,9 +57,11 @@ import at.porscheinformatik.common.springangular.template.parboiled.TemplatePars
 
 @Configuration
 @EnableScheduling
+@EnableWebMvc
 // TODO: maybe we should add a handlerinterceptor that adds no-cache headers
 // for json responses
-public class SpringAngularConfig implements SchedulingConfigurer
+public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
+		SchedulingConfigurer
 {
 	private static final Integer DEFAULT_REFRESH_INTERVALL = Integer.valueOf(5);
 
@@ -380,7 +388,15 @@ public class SpringAngularConfig implements SchedulingConfigurer
 			messageSource.setBasenames(config.getBaseNames().toArray(
 					new String[config.getBaseNames().size()]));
 		}
+	}
 
+	private List<LocaleSource> getLocaleSources()
+	{
+		List<LocaleSource> sources = new ArrayList<>();
+
+		configurer.configureLocaleSources(sources);
+
+		return sources;
 	}
 
 	@Override
@@ -440,6 +456,17 @@ public class SpringAngularConfig implements SchedulingConfigurer
 						}
 					},
 					scriptConfig.getRefreshIntervall() * 1000);
+		}
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry)
+	{
+		List<LocaleSource> sources = getLocaleSources();
+
+		if (!CollectionUtils.isEmpty(sources))
+		{
+			registry.addInterceptor(new LocaleHandlerInterceptor(sources));
 		}
 	}
 }

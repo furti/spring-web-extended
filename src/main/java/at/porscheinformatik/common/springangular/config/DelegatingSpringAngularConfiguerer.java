@@ -7,6 +7,7 @@ import java.util.Map;
 
 import at.porscheinformatik.common.springangular.expression.ExpressionHandler;
 import at.porscheinformatik.common.springangular.io.ResourceScanner;
+import at.porscheinformatik.common.springangular.locale.LocaleSource;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerConfig;
@@ -95,6 +96,18 @@ public class DelegatingSpringAngularConfiguerer implements
 		for (SpringAngularConfigurer configurer : configurers)
 		{
 			configurer.configureHtmlTemplates(config);
+		}
+	}
+
+	/**
+	 * @param sources
+	 */
+	@Override
+	public void configureLocaleSources(List<LocaleSource> sources)
+	{
+		for (SpringAngularConfigurer configurer : configurers)
+		{
+			configurer.configureLocaleSources(sources);
 		}
 	}
 }

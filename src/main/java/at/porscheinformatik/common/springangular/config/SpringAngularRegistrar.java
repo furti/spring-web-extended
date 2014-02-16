@@ -17,8 +17,8 @@ import at.porscheinformatik.common.springangular.template.cache.style.StyleContr
 public class SpringAngularRegistrar implements ImportBeanDefinitionRegistrar
 {
 
-	private static final String TEMPLATECONTROLLER_KEY = "templateControllerConfig";
-	private static final String TEMPLATECONTROLLERREGISTER_KEY = "registerTemplateController";
+	private static final String TEMPLATECONTROLLER_KEY = "htmlTemplateControllerConfig";
+	private static final String TEMPLATECONTROLLERREGISTER_KEY = "registerHtmlTemplateController";
 	private static final String TEMPLATECONTROLLERFALLBACK_KEY = "fallbackToIndex";
 	private static final String ASSETCONTROLLER_KEY = "registerAssetController";
 	private static final String STYLECONTROLLER_KEY = "registerStyleController";
@@ -54,7 +54,7 @@ public class SpringAngularRegistrar implements ImportBeanDefinitionRegistrar
 				.get(TEMPLATECONTROLLER_KEY);
 
 		Assert.notNull(templateControllerConfig,
-				"No config for TemplateController found in EnableSpringAngulars");
+				"No config for TemplateController found in EnableSpringAngular");
 
 		Boolean register = (Boolean) templateControllerConfig
 				.get(TEMPLATECONTROLLERREGISTER_KEY);

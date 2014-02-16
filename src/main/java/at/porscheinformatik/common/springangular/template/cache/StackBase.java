@@ -9,10 +9,12 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.springframework.util.StringUtils;
 
 import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.io.ResourceUtils;
 import at.porscheinformatik.common.springangular.template.Template;
+import at.porscheinformatik.common.springangular.util.SpringAngularUtils;
 
 public abstract class StackBase extends AbstractTemplateCache
 {
@@ -64,15 +66,34 @@ public abstract class StackBase extends AbstractTemplateCache
 	private void addResource(String name, String location,
 			boolean optimizedResource) throws IOException
 	{
-		String[] pathAndFile = ResourceUtils.pathAndFile(location);
+		if (location == null)
+		{
+			return;
+		}
+
+		String[] prefixAndPath = SpringAngularUtils.parseExpression(location);
+		String[] pathAndFile = ResourceUtils.pathAndFile(prefixAndPath[1]);
 
 		if (pathAndFile == null)
 		{
 			return;
 		}
 
+		String locationToUse = null;
+
+		if (StringUtils.hasText(prefixAndPath[0]))
+		{
+			locationToUse = prefixAndPath[0] + ":";
+		}
+		else
+		{
+			locationToUse = "";
+		}
+
+		locationToUse += pathAndFile[0];
+
 		Map<String, Resource> resources = scanners.scanResources(
-				pathAndFile[0], pathAndFile[1], false);
+				locationToUse, pathAndFile[1], false);
 
 		/*
 		 * Spring does not log the message right if we only throw a

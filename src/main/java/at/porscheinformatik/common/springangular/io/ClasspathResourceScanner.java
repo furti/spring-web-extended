@@ -118,7 +118,7 @@ public class ClasspathResourceScanner implements ResourceScanner
 		{
 			packageSearchPath.append("/**/");
 		}
-		else
+		else if (!path.endsWith("/"))
 		{
 			packageSearchPath.append("/");
 		}

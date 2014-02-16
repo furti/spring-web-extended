@@ -33,13 +33,18 @@ import at.porscheinformatik.common.springangular.expression.MessageExpressionHan
 import at.porscheinformatik.common.springangular.expression.ScriptExpressionHandler;
 import at.porscheinformatik.common.springangular.expression.StyleExpressionHandler;
 import at.porscheinformatik.common.springangular.io.AngularResourceScanner;
+import at.porscheinformatik.common.springangular.io.AngularUiBootstrapResourceScanner;
+import at.porscheinformatik.common.springangular.io.BootstrapCssResourceScanner;
+import at.porscheinformatik.common.springangular.io.BootstrapJsResourceScanner;
 import at.porscheinformatik.common.springangular.io.ClasspathResourceScanner;
 import at.porscheinformatik.common.springangular.io.ContextResourceScanner;
+import at.porscheinformatik.common.springangular.io.JqueryResourceScanner;
 import at.porscheinformatik.common.springangular.io.LocalizedResourceLoader;
 import at.porscheinformatik.common.springangular.io.LocalizedResourceLoaderImpl;
 import at.porscheinformatik.common.springangular.io.ResourceScanner;
 import at.porscheinformatik.common.springangular.io.ResourceScanners;
 import at.porscheinformatik.common.springangular.io.ResourceType;
+import at.porscheinformatik.common.springangular.io.WebJarResourceScanner;
 import at.porscheinformatik.common.springangular.locale.LocaleContextHolderBackedLocaleContext;
 import at.porscheinformatik.common.springangular.locale.LocaleHandlerInterceptor;
 import at.porscheinformatik.common.springangular.locale.LocaleSource;
@@ -95,6 +100,36 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 	public AngularResourceScanner angularResourceScanner()
 	{
 		return new AngularResourceScanner();
+	}
+
+	@Bean
+	public WebJarResourceScanner webJarResourceScanner()
+	{
+		return new WebJarResourceScanner();
+	}
+
+	@Bean
+	public JqueryResourceScanner jqueryResourceScanner()
+	{
+		return new JqueryResourceScanner();
+	}
+
+	@Bean
+	public BootstrapJsResourceScanner bootstrapJsResourceScanner()
+	{
+		return new BootstrapJsResourceScanner();
+	}
+
+	@Bean
+	public BootstrapCssResourceScanner bootstrapCssResourceScanner()
+	{
+		return new BootstrapCssResourceScanner();
+	}
+
+	@Bean
+	public AngularUiBootstrapResourceScanner angularUiBootstrapResourceScanner()
+	{
+		return new AngularUiBootstrapResourceScanner();
 	}
 
 	public TemplateParser scriptParser(StackConfig config)
@@ -262,8 +297,8 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 							: DEFAULT_REFRESH_INTERVALL);
 
 			styleConfig.addToStack("bootstrap", "bootstrap",
-					"angular:style/bootstrap.css",
-					"angular:style/bootstrap.min.css");
+					"bootstrapcss:bootstrap.css",
+					"bootstrapcss:bootstrap.min.css");
 
 			configurer.configureStyles(styleConfig);
 		}
@@ -303,16 +338,17 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 					: DEFAULT_REFRESH_INTERVALL);
 
 			scriptConfig.addToStack("angular", "jquery",
-					"angular:script/jquery.js", "angular:script/jquery.min.js");
+					"jquery:jquery.js",
+					"jquery:jquery.min.js");
 			scriptConfig.addToStack("angular", "angularjs",
-					"angular:script/angular.js",
-					"angular:script/angular.min.js");
+					"angular:angular.js",
+					"angular:angular.min.js");
 			scriptConfig.addToStack("angular", "ngroute",
-					"angular:script/angular-route.js",
-					"angular:script/angular-route.min.js");
+					"angular:angular-route.js",
+					"angular:angular-route.min.js");
 			scriptConfig.addToStack("angular", "uibootstrap",
-					"angular:script/ui-bootstrap.js",
-					"angular:script/ui-bootstrap.min.js");
+					"angularuibootstrap:ui-bootstrap-tpls.js",
+					"angularuibootstrap:ui-bootstrap-tpls.min.js");
 
 			configurer.configureScripts(scriptConfig);
 		}
@@ -341,6 +377,11 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 		scanners.put("", contextResourceScanner());
 		scanners.put("classpath", classpathResourceScanner());
 		scanners.put("angular", angularResourceScanner());
+		scanners.put("webjar", webJarResourceScanner());
+		scanners.put("jquery", jqueryResourceScanner());
+		scanners.put("bootstrapjs", bootstrapJsResourceScanner());
+		scanners.put("bootstrapcss", bootstrapCssResourceScanner());
+		scanners.put("angularuibootstrap", angularUiBootstrapResourceScanner());
 
 		configurer.configureResourceScanners(scanners);
 

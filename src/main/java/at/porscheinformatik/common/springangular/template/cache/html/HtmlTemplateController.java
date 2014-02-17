@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ public class HtmlTemplateController
 	private static final Pattern PATH_PATTERN = Pattern
 			.compile("^.*template/(.*)");
 
-	private HtmlStacks stacks;
+	protected HtmlStacks stacks;
 	private Boolean fallbackToIndex;
 
 	public HtmlTemplateController(Boolean fallbackToIndex)
@@ -33,7 +34,7 @@ public class HtmlTemplateController
 				: Boolean.TRUE;
 	}
 
-	@RequestMapping(value = "**", method = RequestMethod.GET, produces = "text/html")
+	@RequestMapping(value = "**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String handleIndex()
 	{
@@ -45,7 +46,7 @@ public class HtmlTemplateController
 		return stacks.get("").renderTemplate(INDEX);
 	}
 
-	@RequestMapping(value = "**/template/**", method = RequestMethod.GET, produces = "text/html")
+	@RequestMapping(value = "**/template/**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
 	public String handleTemplate(HttpServletRequest request)
 	{
@@ -82,12 +83,12 @@ public class HtmlTemplateController
 		return isDefaultTemplate(INDEX);
 	}
 
-	private boolean isDefaultTemplate(String templateName)
+	protected boolean isDefaultTemplate(String templateName)
 	{
 		return isTemplate("", templateName);
 	}
 
-	private boolean isTemplate(String stackName, String templateName)
+	protected boolean isTemplate(String stackName, String templateName)
 	{
 		return stacks.hasStack("")
 				&& stacks.get("").hasTemplate(templateName);

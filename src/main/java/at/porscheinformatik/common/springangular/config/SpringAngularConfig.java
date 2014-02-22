@@ -50,6 +50,7 @@ import at.porscheinformatik.common.springangular.locale.LocaleHandlerInterceptor
 import at.porscheinformatik.common.springangular.locale.LocaleSource;
 import at.porscheinformatik.common.springangular.messagesource.DefaultMessageSourceConfig;
 import at.porscheinformatik.common.springangular.messagesource.MessageSourceConfig;
+import at.porscheinformatik.common.springangular.servlet.ResponseContextHandlerInterceptor;
 import at.porscheinformatik.common.springangular.template.cache.DefaultStackConfig;
 import at.porscheinformatik.common.springangular.template.cache.StackConfig;
 import at.porscheinformatik.common.springangular.template.cache.html.HtmlStacks;
@@ -503,6 +504,8 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 	@Override
 	public void addInterceptors(InterceptorRegistry registry)
 	{
+		registry.addInterceptor(new ResponseContextHandlerInterceptor());
+
 		List<LocaleSource> sources = getLocaleSources();
 
 		if (!CollectionUtils.isEmpty(sources))

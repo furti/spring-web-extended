@@ -42,6 +42,9 @@ public class ParboiledTemplateTest
 						"Template with single expression ${simple:value}"),
 						"Template with single expression value" },
 				{ new StringResource(
+						"Template with ${static}"),
+						"Template with static text" },
+				{ new StringResource(
 						"${simple:value} Template with starting expression"),
 						"value Template with starting expression" },
 				{ new StringResource(

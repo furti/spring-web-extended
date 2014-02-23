@@ -1,5 +1,6 @@
 package at.porscheinformatik.common.springangular.config;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -272,7 +273,13 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 			byte[] bytes = new byte[15];
 			new Random().nextBytes(bytes);
 
-			config.setVersion(Base64.encodeBytes(bytes));
+			try
+			{
+				config.setVersion(Base64.encodeBytes(bytes, Base64.URL_SAFE));
+			} catch (IOException e)
+			{
+				throw new RuntimeException(e);
+			}
 		}
 
 		return config;
@@ -347,6 +354,8 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 			scriptConfig.addToStack("angular", "ngroute",
 					"angular:angular-route.js",
 					"angular:angular-route.min.js");
+			scriptConfig.addToStack("angular", "bootstrap",
+					"bootstrapjs:bootstrap.js", "bootstrapjs:bootstrap.min.js");
 			scriptConfig.addToStack("angular", "uibootstrap",
 					"angularuibootstrap:ui-bootstrap-tpls.js",
 					"angularuibootstrap:ui-bootstrap-tpls.min.js");

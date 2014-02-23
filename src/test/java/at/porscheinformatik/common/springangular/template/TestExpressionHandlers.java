@@ -12,6 +12,7 @@ public class TestExpressionHandlers extends ExpressionHandlers
 	{
 		super(new HashMap<String, ExpressionHandler>());
 		handlers.put("simple", new SimpleExpressionHandler());
+		handlers.put("static", new StaticExpressionHandler());
 	}
 
 	private static class SimpleExpressionHandler implements ExpressionHandler
@@ -25,4 +26,14 @@ public class TestExpressionHandlers extends ExpressionHandlers
 
 	}
 
+	private static class StaticExpressionHandler implements ExpressionHandler
+	{
+
+		@Override
+		public String process(String value)
+		{
+			return "static text";
+		}
+
+	}
 }

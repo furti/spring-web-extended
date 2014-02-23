@@ -1,5 +1,6 @@
 package at.porscheinformatik.common.springangular.annotation;
 
+//CHECKSTYLE:OFF
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,11 +14,14 @@ import at.porscheinformatik.common.springangular.config.SpringAngularConfig;
 import at.porscheinformatik.common.springangular.config.SpringAngularConfigurer;
 import at.porscheinformatik.common.springangular.config.SpringAngularConfigurerAdapter;
 import at.porscheinformatik.common.springangular.config.SpringAngularRegistrar;
+import at.porscheinformatik.common.springangular.template.cache.html.HtmlTemplateController;
+
+//CHECKSTYLE:ON
 
 /**
  * Add this annotation to @{@link Configuration} classes to enable Angular
  * Support configured in {@link SpringAngularConfig} and
- * {@link SpringAngularRegistrar}
+ * {@link SpringAngularRegistrar}.
  * 
  * <p>
  * You can customize the configuration by implementing the
@@ -49,6 +53,9 @@ import at.porscheinformatik.common.springangular.config.SpringAngularRegistrar;
 public @interface EnableSpringAngular
 {
 
+	/**
+	 * @return the configuration for the {@link HtmlTemplateController}
+	 */
 	HtmlTemplateControllerConfig htmlTemplateControllerConfig() default @HtmlTemplateControllerConfig;
 
 	/**

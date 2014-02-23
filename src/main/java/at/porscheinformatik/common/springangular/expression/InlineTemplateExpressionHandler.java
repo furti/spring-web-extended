@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.RecoveringParseRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -16,6 +18,8 @@ import at.porscheinformatik.common.springangular.util.ParboiledUtils;
 public class InlineTemplateExpressionHandler implements ExpressionHandler,
 		BeanFactoryAware
 {
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	private HtmlStacks stacks;
 	private InlineTemplateParser parser = Parboiled
 			.createParser(InlineTemplateParser.class);
@@ -24,6 +28,8 @@ public class InlineTemplateExpressionHandler implements ExpressionHandler,
 	@Override
 	public String process(String value)
 	{
+		logger.info("Rendering inlinetemplate " + value);
+
 		HtmlStacks htmlStacks = getStacks();
 
 		String templateName = value.toLowerCase() + ".html";

@@ -6,6 +6,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import at.porscheinformatik.common.springangular.io.ResourceType;
@@ -13,6 +15,7 @@ import at.porscheinformatik.common.springangular.template.optimize.OptimizerChai
 
 public abstract class BaseTemplate implements Template
 {
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 
 	private OptimizerChain optimizerChain;
 	private ResourceType type;
@@ -28,6 +31,9 @@ public abstract class BaseTemplate implements Template
 
 	public String render() throws IOException
 	{
+		logger.debug("Thread " + Thread.currentThread().getName()
+				+ " obtains readLock for template " + getTemplateUri());
+
 		readLock.lock();
 		try
 		{
@@ -49,6 +55,8 @@ public abstract class BaseTemplate implements Template
 			}
 		} finally
 		{
+			logger.debug("Thread " + Thread.currentThread().getName()
+					+ " releases readLock for template " + getTemplateUri());
 			readLock.unlock();
 		}
 	}
@@ -64,12 +72,18 @@ public abstract class BaseTemplate implements Template
 	@Override
 	public void refresh() throws IOException
 	{
+		logger.debug("Thread " + Thread.currentThread().getName()
+				+ " obtains writeLock for template " + getTemplateUri());
+
 		writeLock.lock();
 		try
 		{
 			doRefresh();
 		} finally
 		{
+			logger.debug("Thread " + Thread.currentThread().getName()
+					+ " releases writeLock for template " + getTemplateUri());
+
 			writeLock.unlock();
 		}
 	}

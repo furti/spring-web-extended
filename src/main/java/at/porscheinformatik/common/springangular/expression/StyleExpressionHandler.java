@@ -2,6 +2,7 @@ package at.porscheinformatik.common.springangular.expression;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.springangular.config.ApplicationConfiguration;
@@ -9,9 +10,9 @@ import at.porscheinformatik.common.springangular.template.cache.StackConfig;
 
 public class StyleExpressionHandler implements ExpressionHandler
 {
-
 	private StackConfig styleConfig;
 	private ApplicationConfiguration config;
+	private LinkPreparator linkPreparator;
 
 	public StyleExpressionHandler(StackConfig styleConfig,
 			ApplicationConfiguration config)
@@ -50,11 +51,13 @@ public class StyleExpressionHandler implements ExpressionHandler
 		for (String styleName : styleNames)
 		{
 			StringBuilder href = new StringBuilder()
-					.append("style/single/")
+					.append(config.getVersion())
+					.append("/style/single/")
 					.append(stackName).append("/")
 					.append(styleName);
 
-			builder.append(buildStyleLink(href.toString())).append("\n");
+			builder.append(buildStyleLink(prepareHref(href.toString())))
+					.append("\n");
 		}
 
 		return builder.toString();
@@ -63,9 +66,32 @@ public class StyleExpressionHandler implements ExpressionHandler
 	private String buildStyleLink(String href)
 	{
 		String style = "<link href=\""
-				+ config.getVersion() + "/" + href + "\" "
+				+ href + "\" "
 				+ "type=\"text/css\" rel=\"stylesheet\"></link>";
 
 		return style;
+	}
+
+	/**
+	 * Subclasses may change the styles href for theyr own needs.
+	 * 
+	 * @param href
+	 *            - Link that is used as href of the link tag
+	 * @return new Link
+	 */
+	protected String prepareHref(String href)
+	{
+		if (linkPreparator != null)
+		{
+			return linkPreparator.prepareLink(href);
+		}
+
+		return href;
+	}
+
+	@Autowired(required = false)
+	public void setLinkPreparator(LinkPreparator linkPreparator)
+	{
+		this.linkPreparator = linkPreparator;
 	}
 }

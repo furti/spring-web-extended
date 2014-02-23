@@ -77,16 +77,18 @@ public class TemplateParser extends BaseParser<Object>
 		return Sequence(
 				expressionPrefix,
 				expressionKey(key),
-				expressionDelimiter,
-				expressionValue(value),
+				Optional(expressionDelimiter,
+						expressionValue(value)),
 				expressionSuffix,
 				push(new ExpressionPart(key.get(), value.get(), handlers)));
 	}
 
 	protected Rule expressionKey(StringVar key)
 	{
-		return Sequence(OneOrMore(
-				Sequence(TestNot(expressionDelimiter), ANY)),
+		return Sequence(
+				OneOrMore(
+				Sequence(TestNot(expressionDelimiter),
+						TestNot(expressionSuffix), ANY)),
 				key.set(matchOrDefault("")));
 	}
 

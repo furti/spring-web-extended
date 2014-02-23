@@ -40,6 +40,17 @@ public class AssetController implements ServletContextAware
 	private LocaleContext locale;
 	private ServletContext servletContext;
 
+	/**
+	 * Handles every URL that cotains "asset" and streams the requested Resource
+	 * to the client.
+	 * 
+	 * @param request
+	 *            - The Request
+	 * @param response
+	 *            - The Response
+	 * @throws IOException
+	 *             - If an exception occurs while streaming the resource
+	 */
 	@RequestMapping(value = "/**/asset/**", method = RequestMethod.GET)
 	public void handleAsset(HttpServletRequest request,
 			HttpServletResponse response) throws IOException

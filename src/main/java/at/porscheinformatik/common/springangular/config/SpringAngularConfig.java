@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.parboiled.Parboiled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +22,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import ro.isdc.wro.extensions.processor.js.GoogleClosureCompressorProcessor;
-import ro.isdc.wro.model.resource.processor.impl.css.CssMinProcessor;
+import ro.isdc.wro.extensions.processor.css.YUICssCompressorProcessor;
+import ro.isdc.wro.model.resource.processor.impl.js.JSMinProcessor;
 import ro.isdc.wro.util.Base64;
 import at.porscheinformatik.common.springangular.expression.AssetExpressionHandler;
 import at.porscheinformatik.common.springangular.expression.ExpressionHandler;
@@ -60,7 +59,6 @@ import at.porscheinformatik.common.springangular.template.cache.style.StyleStack
 import at.porscheinformatik.common.springangular.template.optimize.DefaultOptimizerConfig;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerConfig;
-import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 
 @Configuration
 @EnableScheduling
@@ -134,24 +132,6 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 		return new AngularUiBootstrapResourceScanner();
 	}
 
-	public TemplateParser scriptParser(StackConfig config)
-	{
-		return Parboiled.createParser(TemplateParser.class,
-				expressionHandlers());
-	}
-
-	public TemplateParser styleParser(StackConfig config)
-	{
-		return Parboiled.createParser(TemplateParser.class,
-				expressionHandlers());
-	}
-
-	public TemplateParser htmlParser(StackConfig config)
-	{
-		return Parboiled.createParser(TemplateParser.class,
-				expressionHandlers());
-	}
-
 	@Bean
 	public ExpressionHandlers expressionHandlers()
 	{
@@ -223,7 +203,7 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 
 		StyleStacks styleStacks = new StyleStacks(config);
 		styleStacks.setAppConfig(appConfig());
-		styleStacks.setParser(styleParser(config));
+		styleStacks.setExpressionHandlers(expressionHandlers());
 		styleStacks.setLocale(localeContext());
 		styleStacks.setOptimizerChain(optimizerChain());
 		styleStacks.setScanners(resourceScanners());
@@ -236,7 +216,7 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 		DefaultStackConfig config = getScriptConfig();
 		ScriptStacks scriptStacks = new ScriptStacks(config);
 		scriptStacks.setAppConfig(appConfig());
-		scriptStacks.setParser(scriptParser(config));
+		scriptStacks.setExpressionHandlers(expressionHandlers());
 		scriptStacks.setLocale(localeContext());
 		scriptStacks.setOptimizerChain(optimizerChain());
 		scriptStacks.setScanners(resourceScanners());
@@ -250,7 +230,7 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 
 		HtmlStacks htmlStacks = new HtmlStacks(config);
 		htmlStacks.setAppConfig(appConfig());
-		htmlStacks.setParser(htmlParser(config));
+		htmlStacks.setExpressionHandlers(expressionHandlers());
 		htmlStacks.setLocale(localeContext());
 		htmlStacks.setOptimizerChain(optimizerChain());
 		htmlStacks.setScanners(resourceScanners());
@@ -370,11 +350,15 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 	{
 		OptimizerConfig config = new DefaultOptimizerConfig();
 
-		// config.addOptimizer(ResourceType.STYLE, "datauri",
-		// new CssDataUriPreProcessor());
-		config.addOptimizer(ResourceType.STYLE, "cssmin", new CssMinProcessor());
-		config.addOptimizer(ResourceType.SCRIPT, "googleclosure",
-				new GoogleClosureCompressorProcessor());
+		/*
+		 * We have to use the yuicompressor here because the others don't
+		 * recognize @media queries
+		 * https://code.google.com/p/wro4j/issues/detail?id=231
+		 */
+		config.addOptimizer(ResourceType.STYLE, "cssmin", new
+				YUICssCompressorProcessor());
+		config.addOptimizer(ResourceType.SCRIPT, "jsmin",
+				new JSMinProcessor());
 
 		configurer.configureOptimizers(config);
 

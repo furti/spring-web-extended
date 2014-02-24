@@ -7,11 +7,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.parboiled.Parboiled;
 import org.parboiled.parserunners.RecoveringParseRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import at.porscheinformatik.common.springangular.expression.ExpressionHandlers;
 import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.template.BaseTemplate;
 import at.porscheinformatik.common.springangular.template.part.TemplatePart;
@@ -20,18 +22,35 @@ import at.porscheinformatik.common.springangular.util.ParboiledUtils;
 public class ParboiledTemplate extends BaseTemplate
 {
 	private Resource resource;
-	private TemplateParser parser;
 	private List<TemplatePart> parts;
+	private ExpressionHandlers expressionHandlers;
+	private String expressionPrefix, expressionSuffix, expressionDelimiter;
 
-	public ParboiledTemplate(Resource resource, TemplateParser parser,
+	public ParboiledTemplate(Resource resource,
+			ExpressionHandlers expressionHandlers,
+			ResourceType type)
+			throws IOException
+	{
+		this(resource, expressionHandlers, null, null, null, type);
+	}
+
+	public ParboiledTemplate(Resource resource,
+			ExpressionHandlers expressionHandlers,
+			String expressionPrefix,
+			String expressionDelimiter,
+			String expressionSuffix,
 			ResourceType type)
 			throws IOException
 	{
 		super(type);
 		Assert.notNull(resource, "Template resource must not be null");
-		Assert.notNull(parser, "Template parser must not be null");
+		Assert.notNull(expressionHandlers,
+				"Expressionhandlers must not be null");
 		this.resource = resource;
-		this.parser = parser;
+		this.expressionHandlers = expressionHandlers;
+		this.expressionDelimiter = expressionDelimiter;
+		this.expressionPrefix = expressionPrefix;
+		this.expressionSuffix = expressionSuffix;
 		refresh();
 	}
 
@@ -54,6 +73,8 @@ public class ParboiledTemplate extends BaseTemplate
 				"Template " + resource.getDescription()
 						+ " is not readable");
 
+		TemplateParser parser = buildParser();
+
 		RecoveringParseRunner<TemplatePart> runner = new RecoveringParseRunner<TemplatePart>(
 				parser.temlate());
 
@@ -72,6 +93,22 @@ public class ParboiledTemplate extends BaseTemplate
 
 		parts = ParboiledUtils.buildFromResult(runner.run(templateData),
 				resource.getDescription());
+	}
+
+	private TemplateParser buildParser()
+	{
+		if (expressionDelimiter != null && expressionSuffix != null
+				&& expressionPrefix != null)
+		{
+			return Parboiled.createParser(TemplateParser.class,
+					expressionHandlers, expressionPrefix, expressionSuffix,
+					expressionDelimiter);
+		}
+		else
+		{
+			return Parboiled.createParser(TemplateParser.class,
+					expressionHandlers);
+		}
 	}
 
 	@Override

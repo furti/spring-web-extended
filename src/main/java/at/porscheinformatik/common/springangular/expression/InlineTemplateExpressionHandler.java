@@ -21,8 +21,6 @@ public class InlineTemplateExpressionHandler implements ExpressionHandler,
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private HtmlStacks stacks;
-	private InlineTemplateParser parser = Parboiled
-			.createParser(InlineTemplateParser.class);
 	private BeanFactory beanFactory;
 
 	@Override
@@ -66,20 +64,30 @@ public class InlineTemplateExpressionHandler implements ExpressionHandler,
 			return null;
 		}
 
+		InlineTemplateParser parser = Parboiled
+				.createParser(InlineTemplateParser.class);
+
 		RecoveringParseRunner<String> runner = new RecoveringParseRunner<String>(
 				parser.inlineTemplate());
 
-		List<String> parts = ParboiledUtils.buildFromResult(
-				runner.run(template), template);
-
-		StringBuilder prepared = new StringBuilder();
-
-		for (String part : parts)
+		try
 		{
-			prepared.append(part);
-		}
+			List<String> parts = ParboiledUtils.buildFromResult(
+					runner.run(template), template);
 
-		return prepared.toString();
+			StringBuilder prepared = new StringBuilder();
+
+			for (String part : parts)
+			{
+				prepared.append(part);
+			}
+
+			return prepared.toString();
+		} catch (Exception ex)
+		{
+			logger.error("Error rendering inline template " + template, ex);
+			throw ex;
+		}
 	}
 
 	private HtmlStacks getStacks()

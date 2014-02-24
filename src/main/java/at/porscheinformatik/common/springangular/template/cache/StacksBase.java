@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContext;
 
 import at.porscheinformatik.common.springangular.config.ApplicationConfiguration;
+import at.porscheinformatik.common.springangular.expression.ExpressionHandlers;
 import at.porscheinformatik.common.springangular.io.ResourceScanners;
 import at.porscheinformatik.common.springangular.template.cache.style.StyleStacks;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
-import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 
 public abstract class StacksBase<T extends StackBase>
 {
@@ -25,15 +25,13 @@ public abstract class StacksBase<T extends StackBase>
 
 	private LinkedHashMap<String, T> stacks;
 	private ResourceScanners scanners;
-	// private ExpressionHandlers handlers;
+	private ExpressionHandlers expressionHandlers;
 	private LocaleContext locale;
 	private OptimizerChain optimizerChain;
 
 	private DefaultStackConfig config;
 
 	private ApplicationConfiguration appConfig;
-
-	private TemplateParser parser;
 
 	public StacksBase(DefaultStackConfig config)
 	{
@@ -69,7 +67,7 @@ public abstract class StacksBase<T extends StackBase>
 				.entrySet())
 		{
 			T stack = createNewInstance();
-			stack.setParser(parser);
+			stack.setExpressionHandlers(expressionHandlers);
 			stack.setLocaleContex(locale);
 			stack.setScanners(scanners);
 			stack.setOptimizerChain(optimizerChain);
@@ -112,11 +110,6 @@ public abstract class StacksBase<T extends StackBase>
 		this.scanners = scanners;
 	}
 
-	public void setParser(TemplateParser parser)
-	{
-		this.parser = parser;
-	}
-
 	public void setLocale(LocaleContext locale)
 	{
 		this.locale = locale;
@@ -130,5 +123,10 @@ public abstract class StacksBase<T extends StackBase>
 	public void setAppConfig(ApplicationConfiguration appConfig)
 	{
 		this.appConfig = appConfig;
+	}
+
+	public void setExpressionHandlers(ExpressionHandlers expressionHandlers)
+	{
+		this.expressionHandlers = expressionHandlers;
 	}
 }

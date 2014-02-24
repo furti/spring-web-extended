@@ -8,31 +8,25 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
-import org.parboiled.Parboiled;
 import org.springframework.core.io.ClassPathResource;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.template.parboiled.ParboiledTemplate;
-import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 
 public class ParboiledTemplatePerformanceTest
 {
-	private TemplateParser parser;
 	private Template template;
 	private String expected;
 
 	@BeforeTest
 	public void setupParser() throws IOException
 	{
-		parser = Parboiled.createParser(TemplateParser.class,
-				new TestExpressionHandlers());
-
 		template = new ParboiledTemplate(
 				new ClassPathResource(
 						"/at/porscheinformatik/common/springangular/template/TestTemplate.html"),
-				parser, ResourceType.HTML);
+				new TestExpressionHandlers(), ResourceType.HTML);
 
 		InputStream expectedStream = new ClassPathResource(
 				"/at/porscheinformatik/common/springangular/template/TestTemplateExpected.html")

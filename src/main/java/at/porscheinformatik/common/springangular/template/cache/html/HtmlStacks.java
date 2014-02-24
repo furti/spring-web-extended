@@ -16,5 +16,4 @@ public class HtmlStacks extends StacksBase<HtmlStack>
 	{
 		return new HtmlStack(ResourceType.HTML);
 	}
-
 }

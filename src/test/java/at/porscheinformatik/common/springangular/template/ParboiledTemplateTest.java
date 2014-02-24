@@ -5,14 +5,12 @@ import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 
-import org.parboiled.Parboiled;
 import org.springframework.core.io.Resource;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.template.parboiled.ParboiledTemplate;
-import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 
 public class ParboiledTemplateTest
 {
@@ -21,10 +19,8 @@ public class ParboiledTemplateTest
 	public void template(Resource resource, String expected)
 			throws IOException
 	{
-		TemplateParser parser = Parboiled.createParser(TemplateParser.class,
-				new TestExpressionHandlers());
-
-		String actual = new ParboiledTemplate(resource, parser,
+		String actual = new ParboiledTemplate(resource,
+				new TestExpressionHandlers(),
 				ResourceType.HTML).render();
 
 		assertThat(actual, equalTo(expected));
@@ -72,10 +68,8 @@ public class ParboiledTemplateTest
 	public void customExpression(Resource resource, String expected)
 			throws IOException
 	{
-		TemplateParser parser = Parboiled.createParser(TemplateParser.class,
-				new TestExpressionHandlers(), "{{", "}}", "|");
-
-		String actual = new ParboiledTemplate(resource, parser,
+		String actual = new ParboiledTemplate(resource,
+				new TestExpressionHandlers(), "{{", "|", "}}",
 				ResourceType.HTML).render();
 
 		assertThat(actual, equalTo(expected));

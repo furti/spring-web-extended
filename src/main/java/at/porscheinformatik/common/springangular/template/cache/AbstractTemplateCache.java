@@ -13,13 +13,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.springangular.config.ApplicationConfiguration;
+import at.porscheinformatik.common.springangular.expression.ExpressionHandlers;
 import at.porscheinformatik.common.springangular.io.ResourceScanners;
 import at.porscheinformatik.common.springangular.io.ResourceType;
 import at.porscheinformatik.common.springangular.io.ResourceUtils;
 import at.porscheinformatik.common.springangular.template.Template;
 import at.porscheinformatik.common.springangular.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.springangular.template.parboiled.ParboiledTemplate;
-import at.porscheinformatik.common.springangular.template.parboiled.TemplateParser;
 
 public abstract class AbstractTemplateCache
 {
@@ -27,12 +27,11 @@ public abstract class AbstractTemplateCache
 	private LinkedHashMap<String, Template> templates = new LinkedHashMap<>();
 	private LinkedHashMap<String, Template> optimizedTemplates = new LinkedHashMap<>();
 	protected ResourceScanners scanners;
-	// protected ExpressionHandlers handlers;
-	private TemplateParser parser;
 	private LocaleContext locale;
 	private ApplicationConfiguration appConfig;
 	private OptimizerChain optimizerChain;
 	private Date lastRefresh;
+	private ExpressionHandlers expressionHandlers;
 
 	protected void setupLastRefresh()
 	{
@@ -120,8 +119,8 @@ public abstract class AbstractTemplateCache
 			ResourceType type, boolean optimizedResource)
 			throws IOException
 	{
-		ParboiledTemplate template = new ParboiledTemplate(resource, parser,
-				type);
+		ParboiledTemplate template = new ParboiledTemplate(resource,
+				expressionHandlers, type);
 
 		if (optimizedResource)
 		{
@@ -172,16 +171,6 @@ public abstract class AbstractTemplateCache
 		this.scanners = scanners;
 	}
 
-	// public void setHandlers(ExpressionHandlers handlers)
-	// {
-	// this.handlers = handlers;
-	// }
-
-	public void setParser(TemplateParser parser)
-	{
-		this.parser = parser;
-	}
-
 	public void setAppConfig(ApplicationConfiguration appConfig)
 	{
 		this.appConfig = appConfig;
@@ -217,5 +206,10 @@ public abstract class AbstractTemplateCache
 			}
 		}
 		return null;
+	}
+
+	public void setExpressionHandlers(ExpressionHandlers expressionHandlers)
+	{
+		this.expressionHandlers = expressionHandlers;
 	}
 }

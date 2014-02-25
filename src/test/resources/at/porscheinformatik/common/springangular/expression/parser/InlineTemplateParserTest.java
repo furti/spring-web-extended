@@ -13,6 +13,8 @@ import org.parboiled.support.ParsingResult;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import at.porscheinformatik.common.spring.web.extended.expression.parser.InlineTemplateParser;
+
 public class InlineTemplateParserTest
 {
 

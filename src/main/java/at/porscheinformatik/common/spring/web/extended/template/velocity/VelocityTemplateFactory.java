@@ -73,7 +73,7 @@ public class VelocityTemplateFactory implements TemplateFactory
 				new ExpressionHandlerMacroResourceLoader(expressionHandlers));
 		engine.setProperty("velocimacro.library",
 				ExpressionHandlerMacroResourceLoader.MACRO_LIBRARY_FILE);
-		// engine.setProperty(VelocityEngine.RUNTIME_REFERENCES_STRICT, true);
+		engine.setProperty(VelocityEngine.RUNTIME_REFERENCES_STRICT, true);
 
 		engine.init();
 	}

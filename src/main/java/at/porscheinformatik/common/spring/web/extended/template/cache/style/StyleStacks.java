@@ -12,8 +12,8 @@ public class StyleStacks extends StacksBase<StyleStack>
 	}
 
 	@Override
-	protected StyleStack createNewInstance()
+	protected StyleStack createNewInstance(String stackName)
 	{
-		return new StyleStack();
+		return new StyleStack(stackName);
 	}
 }

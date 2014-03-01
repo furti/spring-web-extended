@@ -6,13 +6,16 @@ public class StackEntry
 	private String location;
 	private String minifiedLocation;
 	private boolean scanLocation;
+	private boolean skipProcessing;
 
-	public StackEntry(String location, String minifiedLocation)
+	public StackEntry(String location, String minifiedLocation,
+			boolean skipProcessing)
 	{
 		super();
 		this.location = location;
 		this.minifiedLocation = minifiedLocation;
 		this.scanLocation = false;
+		this.skipProcessing = skipProcessing;
 	}
 
 	public StackEntry(String location, boolean scanLocation)
@@ -49,5 +52,10 @@ public class StackEntry
 	public void setScanLocation(boolean scanLocation)
 	{
 		this.scanLocation = scanLocation;
+	}
+
+	public boolean isSkipProcessing()
+	{
+		return skipProcessing;
 	}
 }

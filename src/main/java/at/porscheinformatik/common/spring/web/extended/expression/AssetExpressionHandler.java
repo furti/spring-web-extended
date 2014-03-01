@@ -50,4 +50,10 @@ public class AssetExpressionHandler implements ExpressionHandler
 	{
 		this.locale = locale;
 	}
+
+	@Override
+	public boolean valueNeeded()
+	{
+		return true;
+	}
 }

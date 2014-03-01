@@ -1,4 +1,4 @@
-package at.porscheinformatik.common.springangular.expression.parser;
+package at.porscheinformatik.common.spring.web.extended.expression.parser;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;

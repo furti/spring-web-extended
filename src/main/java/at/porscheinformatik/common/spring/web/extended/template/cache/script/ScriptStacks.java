@@ -12,9 +12,9 @@ public class ScriptStacks extends StacksBase<ScriptStack>
 	}
 
 	@Override
-	protected ScriptStack createNewInstance()
+	protected ScriptStack createNewInstance(String stackName)
 	{
-		return new ScriptStack();
+		return new ScriptStack(stackName);
 	}
 
 }

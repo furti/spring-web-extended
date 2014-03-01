@@ -51,6 +51,7 @@ import at.porscheinformatik.common.spring.web.extended.locale.LocaleSource;
 import at.porscheinformatik.common.spring.web.extended.messagesource.DefaultMessageSourceConfig;
 import at.porscheinformatik.common.spring.web.extended.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.spring.web.extended.servlet.ResponseContextHandlerInterceptor;
+import at.porscheinformatik.common.spring.web.extended.template.TemplateFactory;
 import at.porscheinformatik.common.spring.web.extended.template.cache.DefaultStackConfig;
 import at.porscheinformatik.common.spring.web.extended.template.cache.StackConfig;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlStacks;
@@ -59,6 +60,7 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.style.Styl
 import at.porscheinformatik.common.spring.web.extended.template.optimize.DefaultOptimizerConfig;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerConfig;
+import at.porscheinformatik.common.spring.web.extended.template.velocity.VelocityTemplateFactory;
 
 @Configuration
 @EnableScheduling
@@ -203,8 +205,7 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 
 		StyleStacks styleStacks = new StyleStacks(config);
 		styleStacks.setAppConfig(appConfig());
-		styleStacks.setExpressionHandlers(expressionHandlers());
-		styleStacks.setLocale(localeContext());
+		styleStacks.setTemplateFactory(templateFactory());
 		styleStacks.setOptimizerChain(optimizerChain());
 		styleStacks.setScanners(resourceScanners());
 		return styleStacks;
@@ -216,8 +217,7 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 		DefaultStackConfig config = getScriptConfig();
 		ScriptStacks scriptStacks = new ScriptStacks(config);
 		scriptStacks.setAppConfig(appConfig());
-		scriptStacks.setExpressionHandlers(expressionHandlers());
-		scriptStacks.setLocale(localeContext());
+		scriptStacks.setTemplateFactory(templateFactory());
 		scriptStacks.setOptimizerChain(optimizerChain());
 		scriptStacks.setScanners(resourceScanners());
 		return scriptStacks;
@@ -230,11 +230,16 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 
 		HtmlStacks htmlStacks = new HtmlStacks(config);
 		htmlStacks.setAppConfig(appConfig());
-		htmlStacks.setExpressionHandlers(expressionHandlers());
-		htmlStacks.setLocale(localeContext());
+		htmlStacks.setTemplateFactory(templateFactory());
 		htmlStacks.setOptimizerChain(optimizerChain());
 		htmlStacks.setScanners(resourceScanners());
 		return htmlStacks;
+	}
+
+	@Bean
+	public TemplateFactory templateFactory()
+	{
+		return new VelocityTemplateFactory();
 	}
 
 	@Bean

@@ -6,14 +6,19 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.util.Assert;
 
-public class MessageExpressionHandler implements ExpressionHandler
+public class MessageExpressionHandler extends BaseExpressionHandler
 {
 
 	private MessageSource messageSource;
 	private LocaleContext locale;
 
+	public MessageExpressionHandler()
+	{
+		super(true);
+	}
+
 	@Override
-	public String process(String value)
+	public String doProcess(String value)
 	{
 		Assert.notNull(messageSource, "Messagesource must not be null");
 

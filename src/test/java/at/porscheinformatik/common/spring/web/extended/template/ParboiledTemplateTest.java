@@ -20,8 +20,9 @@ public class ParboiledTemplateTest
 			throws IOException
 	{
 		String actual = new ParboiledTemplate(resource,
+				resource.getDescription(),
 				new TestExpressionHandlers(),
-				ResourceType.HTML).render();
+				ResourceType.HTML, false).render();
 
 		assertThat(actual, equalTo(expected));
 	}
@@ -69,8 +70,9 @@ public class ParboiledTemplateTest
 			throws IOException
 	{
 		String actual = new ParboiledTemplate(resource,
+				resource.getDescription(),
 				new TestExpressionHandlers(), "{{", "|", "}}",
-				ResourceType.HTML).render();
+				ResourceType.HTML, false).render();
 
 		assertThat(actual, equalTo(expected));
 	}

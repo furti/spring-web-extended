@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014 Daniel Furtlehner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package at.porscheinformatik.common.spring.web.extended.template.cache;
 
 import java.io.IOException;
@@ -9,11 +24,10 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.i18n.LocaleContext;
 
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
-import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHandlers;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanners;
+import at.porscheinformatik.common.spring.web.extended.template.TemplateFactory;
 import at.porscheinformatik.common.spring.web.extended.template.cache.style.StyleStacks;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
 
@@ -25,8 +39,7 @@ public abstract class StacksBase<T extends StackBase>
 
 	private LinkedHashMap<String, T> stacks;
 	private ResourceScanners scanners;
-	private ExpressionHandlers expressionHandlers;
-	private LocaleContext locale;
+	private TemplateFactory templateFactory;
 	private OptimizerChain optimizerChain;
 
 	private DefaultStackConfig config;
@@ -66,9 +79,8 @@ public abstract class StacksBase<T extends StackBase>
 		for (Entry<String, LinkedHashMap<String, StackEntry>> entry : stackConfigs
 				.entrySet())
 		{
-			T stack = createNewInstance();
-			stack.setExpressionHandlers(expressionHandlers);
-			stack.setLocaleContex(locale);
+			T stack = createNewInstance(entry.getKey());
+			stack.setTemplateFactory(templateFactory);
 			stack.setScanners(scanners);
 			stack.setOptimizerChain(optimizerChain);
 			stack.setAppConfig(appConfig);
@@ -84,7 +96,7 @@ public abstract class StacksBase<T extends StackBase>
 		}
 	}
 
-	protected abstract T createNewInstance();
+	protected abstract T createNewInstance(String stackName);
 
 	public void refresh()
 	{
@@ -110,11 +122,6 @@ public abstract class StacksBase<T extends StackBase>
 		this.scanners = scanners;
 	}
 
-	public void setLocale(LocaleContext locale)
-	{
-		this.locale = locale;
-	}
-
 	public void setOptimizerChain(OptimizerChain optimizerChain)
 	{
 		this.optimizerChain = optimizerChain;
@@ -125,8 +132,8 @@ public abstract class StacksBase<T extends StackBase>
 		this.appConfig = appConfig;
 	}
 
-	public void setExpressionHandlers(ExpressionHandlers expressionHandlers)
+	public void setTemplateFactory(TemplateFactory templateFactory)
 	{
-		this.expressionHandlers = expressionHandlers;
+		this.templateFactory = templateFactory;
 	}
 }

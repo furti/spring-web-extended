@@ -15,16 +15,21 @@ import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlStacks;
 import at.porscheinformatik.common.spring.web.extended.util.ParboiledUtils;
 
-public class InlineTemplateExpressionHandler implements ExpressionHandler,
-		BeanFactoryAware
+public class InlineTemplateExpressionHandler extends BaseExpressionHandler
+		implements BeanFactoryAware
 {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private HtmlStacks stacks;
 	private BeanFactory beanFactory;
 
+	public InlineTemplateExpressionHandler()
+	{
+		super(true);
+	}
+
 	@Override
-	public String process(String value)
+	public String doProcess(String value)
 	{
 		logger.info("Rendering inlinetemplate " + value);
 

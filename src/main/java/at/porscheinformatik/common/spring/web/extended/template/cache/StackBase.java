@@ -21,8 +21,9 @@ public abstract class StackBase extends AbstractTemplateCache
 	private ResourceType resourceType;
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	public StackBase(ResourceType resourceType)
+	public StackBase(ResourceType resourceType, String stackName)
 	{
+		super(stackName);
 		this.resourceType = resourceType;
 		setupLastRefresh();
 	}
@@ -31,12 +32,14 @@ public abstract class StackBase extends AbstractTemplateCache
 	{
 		if (entry.isScanLocation())
 		{
-			scanResources(entry.getLocation());
+			scanResources(entry.getLocation(), entry.isSkipProcessing());
 		}
 		else
 		{
-			addResource(name, entry.getLocation(), false);
-			addResource(name, entry.getMinifiedLocation(), true);
+			addResource(name, entry.getLocation(), false,
+					entry.isSkipProcessing());
+			addResource(name, entry.getMinifiedLocation(), true,
+					entry.isSkipProcessing());
 		}
 	}
 
@@ -46,7 +49,8 @@ public abstract class StackBase extends AbstractTemplateCache
 	 * @param location
 	 * @throws IOException
 	 */
-	private void scanResources(String location) throws IOException
+	private void scanResources(String location, boolean skipProcessing)
+			throws IOException
 	{
 		Map<String, Resource> resources = scanners.scanResources(location);
 
@@ -59,12 +63,13 @@ public abstract class StackBase extends AbstractTemplateCache
 		for (Entry<String, Resource> entry : resources.entrySet())
 		{
 			addTemplate(entry.getKey().toLowerCase(), entry.getValue(),
-					resourceType, false);
+					resourceType, false, skipProcessing);
 		}
 	}
 
 	private void addResource(String name, String location,
-			boolean optimizedResource) throws IOException
+			boolean optimizedResource, boolean skipProcessing)
+			throws IOException
 	{
 		if (location == null)
 		{
@@ -113,7 +118,7 @@ public abstract class StackBase extends AbstractTemplateCache
 		for (Entry<String, Resource> entry : resources.entrySet())
 		{
 			addTemplate(prepareName(name, entry.getKey()), entry.getValue(),
-					resourceType, optimizedResource);
+					resourceType, optimizedResource, skipProcessing);
 		}
 	}
 

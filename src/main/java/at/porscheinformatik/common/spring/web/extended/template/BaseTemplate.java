@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014 Daniel Furtlehner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package at.porscheinformatik.common.spring.web.extended.template;
 
 import java.io.IOException;
@@ -11,28 +26,30 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
-import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
 
 public abstract class BaseTemplate implements Template
 {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	private OptimizerChain optimizerChain;
-	private ResourceType type;
+	protected ResourceType type;
+	protected String templateName;
+	protected boolean alreadyOptimized;
 	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private ReadLock readLock = lock.readLock();
 	private WriteLock writeLock = lock.writeLock();
 
-	public BaseTemplate(ResourceType type)
-			throws IOException
+	public BaseTemplate(ResourceType type, String templateName,
+			boolean alreadyOptimized)
 	{
 		this.type = type;
+		this.templateName = templateName;
+		this.alreadyOptimized = alreadyOptimized;
 	}
 
 	public String render() throws IOException
 	{
 		logger.debug("Thread " + Thread.currentThread().getName()
-				+ " obtains readLock for template " + getTemplateUri());
+				+ " obtains readLock for template " + getName());
 
 		readLock.lock();
 		try
@@ -44,19 +61,11 @@ public abstract class BaseTemplate implements Template
 				return template;
 			}
 
-			if (optimizerChain != null)
-			{
-				return optimizerChain.optimize(type, getTemplateUri(),
-						template);
-			}
-			else
-			{
-				return template;
-			}
+			return template;
 		} finally
 		{
 			logger.debug("Thread " + Thread.currentThread().getName()
-					+ " releases readLock for template " + getTemplateUri());
+					+ " releases readLock for template " + getName());
 			readLock.unlock();
 		}
 	}
@@ -73,7 +82,7 @@ public abstract class BaseTemplate implements Template
 	public void refresh() throws IOException
 	{
 		logger.debug("Thread " + Thread.currentThread().getName()
-				+ " obtains writeLock for template " + getTemplateUri());
+				+ " obtains writeLock for template " + getName());
 
 		writeLock.lock();
 		try
@@ -82,22 +91,32 @@ public abstract class BaseTemplate implements Template
 		} finally
 		{
 			logger.debug("Thread " + Thread.currentThread().getName()
-					+ " releases writeLock for template " + getTemplateUri());
+					+ " releases writeLock for template " + getName());
 
 			writeLock.unlock();
 		}
 	}
 
-	public void setOptimizerChain(OptimizerChain optimizerChain)
-	{
-		this.optimizerChain = optimizerChain;
-	}
-
-	protected abstract String getTemplateUri();
-
-	protected abstract long getLastModified() throws IOException;
-
 	protected abstract String getContent() throws IOException;
 
 	protected abstract void doRefresh() throws IOException;
+
+	protected abstract long getLastModified() throws IOException;
+
+	public ResourceType getType()
+	{
+		return type;
+	}
+
+	@Override
+	public boolean isAlreadyOptimized()
+	{
+		return alreadyOptimized;
+	}
+
+	@Override
+	public String getName()
+	{
+		return templateName;
+	}
 }

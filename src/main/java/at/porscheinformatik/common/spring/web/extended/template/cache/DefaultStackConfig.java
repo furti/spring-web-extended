@@ -46,6 +46,14 @@ public class DefaultStackConfig implements StackConfig
 	}
 
 	@Override
+	public StackConfig addToStack(String stackName, String resourceName,
+			String location, boolean skipProcessing)
+	{
+		return addToStack(stackName, resourceName, location, null,
+				skipProcessing);
+	}
+
+	@Override
 	public StackConfig removeFromStack(String stackName, String resourceName)
 	{
 		if (!hasStack(stackName))
@@ -84,13 +92,21 @@ public class DefaultStackConfig implements StackConfig
 	public StackConfig addToStack(String stackName, String resourceName,
 			String location, String minifiedLocation)
 	{
+		return addToStack(stackName, resourceName, location, minifiedLocation,
+				false);
+	}
+
+	@Override
+	public StackConfig addToStack(String stackName, String resourceName,
+			String location, String minifiedLocation, boolean skipProcessing)
+	{
 		if (!hasStack(stackName))
 		{
 			stacks.put(stackName, new LinkedHashMap<String, StackEntry>());
 		}
 
 		stacks.get(stackName).put(resourceName,
-				new StackEntry(location, minifiedLocation));
+				new StackEntry(location, minifiedLocation, skipProcessing));
 
 		return this;
 	}

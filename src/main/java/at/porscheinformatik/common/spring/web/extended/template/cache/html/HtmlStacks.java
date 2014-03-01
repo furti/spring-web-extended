@@ -1,6 +1,5 @@
 package at.porscheinformatik.common.spring.web.extended.template.cache.html;
 
-import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
 import at.porscheinformatik.common.spring.web.extended.template.cache.DefaultStackConfig;
 import at.porscheinformatik.common.spring.web.extended.template.cache.StacksBase;
 
@@ -12,8 +11,8 @@ public class HtmlStacks extends StacksBase<HtmlStack>
 	}
 
 	@Override
-	protected HtmlStack createNewInstance()
+	protected HtmlStack createNewInstance(String stackName)
 	{
-		return new HtmlStack(ResourceType.HTML);
+		return new HtmlStack(stackName);
 	}
 }

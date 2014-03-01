@@ -1,6 +1,7 @@
 package at.porscheinformatik.common.spring.web.extended.expression;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.util.Assert;
 
@@ -18,13 +19,19 @@ public class ExpressionHandlers
 	public String processExpression(String expression)
 	{
 		String[] split = parseExpression(expression);
-
 		Assert.isTrue(split.length == 2, "Invalid expression " + expression);
-		Assert.notNull(handlers, "No expressionhandlers defined");
-		Assert.isTrue(handlers.containsKey(split[0]),
-				"Unknown expression prefix " + split[0]);
 
-		return handlers.get(split[0]).process(split[1]);
+		return processExpression(split[0], split[1]);
+	}
+
+	public String processExpression(String handlerName, String value)
+	{
+
+		Assert.notNull(handlers, "No expressionhandlers defined");
+		Assert.isTrue(handlers.containsKey(handlerName),
+				"Unknown expression prefix " + handlerName);
+
+		return handlers.get(handlerName).process(value);
 	}
 
 	private String[] parseExpression(String expression)
@@ -47,5 +54,15 @@ public class ExpressionHandlers
 		split[1] = expression.substring(index + 1);
 
 		return split;
+	}
+
+	public Set<String> getHandlerNames()
+	{
+		return handlers.keySet();
+	}
+
+	public ExpressionHandler getHandler(String handlerName)
+	{
+		return handlers.get(handlerName);
 	}
 }

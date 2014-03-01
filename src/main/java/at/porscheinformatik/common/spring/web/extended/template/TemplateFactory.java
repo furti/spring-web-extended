@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.porscheinformatik.common.spring.web.extended.template.cache.html;
+package at.porscheinformatik.common.spring.web.extended.template;
+
+import org.springframework.core.io.Resource;
 
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
-import at.porscheinformatik.common.spring.web.extended.template.cache.StackBase;
 
-public class HtmlStack extends StackBase
+public interface TemplateFactory
 {
-
-	public HtmlStack(String stackName)
-	{
-		super(ResourceType.HTML, stackName);
-	}
+	Template createTemplate(Resource resource,
+			String templateName,
+			ResourceType type,
+			boolean optimized);
 }

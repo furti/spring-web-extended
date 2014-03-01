@@ -13,7 +13,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
-import at.porscheinformatik.common.spring.web.extended.template.Template;
 import at.porscheinformatik.common.spring.web.extended.template.parboiled.ParboiledTemplate;
 
 public class ParboiledBigTemplatePerformanceTest
@@ -26,11 +25,12 @@ public class ParboiledBigTemplatePerformanceTest
 	{
 		template = new ParboiledTemplate(
 				new ClassPathResource(
-						"/at/porscheinformatik/common/springangular/template/BigTemplate.html"),
-				new TestExpressionHandlers(), ResourceType.HTML);
+						"/at/porscheinformatik/common/spring/web/extended/template/BigTemplate.html"),
+				"BigTemplate",
+				new TestExpressionHandlers(), ResourceType.HTML, false);
 
 		InputStream expectedStream = new ClassPathResource(
-				"/at/porscheinformatik/common/springangular/template/BigTemplateExpected.html")
+				"/at/porscheinformatik/common/spring/web/extended/template/BigTemplateExpected.html")
 				.getInputStream();
 
 		expected = IOUtils.toString(expectedStream, Charset.forName("UTF-8"));

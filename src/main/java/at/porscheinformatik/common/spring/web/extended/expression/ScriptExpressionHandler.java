@@ -94,4 +94,10 @@ public class ScriptExpressionHandler implements ExpressionHandler
 	{
 		this.linkPreparator = linkPreparator;
 	}
+
+	@Override
+	public boolean valueNeeded()
+	{
+		return true;
+	}
 }

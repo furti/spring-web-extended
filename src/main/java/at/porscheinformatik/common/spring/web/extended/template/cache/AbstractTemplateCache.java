@@ -118,13 +118,15 @@ public abstract class AbstractTemplateCache
 
 		try
 		{
-			//TODO: hier noch eine factory einführen
+			// TODO: hier noch eine factory einführen
 			// Set the rendercontext before rendering the template
 			TemplateRenderContextHolder
-					.setContext(new DefaultTemplateRenderContext(locale,
+					.setCurrentContext(new DefaultTemplateRenderContext(locale,
 							template.getType()));
 
 			String result = template.render();
+
+			TemplateRenderContextHolder.removeCurrentContext();
 
 			if (optimizerChain != null
 					&& shouldOptimize()

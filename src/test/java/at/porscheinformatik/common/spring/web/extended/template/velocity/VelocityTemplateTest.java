@@ -55,7 +55,7 @@ public class VelocityTemplateTest
 		((VelocityTemplateFactory) factory).setupEngine();
 
 		TemplateRenderContextHolder
-				.setContext(new DefaultTemplateRenderContext(Locale
+				.setCurrentContext(new DefaultTemplateRenderContext(Locale
 						.getDefault(), ResourceType.HTML));
 	}
 

@@ -291,7 +291,7 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 
 			styleConfig.addToStack("bootstrap", "bootstrap",
 					"bootstrapcss:bootstrap.css",
-					"bootstrapcss:bootstrap.min.css");
+					"bootstrapcss:bootstrap.min.css", true);
 
 			configurer.configureStyles(styleConfig);
 		}
@@ -332,18 +332,19 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 
 			scriptConfig.addToStack("angular", "jquery",
 					"jquery:jquery.js",
-					"jquery:jquery.min.js");
+					"jquery:jquery.min.js", true);
 			scriptConfig.addToStack("angular", "angularjs",
 					"angular:angular.js",
-					"angular:angular.min.js");
+					"angular:angular.min.js", true);
 			scriptConfig.addToStack("angular", "ngroute",
 					"angular:angular-route.js",
-					"angular:angular-route.min.js");
+					"angular:angular-route.min.js", true);
 			scriptConfig.addToStack("angular", "bootstrap",
-					"bootstrapjs:bootstrap.js", "bootstrapjs:bootstrap.min.js");
+					"bootstrapjs:bootstrap.js", "bootstrapjs:bootstrap.min.js",
+					true);
 			scriptConfig.addToStack("angular", "uibootstrap",
 					"angularuibootstrap:ui-bootstrap-tpls.js",
-					"angularuibootstrap:ui-bootstrap-tpls.min.js");
+					"angularuibootstrap:ui-bootstrap-tpls.min.js", true);
 
 			configurer.configureScripts(scriptConfig);
 		}

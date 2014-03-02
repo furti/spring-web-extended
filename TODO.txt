@@ -1,5 +1,3 @@
-*	create a templatefactory so that the templateengine could be switched easily.
-*	integrate a well known template engine in addition to the current one.
 *	remove assetcontroller and use spring resourcehandlers
 *	tests for expressionhandlers
 *	Integrate logging for template rendering time

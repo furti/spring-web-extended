@@ -376,7 +376,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 		 * recognize @media queries
 		 * https://code.google.com/p/wro4j/issues/detail?id=231
 		 */
-		config.addOptimizer(ResourceType.STYLE, "cssmin", new
+		config.addOptimizer(ResourceType.STYLE, "yuicss", new
 				YUICssCompressorProcessor());
 		config.addOptimizer(ResourceType.SCRIPT, "jsmin",
 				new JSMinProcessor());

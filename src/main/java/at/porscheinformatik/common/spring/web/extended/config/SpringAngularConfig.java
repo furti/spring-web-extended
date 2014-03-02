@@ -57,10 +57,10 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.StackConfi
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlStacks;
 import at.porscheinformatik.common.spring.web.extended.template.cache.script.ScriptStacks;
 import at.porscheinformatik.common.spring.web.extended.template.cache.style.StyleStacks;
+import at.porscheinformatik.common.spring.web.extended.template.chunk.ChunkTemplateFactory;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.DefaultOptimizerConfig;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerConfig;
-import at.porscheinformatik.common.spring.web.extended.template.velocity.VelocityTemplateFactory;
 
 @Configuration
 @EnableScheduling
@@ -239,7 +239,7 @@ public class SpringAngularConfig extends WebMvcConfigurerAdapter implements
 	@Bean
 	public TemplateFactory templateFactory()
 	{
-		return new VelocityTemplateFactory();
+		return new ChunkTemplateFactory();
 	}
 
 	@Bean

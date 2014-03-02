@@ -6,6 +6,7 @@
 *	remove webjars
 *	rename the optimize profile
 *	Templaterendercontextfactory erstellen
+*	default TemplateFactory in eigene config auslagern und conditionalonmissingbean verwenden
 
 Add Licence to files.
 /**

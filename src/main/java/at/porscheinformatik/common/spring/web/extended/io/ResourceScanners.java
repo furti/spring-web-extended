@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-import at.porscheinformatik.common.spring.web.extended.util.SpringAngularUtils;
+import at.porscheinformatik.common.spring.web.extended.util.SpringWebExtendedUtils;
 
 public class ResourceScanners
 {
@@ -22,7 +22,7 @@ public class ResourceScanners
 	public Map<String, Resource> scanResources(String resourcePath)
 			throws IOException
 	{
-		String[] split = SpringAngularUtils.parseExpression(resourcePath);
+		String[] split = SpringWebExtendedUtils.parseExpression(resourcePath);
 
 		Assert.isTrue(split.length == 2, "Invalid expression " + resourcePath);
 		Assert.isTrue(scanners.containsKey(split[0]),
@@ -35,7 +35,7 @@ public class ResourceScanners
 			String file,
 			boolean scanSubDirectories) throws IOException
 	{
-		String[] split = SpringAngularUtils.parseExpression(location);
+		String[] split = SpringWebExtendedUtils.parseExpression(location);
 
 		Assert.isTrue(split.length == 2, "Invalid expression " + location);
 		Assert.isTrue(scanners.containsKey(split[0]),

@@ -10,30 +10,30 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import at.porscheinformatik.common.spring.web.extended.config.SpringAngularConfig;
-import at.porscheinformatik.common.spring.web.extended.config.SpringAngularConfigurer;
-import at.porscheinformatik.common.spring.web.extended.config.SpringAngularConfigurerAdapter;
-import at.porscheinformatik.common.spring.web.extended.config.SpringAngularRegistrar;
+import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedConfig;
+import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedConfigurer;
+import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedConfigurerAdapter;
+import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedRegistrar;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlTemplateController;
 
 //CHECKSTYLE:ON
 
 /**
- * Add this annotation to @{@link Configuration} classes to enable Angular
- * Support configured in {@link SpringAngularConfig} and
- * {@link SpringAngularRegistrar}.
+ * Add this annotation to @{@link Configuration} classes to enable extended web
+ * support configured in {@link SpringWebExtendedConfig} and
+ * {@link SpringWebExtendedRegistrar}.
  * 
  * <p>
  * You can customize the configuration by implementing the
- * {@link SpringAngularConfigurer} or extending the
- * {@link SpringAngularConfigurerAdapter}
+ * {@link SpringWebExtendedConfigurer} or extending the
+ * {@link SpringWebExtendedConfigurerAdapter}
  * </p>
  * 
  * <pre>
  * &#064;Configuration
- * &#064;EnableSpringAngular
+ * &#064;EnableSpringWebExtended
  * &#064;ComponentScan(basePackageClasses = { AppConfig.class })
- * public class AppConfig extends SpringAngularConfigurerAdapter
+ * public class AppConfig extends SpringWebExtendedConfigurerAdapter
  * {
  * 	&#064;Override
  * 	public void configureMessageSource(MessageSourceConfig config)
@@ -48,9 +48,10 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlT
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import(value = { SpringAngularConfig.class, SpringAngularRegistrar.class })
+@Import(value = { SpringWebExtendedConfig.class,
+		SpringWebExtendedRegistrar.class })
 @EnableWebMvc
-public @interface EnableSpringAngular
+public @interface EnableSpringWebExtended
 {
 
 	/**

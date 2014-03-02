@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014 Daniel Furtlehner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package at.porscheinformatik.common.spring.web.extended.config;
 
 import java.util.Map;
@@ -8,13 +23,14 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 
-import at.porscheinformatik.common.spring.web.extended.annotation.EnableSpringAngular;
+import at.porscheinformatik.common.spring.web.extended.annotation.EnableSpringWebExtended;
 import at.porscheinformatik.common.spring.web.extended.asset.AssetController;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlTemplateController;
 import at.porscheinformatik.common.spring.web.extended.template.cache.script.ScriptController;
 import at.porscheinformatik.common.spring.web.extended.template.cache.style.StyleController;
 
-public class SpringAngularRegistrar implements ImportBeanDefinitionRegistrar
+public class SpringWebExtendedRegistrar implements
+		ImportBeanDefinitionRegistrar
 {
 
 	private static final String TEMPLATECONTROLLER_KEY = "htmlTemplateControllerConfig";
@@ -31,7 +47,8 @@ public class SpringAngularRegistrar implements ImportBeanDefinitionRegistrar
 	{
 
 		Map<String, Object> annotationAttributes = annotationMetadata
-				.getAnnotationAttributes(EnableSpringAngular.class.getName());
+				.getAnnotationAttributes(EnableSpringWebExtended.class
+						.getName());
 
 		// Guard against calls for sub-classes
 		if (annotationAttributes == null)
@@ -54,7 +71,7 @@ public class SpringAngularRegistrar implements ImportBeanDefinitionRegistrar
 				.get(TEMPLATECONTROLLER_KEY);
 
 		Assert.notNull(templateControllerConfig,
-				"No config for TemplateController found in EnableSpringAngular");
+				"No config for TemplateController found in EnableSpringWebExtended");
 
 		Boolean register = (Boolean) templateControllerConfig
 				.get(TEMPLATECONTROLLERREGISTER_KEY);

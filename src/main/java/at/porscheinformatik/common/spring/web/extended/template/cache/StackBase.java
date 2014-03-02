@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
 import at.porscheinformatik.common.spring.web.extended.template.Template;
-import at.porscheinformatik.common.spring.web.extended.util.SpringAngularUtils;
+import at.porscheinformatik.common.spring.web.extended.util.SpringWebExtendedUtils;
 
 public abstract class StackBase extends AbstractTemplateCache
 {
@@ -76,7 +76,7 @@ public abstract class StackBase extends AbstractTemplateCache
 			return;
 		}
 
-		String[] prefixAndPath = SpringAngularUtils.parseExpression(location);
+		String[] prefixAndPath = SpringWebExtendedUtils.parseExpression(location);
 		String[] pathAndFile = ResourceUtils.pathAndFile(prefixAndPath[1]);
 
 		if (pathAndFile == null)

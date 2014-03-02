@@ -1,3 +1,18 @@
+/**
+ * Copyright 2014 Daniel Furtlehner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package at.porscheinformatik.common.spring.web.extended.config;
 
 import java.util.ArrayList;
@@ -12,13 +27,14 @@ import at.porscheinformatik.common.spring.web.extended.messagesource.MessageSour
 import at.porscheinformatik.common.spring.web.extended.template.cache.StackConfig;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerConfig;
 
-public class DelegatingSpringAngularConfiguerer implements
-		SpringAngularConfigurer
+public class DelegatingSpringWebExtendedConfiguerer implements
+		SpringWebExtendedConfigurer
 {
 
-	private List<SpringAngularConfigurer> configurers = new ArrayList<>();
+	private List<SpringWebExtendedConfigurer> configurers = new ArrayList<>();
 
-	public void addConfigurers(Collection<SpringAngularConfigurer> configurers)
+	public void addConfigurers(
+			Collection<SpringWebExtendedConfigurer> configurers)
 	{
 		if (configurers != null)
 		{
@@ -29,7 +45,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	@Override
 	public void configureMessageSource(MessageSourceConfig config)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureMessageSource(config);
 		}
@@ -38,7 +54,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	@Override
 	public void configureStyles(StackConfig config)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureStyles(config);
 		}
@@ -47,7 +63,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	@Override
 	public void configureScripts(StackConfig config)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureScripts(config);
 		}
@@ -56,7 +72,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	@Override
 	public void configureApplication(ApplicationConfiguration config)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureApplication(config);
 		}
@@ -65,7 +81,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	@Override
 	public void configureOptimizers(OptimizerConfig config)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureOptimizers(config);
 		}
@@ -74,7 +90,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	@Override
 	public void configureResourceScanners(Map<String, ResourceScanner> config)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureResourceScanners(config);
 		}
@@ -84,7 +100,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	public void configureExpressionHandlers(
 			Map<String, ExpressionHandler> config)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureExpressionHandlers(config);
 		}
@@ -93,7 +109,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	@Override
 	public void configureHtmlTemplates(StackConfig config)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureHtmlTemplates(config);
 		}
@@ -105,7 +121,7 @@ public class DelegatingSpringAngularConfiguerer implements
 	@Override
 	public void configureLocaleSources(List<LocaleSource> sources)
 	{
-		for (SpringAngularConfigurer configurer : configurers)
+		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureLocaleSources(sources);
 		}

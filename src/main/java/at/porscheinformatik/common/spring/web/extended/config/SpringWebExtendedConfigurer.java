@@ -25,7 +25,7 @@ import at.porscheinformatik.common.spring.web.extended.messagesource.MessageSour
 import at.porscheinformatik.common.spring.web.extended.template.cache.StackConfig;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerConfig;
 
-public interface SpringAngularConfigurer
+public interface SpringWebExtendedConfigurer
 {
 	void configureMessageSource(MessageSourceConfig config);
 

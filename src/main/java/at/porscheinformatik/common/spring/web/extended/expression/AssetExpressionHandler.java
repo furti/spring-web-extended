@@ -5,7 +5,7 @@ import org.springframework.context.i18n.LocaleContext;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import at.porscheinformatik.common.spring.web.extended.util.SpringAngularUtils;
+import at.porscheinformatik.common.spring.web.extended.util.SpringWebExtendedUtils;
 
 /**
  * Produces a realtive url for an asset
@@ -21,7 +21,7 @@ public class AssetExpressionHandler implements ExpressionHandler
 	@Override
 	public String process(String value)
 	{
-		String[] split = SpringAngularUtils.parseExpression(value);
+		String[] split = SpringWebExtendedUtils.parseExpression(value);
 		Assert.isTrue(split.length == 2, "Invalid asset " + value);
 
 		StringBuilder url = new StringBuilder();

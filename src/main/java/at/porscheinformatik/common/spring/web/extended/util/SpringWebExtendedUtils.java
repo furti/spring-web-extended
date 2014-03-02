@@ -13,35 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.porscheinformatik.common.spring.web.extended.config;
+package at.porscheinformatik.common.spring.web.extended.util;
 
-public class DefaultApplicationConfiguration implements
-		ApplicationConfiguration
+public final class SpringWebExtendedUtils
 {
-	private String version;
-	private boolean optimizeResources;
 
-	@Override
-	public String getVersion()
+	private SpringWebExtendedUtils()
 	{
-		return version;
+
 	}
 
-	@Override
-	public boolean isOptimizeResources()
+	public static String[] parseExpression(String expression)
 	{
-		return optimizeResources;
-	}
+		if (expression == null)
+		{
+			return new String[] {};
+		}
 
-	@Override
-	public void setOptimizeResources(boolean optimizeResources)
-	{
-		this.optimizeResources = optimizeResources;
-	}
+		int index = expression.indexOf(":");
 
-	@Override
-	public void setVersion(String version)
-	{
-		this.version = version;
+		if (index == -1)
+		{
+			return new String[] { "", expression };
+		}
+
+		String[] split = new String[2];
+
+		split[0] = expression.substring(0, index);
+		split[1] = expression.substring(index + 1);
+
+		return split;
 	}
 }

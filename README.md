@@ -3,7 +3,7 @@ SpringWebExtended
 
 SpringWebExtended extends the Spring Web Framework to some common functionality needed for creating a web application.
 
-For further informations see the [Wiki](https://github.com/furti/spring-web-extended/wiki)
+For further informations see the [Wiki](https://github.com/furti/spring-web-extended/wiki).
 The documentation is currently in german but will hopefully translated to english soon ;)
 
 ###License

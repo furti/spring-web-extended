@@ -264,7 +264,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 
 		// Set the default optimize flag
 		config.setOptimizeResources(environment
-				.acceptsProfiles("optimizeangular"));
+				.acceptsProfiles("optimizeresources"));
 
 		configurer.configureApplication(config);
 

@@ -1,27 +1,25 @@
 package at.porscheinformatik.common.spring.web.extended.asset;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContext;
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
+import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
 import at.porscheinformatik.common.spring.web.extended.io.LocalizedResourceLoader;
 import at.porscheinformatik.common.spring.web.extended.util.RequestUtils;
-import at.porscheinformatik.common.spring.web.extended.util.ResourceNotFoundException;
 
 /**
  * Controller that sends static resources to the client.
@@ -30,15 +28,14 @@ import at.porscheinformatik.common.spring.web.extended.util.ResourceNotFoundExce
  * 
  */
 @Controller
-public class AssetController implements ServletContextAware
+public class AssetController extends ResourceHttpRequestHandler
 {
 
 	private static final Pattern PATH_PATTERN = Pattern
 			.compile("^.*asset/(.*)");
 
 	private LocalizedResourceLoader resourceLoader;
-	private LocaleContext locale;
-	private ServletContext servletContext;
+	private ApplicationConfiguration appConfig;
 
 	/**
 	 * Handles every URL that cotains "asset" and streams the requested Resource
@@ -50,35 +47,13 @@ public class AssetController implements ServletContextAware
 	 *            - The Response
 	 * @throws IOException
 	 *             - If an exception occurs while streaming the resource
+	 * @throws ServletException
 	 */
 	@RequestMapping(value = "/**/asset/**", method = RequestMethod.GET)
 	public void handleAsset(HttpServletRequest request,
-			HttpServletResponse response) throws IOException
+			HttpServletResponse response) throws IOException, ServletException
 	{
-		String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN);
-		String resourcePath = buildResourceFromPath(path);
-
-		// TODO: we should improve loading of resources
-		Resource resource = resourceLoader.getResource(resourcePath,
-				locale.getLocale());
-
-		if (resource == null || !resource.exists())
-		{
-			throw new ResourceNotFoundException();
-		}
-
-		String mimeType = servletContext.getMimeType(path);
-
-		if (mimeType != null)
-		{
-			response.setContentType(mimeType);
-		}
-
-		try (InputStream in = resource.getInputStream();
-				OutputStream out = response.getOutputStream();)
-		{
-			IOUtils.copy(in, out);
-		}
+		handleRequest(request, response);
 	}
 
 	private String buildResourceFromPath(String path)
@@ -112,15 +87,32 @@ public class AssetController implements ServletContextAware
 		this.resourceLoader = resourceLoader;
 	}
 
-	@Autowired
-	public void setLocale(LocaleContext locale)
+	@Override
+	protected Resource getResource(HttpServletRequest request)
 	{
-		this.locale = locale;
+		String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN);
+		String resourcePath = buildResourceFromPath(path);
+
+		return resourceLoader.getResource(resourcePath,
+				LocaleContextHolder.getLocale());
 	}
 
-	@Override
-	public void setServletContext(ServletContext servletContext)
+	@Autowired
+	public void setAppConfig(ApplicationConfiguration appConfig)
 	{
-		this.servletContext = servletContext;
+		this.appConfig = appConfig;
+	}
+
+	@PostConstruct
+	public void init()
+	{
+		if (appConfig.isOptimizeResources())
+		{
+			setCacheSeconds(365 * 24 * 60 * 60);
+		}
+		else
+		{
+			setCacheSeconds(0);
+		}
 	}
 }

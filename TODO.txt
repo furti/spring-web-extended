@@ -1,4 +1,4 @@
-*	remove assetcontroller and use spring resourcehandlers
+*	use Locale.toLanguageTag instead of substring
 *	tests for expressionhandlers
 *	Integrate logging for template rendering time
 *	remove webjars

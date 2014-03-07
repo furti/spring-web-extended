@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
 import at.porscheinformatik.common.spring.web.extended.template.cache.StackConfig;
 
-public class StyleExpressionHandler implements ExpressionHandler
+public class StyleExpressionHandler extends UrlGeneratingExpressionHandler
 {
 	private StackConfig styleConfig;
 	private ApplicationConfiguration config;
@@ -31,7 +31,7 @@ public class StyleExpressionHandler implements ExpressionHandler
 
 		if (config.isOptimizeResources())
 		{
-			return buildStyleLink("style/stack/" + value);
+			return buildStyleLink("style/stack", value);
 		}
 		else
 		{
@@ -50,23 +50,17 @@ public class StyleExpressionHandler implements ExpressionHandler
 
 		for (String styleName : styleNames)
 		{
-			StringBuilder href = new StringBuilder()
-					.append(config.getVersion())
-					.append("/style/single/")
-					.append(stackName).append("/")
-					.append(styleName);
-
-			builder.append(buildStyleLink(prepareHref(href.toString())))
+			builder.append(buildStyleLink("style/single", stackName, styleName))
 					.append("\n");
 		}
 
 		return builder.toString();
 	}
 
-	private String buildStyleLink(String href)
+	private String buildStyleLink(String... parts)
 	{
 		String style = "<link href=\""
-				+ href + "\" "
+				+ prepareHref(generateUrl(parts)) + "\" "
 				+ "type=\"text/css\" rel=\"stylesheet\"></link>";
 
 		return style;

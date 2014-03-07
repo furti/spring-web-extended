@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
 import at.porscheinformatik.common.spring.web.extended.template.cache.StackConfig;
 
-public class ScriptExpressionHandler implements ExpressionHandler
+public class ScriptExpressionHandler extends UrlGeneratingExpressionHandler
 {
 	private StackConfig scriptConfig;
 	private ApplicationConfiguration config;
@@ -31,7 +31,7 @@ public class ScriptExpressionHandler implements ExpressionHandler
 
 		if (config.isOptimizeResources())
 		{
-			return buildScriptLink("script/stack/" + value);
+			return buildScriptLink("script/stack", value);
 		}
 		else
 		{
@@ -50,23 +50,18 @@ public class ScriptExpressionHandler implements ExpressionHandler
 
 		for (String styleName : scriptNames)
 		{
-			StringBuilder href = new StringBuilder()
-					.append(config.getVersion())
-					.append("/script/single/")
-					.append(stackName).append("/")
-					.append(styleName);
-
-			builder.append(buildScriptLink(
-					prepareHref(href.toString()))).append("\n");
+			builder.append(
+					buildScriptLink("script/single", stackName, styleName))
+					.append("\n");
 		}
 
 		return builder.toString();
 	}
 
-	private String buildScriptLink(String href)
+	private String buildScriptLink(String... parts)
 	{
 		String script = "<script src=\""
-				+ href + "\" "
+				+ prepareHref(generateUrl(parts)) + "\" "
 				+ "type=\"text/javascript\"></script>";
 
 		return script;

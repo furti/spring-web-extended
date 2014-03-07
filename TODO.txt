@@ -1,8 +1,6 @@
-*	use Locale.toLanguageTag instead of substring
 *	tests for expressionhandlers
 *	Integrate logging for template rendering time
 *	remove webjars
-*	rename the optimize profile
 *	Templaterendercontextfactory erstellen
 *	default TemplateFactory in eigene config auslagern und conditionalonmissingbean verwenden
 

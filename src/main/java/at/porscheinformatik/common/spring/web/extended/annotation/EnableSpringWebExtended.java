@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedConfig;
 import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedConfigurer;
 import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedConfigurerAdapter;
+import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedImportSelector;
 import at.porscheinformatik.common.spring.web.extended.config.SpringWebExtendedRegistrar;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlTemplateController;
 
@@ -48,8 +49,8 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlT
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import(value = { SpringWebExtendedConfig.class,
-		SpringWebExtendedRegistrar.class })
+@Import(value = { SpringWebExtendedRegistrar.class,
+		SpringWebExtendedImportSelector.class })
 @EnableWebMvc
 public @interface EnableSpringWebExtended
 {

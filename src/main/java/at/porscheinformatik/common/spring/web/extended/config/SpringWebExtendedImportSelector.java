@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package at.porscheinformatik.common.spring.web.extended.expression;
+package at.porscheinformatik.common.spring.web.extended.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import at.porscheinformatik.common.spring.web.extended.http.LinkCreator;
+import org.springframework.context.annotation.DeferredImportSelector;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.type.AnnotationMetadata;
 
 /**
  * @author Daniel Furtlehner
  * 
  */
-public abstract class UrlGeneratingExpressionHandler implements
-		ExpressionHandler
+@Order(Ordered.LOWEST_PRECEDENCE)
+public class SpringWebExtendedImportSelector implements DeferredImportSelector
 {
-	private LinkCreator linkCreator;
 
-	protected String generateUrl(String... parts)
+	@Override
+	public String[] selectImports(AnnotationMetadata importingClassMetadata)
 	{
-		return linkCreator.createLink(parts);
+		return new String[] {
+				SpringWebExtendedConfig.class.getName(),
+				SpringWebExtendedDefaults.class.getName()
+		};
 	}
 
-	@Autowired
-	public void setLinkCreator(LinkCreator linkCreator)
-	{
-		this.linkCreator = linkCreator;
-	}
 }

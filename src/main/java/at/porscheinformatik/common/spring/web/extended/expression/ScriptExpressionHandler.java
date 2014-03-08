@@ -2,7 +2,6 @@ package at.porscheinformatik.common.spring.web.extended.expression;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
@@ -12,7 +11,6 @@ public class ScriptExpressionHandler extends UrlGeneratingExpressionHandler
 {
 	private StackConfig scriptConfig;
 	private ApplicationConfiguration config;
-	private LinkPreparator linkPreparator;
 
 	public ScriptExpressionHandler(StackConfig scriptConfig,
 			ApplicationConfiguration config)
@@ -61,33 +59,10 @@ public class ScriptExpressionHandler extends UrlGeneratingExpressionHandler
 	private String buildScriptLink(String... parts)
 	{
 		String script = "<script src=\""
-				+ prepareHref(generateUrl(parts)) + "\" "
+				+ generateUrl(parts) + "\" "
 				+ "type=\"text/javascript\"></script>";
 
 		return script;
-	}
-
-	/**
-	 * Subclasses may change the script href for theyr own needs.
-	 * 
-	 * @param href
-	 *            - Link that is used as href of the script tag
-	 * @return new Link
-	 */
-	protected String prepareHref(String href)
-	{
-		if (linkPreparator != null)
-		{
-			return linkPreparator.prepareLink(href);
-		}
-
-		return href;
-	}
-
-	@Autowired(required = false)
-	public void setLinkPreparator(LinkPreparator linkPreparator)
-	{
-		this.linkPreparator = linkPreparator;
 	}
 
 	@Override

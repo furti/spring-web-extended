@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanners;
@@ -132,6 +133,7 @@ public abstract class StacksBase<T extends StackBase>
 		this.appConfig = appConfig;
 	}
 
+	@Autowired
 	public void setTemplateFactory(TemplateFactory templateFactory)
 	{
 		this.templateFactory = templateFactory;

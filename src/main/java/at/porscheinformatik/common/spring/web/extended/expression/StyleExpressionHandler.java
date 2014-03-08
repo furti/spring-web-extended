@@ -2,7 +2,6 @@ package at.porscheinformatik.common.spring.web.extended.expression;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
@@ -12,7 +11,6 @@ public class StyleExpressionHandler extends UrlGeneratingExpressionHandler
 {
 	private StackConfig styleConfig;
 	private ApplicationConfiguration config;
-	private LinkPreparator linkPreparator;
 
 	public StyleExpressionHandler(StackConfig styleConfig,
 			ApplicationConfiguration config)
@@ -60,33 +58,10 @@ public class StyleExpressionHandler extends UrlGeneratingExpressionHandler
 	private String buildStyleLink(String... parts)
 	{
 		String style = "<link href=\""
-				+ prepareHref(generateUrl(parts)) + "\" "
+				+ generateUrl(parts) + "\" "
 				+ "type=\"text/css\" rel=\"stylesheet\"></link>";
 
 		return style;
-	}
-
-	/**
-	 * Subclasses may change the styles href for theyr own needs.
-	 * 
-	 * @param href
-	 *            - Link that is used as href of the link tag
-	 * @return new Link
-	 */
-	protected String prepareHref(String href)
-	{
-		if (linkPreparator != null)
-		{
-			return linkPreparator.prepareLink(href);
-		}
-
-		return href;
-	}
-
-	@Autowired(required = false)
-	public void setLinkPreparator(LinkPreparator linkPreparator)
-	{
-		this.linkPreparator = linkPreparator;
 	}
 
 	@Override

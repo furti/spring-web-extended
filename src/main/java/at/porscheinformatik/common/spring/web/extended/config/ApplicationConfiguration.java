@@ -15,14 +15,33 @@
  */
 package at.porscheinformatik.common.spring.web.extended.config;
 
+import java.util.List;
+import java.util.Locale;
+
 public interface ApplicationConfiguration
 {
 
 	String getVersion();
 
-	void setVersion(String version);
+	ApplicationConfiguration setVersion(String version);
 
 	boolean isOptimizeResources();
 
-	void setOptimizeResources(boolean optimizeResources);
+	ApplicationConfiguration setOptimizeResources(boolean optimizeResources);
+
+	ApplicationConfiguration addLocale(String language);
+
+	ApplicationConfiguration addLocale(String language, String country);
+
+	ApplicationConfiguration addLocale(String language, String country,
+			String variant);
+
+	ApplicationConfiguration removeLocale(String language);
+
+	ApplicationConfiguration removeLocale(String language, String country);
+
+	ApplicationConfiguration removeLocale(String language, String country,
+			String variant);
+
+	List<Locale> getSupportedLocales();
 }

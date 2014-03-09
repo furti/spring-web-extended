@@ -15,11 +15,17 @@
  */
 package at.porscheinformatik.common.spring.web.extended.config;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
 public class DefaultApplicationConfiguration implements
 		ApplicationConfiguration
 {
 	private String version;
 	private boolean optimizeResources;
+	private List<Locale> supportedLocales = new ArrayList<>();
 
 	@Override
 	public String getVersion()
@@ -34,14 +40,71 @@ public class DefaultApplicationConfiguration implements
 	}
 
 	@Override
-	public void setOptimizeResources(boolean optimizeResources)
+	public ApplicationConfiguration setOptimizeResources(
+			boolean optimizeResources)
 	{
 		this.optimizeResources = optimizeResources;
+
+		return this;
 	}
 
 	@Override
-	public void setVersion(String version)
+	public ApplicationConfiguration setVersion(String version)
 	{
 		this.version = version;
+
+		return this;
+	}
+
+	@Override
+	public ApplicationConfiguration addLocale(String language)
+	{
+		return addLocale(language, null, null);
+	}
+
+	@Override
+	public ApplicationConfiguration addLocale(String language, String country)
+	{
+		return addLocale(language, country, null);
+	}
+
+	@Override
+	public ApplicationConfiguration addLocale(String language, String country,
+			String variant)
+	{
+		Locale locale = new Locale(language, country, variant);
+
+		supportedLocales.add(locale);
+
+		return this;
+	}
+
+	@Override
+	public ApplicationConfiguration removeLocale(String language)
+	{
+		return removeLocale(language, null, null);
+	}
+
+	@Override
+	public ApplicationConfiguration removeLocale(String language, String country)
+	{
+		return removeLocale(language, country, null);
+	}
+
+	@Override
+	public ApplicationConfiguration removeLocale(String language,
+			String country, String variant)
+	{
+		Locale locale = new Locale(language, country, variant);
+
+		supportedLocales.remove(locale);
+
+		return this;
+	}
+
+	@Override
+	public List<Locale> getSupportedLocales()
+	{
+		return Collections.unmodifiableList(supportedLocales);
 	}
 }

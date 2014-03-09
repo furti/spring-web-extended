@@ -2,6 +2,7 @@
 *	Integrate logging for template rendering time
 *	remove webjars
 *	Templaterendercontextfactory erstellen
+*	create defaultlocalesource and register it by default. Uses the first part of the url as locale if it is one
 
 Add Licence to files.
 /**

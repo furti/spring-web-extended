@@ -63,6 +63,7 @@ import at.porscheinformatik.common.spring.web.extended.io.WebJarResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleContextHolderBackedLocaleContext;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleHandlerInterceptor;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleSource;
+import at.porscheinformatik.common.spring.web.extended.locale.RequestURILocaleSource;
 import at.porscheinformatik.common.spring.web.extended.messagesource.DefaultMessageSourceConfig;
 import at.porscheinformatik.common.spring.web.extended.messagesource.MessageSourceConfig;
 import at.porscheinformatik.common.spring.web.extended.servlet.ResponseContextHandlerInterceptor;
@@ -435,10 +436,17 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 		}
 	}
 
+	@Bean
+	public LocaleSource requestUriLocaleSource()
+	{
+		return new RequestURILocaleSource();
+	}
+
 	private List<LocaleSource> getLocaleSources()
 	{
 		List<LocaleSource> sources = new ArrayList<>();
 
+		sources.add(requestUriLocaleSource());
 		configurer.configureLocaleSources(sources);
 
 		return sources;

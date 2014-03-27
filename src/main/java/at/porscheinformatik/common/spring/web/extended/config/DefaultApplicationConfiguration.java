@@ -59,13 +59,14 @@ public class DefaultApplicationConfiguration implements
 	@Override
 	public ApplicationConfiguration addLocale(String language)
 	{
-		return addLocale(language, null, null);
+
+		return addLocale(language, "", "");
 	}
 
 	@Override
 	public ApplicationConfiguration addLocale(String language, String country)
 	{
-		return addLocale(language, country, null);
+		return addLocale(language, country, "");
 	}
 
 	@Override

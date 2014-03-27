@@ -1,9 +1,3 @@
-*	tests for expressionhandlers
-*	Integrate logging for template rendering time
-*	remove webjars
-*	Templaterendercontextfactory erstellen
-
-Add Licence to files.
 /**
  * Copyright 2014 Daniel Furtlehner
  *
@@ -19,3 +13,27 @@ Add Licence to files.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package at.porscheinformatik.common.spring.web.extended.locale;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * @author Daniel Furtlehner
+ * 
+ */
+public class RequestURILocaleSource extends NthPathPartLocaleSource
+{
+
+	public RequestURILocaleSource()
+	{
+		super(0);
+	}
+
+	@Override
+	protected String getPath(HttpServletRequest request,
+			HttpServletResponse response)
+	{
+		return request.getRequestURI();
+	}
+}

@@ -1,14 +1,20 @@
 package at.porscheinformatik.common.spring.web.extended.locale;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+
+import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
 
 public abstract class AbstractLocaleSource implements LocaleSource
 {
+	private List<Locale> availableLocales;
+
 	@Override
 	public Locale getLocale(HttpServletRequest request,
 			HttpServletResponse response)
@@ -20,12 +26,12 @@ public abstract class AbstractLocaleSource implements LocaleSource
 
 	private Locale checkLocale(String possibleLocale)
 	{
-		if (StringUtils.isEmpty(possibleLocale))
+		if (StringUtils.isEmpty(possibleLocale) || availableLocales == null)
 		{
 			return null;
 		}
-		
-		for (Locale locale : Locale.getAvailableLocales())
+
+		for (Locale locale : availableLocales)
 		{
 			if (locale.toString().equals(possibleLocale))
 			{
@@ -38,4 +44,13 @@ public abstract class AbstractLocaleSource implements LocaleSource
 
 	protected abstract String getPossibleLocale(HttpServletRequest request,
 			HttpServletResponse response);
+
+	@Autowired
+	public void setAppConfig(ApplicationConfiguration appConfig)
+	{
+		if (appConfig != null)
+		{
+			this.availableLocales = appConfig.getSupportedLocales();
+		}
+	}
 }

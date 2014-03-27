@@ -256,6 +256,8 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 		config.setOptimizeResources(environment
 				.acceptsProfiles("optimizeresources"));
 
+		config.addLocale("en");
+
 		configurer.configureApplication(config);
 
 		if (config.getVersion() == null)
@@ -521,7 +523,11 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 
 		if (!CollectionUtils.isEmpty(sources))
 		{
-			registry.addInterceptor(new LocaleHandlerInterceptor(sources));
+			LocaleHandlerInterceptor interceptor = new LocaleHandlerInterceptor(
+					sources);
+			interceptor.setAvailableLocales(appConfig().getSupportedLocales());
+
+			registry.addInterceptor(interceptor);
 		}
 	}
 }

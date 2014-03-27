@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
+import at.porscheinformatik.common.spring.web.extended.util.LocaleUtils;
 
 public abstract class AbstractLocaleSource implements LocaleSource
 {
@@ -26,20 +26,8 @@ public abstract class AbstractLocaleSource implements LocaleSource
 
 	private Locale checkLocale(String possibleLocale)
 	{
-		if (StringUtils.isEmpty(possibleLocale) || availableLocales == null)
-		{
-			return null;
-		}
-
-		for (Locale locale : availableLocales)
-		{
-			if (locale.toString().equals(possibleLocale))
-			{
-				return locale;
-			}
-		}
-
-		return null;
+		return LocaleUtils.closestSupportedLocale(availableLocales,
+				possibleLocale);
 	}
 
 	protected abstract String getPossibleLocale(HttpServletRequest request,

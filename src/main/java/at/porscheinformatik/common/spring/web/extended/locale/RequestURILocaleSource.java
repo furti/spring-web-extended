@@ -30,6 +30,11 @@ public class RequestURILocaleSource extends NthPathPartLocaleSource
 		super(0);
 	}
 
+	public RequestURILocaleSource(int partIndex)
+	{
+		super(partIndex);
+	}
+
 	@Override
 	protected String getPath(HttpServletRequest request,
 			HttpServletResponse response)

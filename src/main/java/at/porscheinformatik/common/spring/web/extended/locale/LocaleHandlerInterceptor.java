@@ -26,6 +26,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import at.porscheinformatik.common.spring.web.extended.util.LocaleUtils;
+
 /**
  * @author Daniel Furtlehner
  * 
@@ -66,10 +68,11 @@ public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
 
 		// If no locale was found we check if the one from the request is
 		// supported
-		Locale locale = LocaleContextHolder.getLocale();
-
-		if (availableLocales.contains(locale))
+		Locale locale = LocaleUtils.closestSupportedLocale(availableLocales,
+				LocaleContextHolder.getLocale());
+		if (locale != null)
 		{
+			LocaleContextHolder.setLocale(locale);
 			return true;
 		}
 
@@ -83,6 +86,9 @@ public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
 	@Autowired
 	public void setAvailableLocales(List<Locale> availableLocales)
 	{
+		Assert.notNull(availableLocales,
+				"No supported locales are configured. Please configure at least one locale");
+
 		this.availableLocales = availableLocales;
 	}
 }

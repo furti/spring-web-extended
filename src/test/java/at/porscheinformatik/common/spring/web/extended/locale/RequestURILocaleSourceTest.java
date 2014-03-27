@@ -57,9 +57,9 @@ public class RequestURILocaleSourceTest
 				{ "/test", null },
 				{ "/abc/test", null },
 				{ "/de/test", new Locale("de") },
-				{ "/de_AT/test", new Locale("de", "AT") },
-				{ "/de_DE/test", null },
-				{ "/xy_AB/test", null }
+				{ "/de-AT/test", new Locale("de", "AT") },
+				{ "/de-DE/test", new Locale("de") },
+				{ "/xy-AB/test", null }
 		};
 	}
 
@@ -76,7 +76,7 @@ public class RequestURILocaleSourceTest
 				{ "/de/test", "de" },
 				{ "de_AT/test", "de_AT" },
 				{ "/xy_AB/test/", "xy_AB" },
-				{ "xy_AB/test/", "xy_AB" }
+				{ "xy-AB/test/", "xy-AB" }
 		};
 	}
 }

@@ -38,7 +38,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import ro.isdc.wro.extensions.processor.css.YUICssCompressorProcessor;
-import ro.isdc.wro.model.resource.processor.impl.js.JSMinProcessor;
+import ro.isdc.wro.extensions.processor.js.GoogleClosureCompressorProcessor;
 import ro.isdc.wro.util.Base64;
 import at.porscheinformatik.common.spring.web.extended.expression.AssetExpressionHandler;
 import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHandler;
@@ -75,6 +75,8 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.style.Styl
 import at.porscheinformatik.common.spring.web.extended.template.optimize.DefaultOptimizerConfig;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerConfig;
+
+import com.google.javascript.jscomp.CompilationLevel;
 
 @Configuration
 @EnableScheduling
@@ -371,7 +373,8 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 		config.addOptimizer(ResourceType.STYLE, "yuicss", new
 				YUICssCompressorProcessor());
 		config.addOptimizer(ResourceType.SCRIPT, "jsmin",
-				new JSMinProcessor());
+				new GoogleClosureCompressorProcessor(
+						CompilationLevel.SIMPLE_OPTIMIZATIONS));
 
 		configurer.configureOptimizers(config);
 

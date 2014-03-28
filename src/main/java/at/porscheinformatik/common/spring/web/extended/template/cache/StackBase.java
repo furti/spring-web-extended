@@ -123,42 +123,6 @@ public abstract class StackBase extends AbstractTemplateCache
 	}
 
 	/**
-	 * @return
-	 */
-	public List<String> getNames()
-	{
-		// TODO: we must unlocalize the names here. Else we will publish the
-		// same resource more than once
-		Map<String, Template> templates = getTemplates();
-
-		if (templates == null || templates.isEmpty())
-		{
-			return null;
-		}
-
-		return new ArrayList<String>(templates.keySet());
-	}
-
-	public String renderAll()
-	{
-		List<String> names = getNames();
-
-		if (names == null)
-		{
-			return null;
-		}
-
-		StringBuilder content = new StringBuilder();
-
-		for (String name : names)
-		{
-			content.append(renderTemplate(name)).append("\n");
-		}
-
-		return content.toString();
-	}
-
-	/**
 	 * Add the locale to the name
 	 * 
 	 * @param name

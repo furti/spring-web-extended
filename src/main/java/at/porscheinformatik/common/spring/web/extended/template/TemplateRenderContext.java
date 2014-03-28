@@ -19,6 +19,20 @@ import java.util.Locale;
 
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
 
+/**
+ * In the optimized mode the templatecache caches templates for each
+ * templaterendercontext and reuses them when they are requested for the same
+ * rendercontext again. So a template must not be rendered and processed by the
+ * optimizer chain each time it is requested. This gives us better performance.
+ * 
+ * <b>Be sure to only use data from the tempalterendercontext in your own
+ * expressionhandlers. Or else a cached template may be used even though a
+ * expressoinhandler would have generated a different value for this
+ * request.</b>
+ * 
+ * @author Daniel Furtlehner
+ * 
+ */
 public interface TemplateRenderContext
 {
 	Locale getLocale();

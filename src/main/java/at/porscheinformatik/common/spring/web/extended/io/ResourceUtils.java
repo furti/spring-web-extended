@@ -161,4 +161,32 @@ public final class ResourceUtils
 
 		return fileName.substring(0, index);
 	}
+
+	public static String unlocalize(String resource)
+	{
+		String[] nameAndEnding = getNameAndEnding(resource);
+
+		if (nameAndEnding == null)
+		{
+			return null;
+		}
+
+		int index = nameAndEnding[0].indexOf("_");
+
+		if (index == -1)
+		{
+			return resource;
+		}
+
+		StringBuilder builder = new StringBuilder();
+
+		builder.append(nameAndEnding[0].substring(0, index));
+
+		if (nameAndEnding[1] != null)
+		{
+			builder.append(".").append(nameAndEnding[1]);
+		}
+
+		return builder.toString();
+	}
 }

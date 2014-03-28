@@ -51,4 +51,52 @@ public class DefaultTemplateRenderContext implements TemplateRenderContext
 		this.resourceType = resourceType;
 	}
 
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+		result = prime * result
+				+ ((resourceType == null) ? 0 : resourceType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj == null)
+		{
+			return false;
+		}
+		if (getClass() != obj.getClass())
+		{
+			return false;
+		}
+
+		DefaultTemplateRenderContext other = (DefaultTemplateRenderContext) obj;
+
+		if (locale == null)
+		{
+			if (other.locale != null)
+			{
+				return false;
+			}
+		} else if (!locale.equals(other.locale))
+		{
+			return false;
+		}
+
+		if (resourceType != other.resourceType)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 }

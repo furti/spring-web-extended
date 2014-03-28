@@ -16,7 +16,9 @@
 package at.porscheinformatik.common.spring.web.extended.template.cache;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,6 +38,7 @@ import at.porscheinformatik.common.spring.web.extended.template.DefaultTemplateR
 import at.porscheinformatik.common.spring.web.extended.template.StringTemplate;
 import at.porscheinformatik.common.spring.web.extended.template.Template;
 import at.porscheinformatik.common.spring.web.extended.template.TemplateFactory;
+import at.porscheinformatik.common.spring.web.extended.template.TemplateRenderContext;
 import at.porscheinformatik.common.spring.web.extended.template.TemplateRenderContextHolder;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
 
@@ -55,6 +58,8 @@ public abstract class AbstractTemplateCache
 	private ApplicationConfiguration appConfig;
 	private OptimizerChain optimizerChain;
 	private Date lastRefresh;
+
+	private Map<RenderCacheKey, String> renderCache = new HashMap<RenderCacheKey, String>();
 
 	public AbstractTemplateCache(String cacheName)
 	{
@@ -120,9 +125,20 @@ public abstract class AbstractTemplateCache
 		{
 			// TODO: hier noch eine factory einführen
 			// Set the rendercontext before rendering the template
+			DefaultTemplateRenderContext context = new DefaultTemplateRenderContext(
+					locale,
+					template.getType());
+
+			// If the template was rendered and cached before we use the already
+			// rendered one
+			String fromCache = checkCache(context, template);
+			if (fromCache != null)
+			{
+				return fromCache;
+			}
+
 			TemplateRenderContextHolder
-					.setCurrentContext(new DefaultTemplateRenderContext(locale,
-							template.getType()));
+					.setCurrentContext(context);
 
 			String result = template.render();
 
@@ -136,12 +152,72 @@ public abstract class AbstractTemplateCache
 						template.getName(), result);
 			}
 
+			if (shouldOptimize())
+			{
+				addToCache(context, template, result);
+			}
+
 			return result;
 		} catch (IOException ex)
 		{
 			throw new RuntimeException("Error rendering template "
 					+ template.getName(), ex);
 		}
+	}
+
+	private void addToCache(DefaultTemplateRenderContext context,
+			Template template, String content)
+	{
+		RenderCacheKey key = new RenderCacheKey(context, template.getName());
+		renderCache.put(key, content);
+	}
+
+	private String checkCache(DefaultTemplateRenderContext context,
+			Template template)
+	{
+		RenderCacheKey key = new RenderCacheKey(context, template.getName());
+		return renderCache.get(key);
+	}
+
+	public String renderAll()
+	{
+		List<String> names = getNames();
+
+		if (names == null)
+		{
+			return null;
+		}
+
+		StringBuilder content = new StringBuilder();
+
+		for (String name : names)
+		{
+			content.append(renderTemplate(name)).append("\n");
+		}
+
+		return content.toString();
+	}
+
+	/**
+	 * @return
+	 */
+	public List<String> getNames()
+	{
+		Map<String, Template> templates = getTemplates();
+
+		if (templates == null || templates.isEmpty())
+		{
+			return null;
+		}
+
+		List<String> names = new ArrayList<>();
+
+		for (String name : templates.keySet())
+		{
+			names.add(ResourceUtils.unlocalize(name));
+		}
+
+		return names;
 	}
 
 	public void refreshTemplates() throws IOException
@@ -271,5 +347,78 @@ public abstract class AbstractTemplateCache
 	public void setTemplateFactory(TemplateFactory templateFactory)
 	{
 		this.templateFactory = templateFactory;
+	}
+
+	/**
+	 * @author Daniel Furtlehner
+	 * 
+	 */
+	private static class RenderCacheKey
+	{
+		private TemplateRenderContext context;
+		private String template;
+
+		public RenderCacheKey(TemplateRenderContext context, String template)
+		{
+			super();
+			this.context = context;
+			this.template = template;
+		}
+
+		@Override
+		public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((context == null) ? 0 : context.hashCode());
+			result = prime * result
+					+ ((template == null) ? 0 : template.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+
+			if (obj == null)
+			{
+				return false;
+			}
+
+			if (getClass() != obj.getClass())
+			{
+				return false;
+			}
+
+			RenderCacheKey other = (RenderCacheKey) obj;
+			if (context == null)
+			{
+				if (other.context != null)
+				{
+					return false;
+				}
+			} else if (!context.equals(other.context))
+			{
+				return false;
+			}
+
+			if (template == null)
+			{
+				if (other.template != null)
+				{
+					return false;
+				}
+			} else if (!template.equals(other.template))
+			{
+				return false;
+			}
+
+			return true;
+		}
 	}
 }

@@ -1,8 +1,6 @@
 package at.porscheinformatik.common.spring.web.extended.template.cache;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -13,7 +11,6 @@ import org.springframework.util.StringUtils;
 
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
-import at.porscheinformatik.common.spring.web.extended.template.Template;
 import at.porscheinformatik.common.spring.web.extended.util.SpringWebExtendedUtils;
 
 public abstract class StackBase extends AbstractTemplateCache
@@ -76,7 +73,8 @@ public abstract class StackBase extends AbstractTemplateCache
 			return;
 		}
 
-		String[] prefixAndPath = SpringWebExtendedUtils.parseExpression(location);
+		String[] prefixAndPath = SpringWebExtendedUtils
+				.parseExpression(location);
 		String[] pathAndFile = ResourceUtils.pathAndFile(prefixAndPath[1]);
 
 		if (pathAndFile == null)

@@ -38,9 +38,12 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import ro.isdc.wro.extensions.processor.css.YUICssCompressorProcessor;
-import ro.isdc.wro.extensions.processor.js.GoogleClosureCompressorProcessor;
+import ro.isdc.wro.model.resource.processor.impl.js.JSMinProcessor;
 import ro.isdc.wro.util.Base64;
+import at.porscheinformatik.common.spring.web.extended.asset.CdnConfig;
+import at.porscheinformatik.common.spring.web.extended.asset.DefaultCdnConfig;
 import at.porscheinformatik.common.spring.web.extended.expression.AssetExpressionHandler;
+import at.porscheinformatik.common.spring.web.extended.expression.CdnExpressionHandler;
 import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHandler;
 import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHandlers;
 import at.porscheinformatik.common.spring.web.extended.expression.InlineTemplateExpressionHandler;
@@ -76,8 +79,6 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Default
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerConfig;
 
-import com.google.javascript.jscomp.CompilationLevel;
-
 @Configuration
 @EnableScheduling
 @EnableWebMvc
@@ -93,6 +94,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 
 	private DelegatingSpringWebExtendedConfiguerer configurer = new DelegatingSpringWebExtendedConfiguerer();
 	private DefaultStackConfig scriptConfig, styleConfig, htmlConfig;
+	private CdnConfig cdnConfig;
 
 	private HashMap<String, ExpressionHandler> handlers;
 
@@ -197,6 +199,12 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 	}
 
 	@Bean
+	public CdnExpressionHandler cdnExpressionHandler()
+	{
+		return new CdnExpressionHandler(appConfig(), getCdnConfig());
+	}
+
+	@Bean
 	public LocaleContext localeContext()
 	{
 		return new LocaleContextHolderBackedLocaleContext();
@@ -298,10 +306,6 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 							? -1
 							: DEFAULT_REFRESH_INTERVALL);
 
-			styleConfig.addToStack("bootstrap", "bootstrap",
-					"bootstrapcss:bootstrap.css",
-					"bootstrapcss:bootstrap.min.css", true);
-
 			configurer.configureStyles(styleConfig);
 		}
 
@@ -327,6 +331,18 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 		return htmlConfig;
 	}
 
+	public CdnConfig getCdnConfig()
+	{
+		if (cdnConfig == null)
+		{
+			cdnConfig = new DefaultCdnConfig();
+
+			configurer.configureCDN(cdnConfig);
+		}
+
+		return cdnConfig;
+	}
+
 	public DefaultStackConfig getScriptConfig()
 	{
 		if (scriptConfig == null)
@@ -338,22 +354,6 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 			scriptConfig.setRefreshIntervall(appConfig.isOptimizeResources()
 					? -1
 					: DEFAULT_REFRESH_INTERVALL);
-
-			scriptConfig.addToStack("angular", "jquery",
-					"jquery:jquery.js",
-					"jquery:jquery.min.js", true);
-			scriptConfig.addToStack("angular", "angularjs",
-					"angular:angular.js",
-					"angular:angular.min.js", true);
-			scriptConfig.addToStack("angular", "ngroute",
-					"angular:angular-route.js",
-					"angular:angular-route.min.js", true);
-			scriptConfig.addToStack("angular", "bootstrap",
-					"bootstrapjs:bootstrap.js", "bootstrapjs:bootstrap.min.js",
-					true);
-			scriptConfig.addToStack("angular", "uibootstrap",
-					"angularuibootstrap:ui-bootstrap-tpls.js",
-					"angularuibootstrap:ui-bootstrap-tpls.min.js", true);
 
 			configurer.configureScripts(scriptConfig);
 		}
@@ -373,8 +373,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 		config.addOptimizer(ResourceType.STYLE, "yuicss", new
 				YUICssCompressorProcessor());
 		config.addOptimizer(ResourceType.SCRIPT, "jsmin",
-				new GoogleClosureCompressorProcessor(
-						CompilationLevel.SIMPLE_OPTIMIZATIONS));
+				new JSMinProcessor());
 
 		configurer.configureOptimizers(config);
 
@@ -409,6 +408,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 			handlers.put("script", scriptExpressionHandler());
 			handlers.put("asset", assetExpressionHandler());
 			handlers.put("inlinetemplate", inlineTemplateExpressionHandler());
+			handlers.put("cdn", cdnExpressionHandler());
 
 			configurer.configureExpressionHandlers(handlers);
 		}

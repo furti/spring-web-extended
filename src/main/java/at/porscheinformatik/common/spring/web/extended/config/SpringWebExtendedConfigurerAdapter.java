@@ -18,6 +18,7 @@ package at.porscheinformatik.common.spring.web.extended.config;
 import java.util.List;
 import java.util.Map;
 
+import at.porscheinformatik.common.spring.web.extended.asset.CdnConfig;
 import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHandler;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleSource;
@@ -86,5 +87,11 @@ public abstract class SpringWebExtendedConfigurerAdapter implements
 	public void configureLocaleSources(List<LocaleSource> sources)
 	{
 		// Subclasses may override this to add configurations
+	}
+
+	@Override
+	public void configureCDN(CdnConfig config)
+	{
+		// Subclasses may override this to add own configurations
 	}
 }

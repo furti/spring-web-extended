@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import at.porscheinformatik.common.spring.web.extended.asset.CdnConfig;
 import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHandler;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleSource;
@@ -124,6 +125,15 @@ public class DelegatingSpringWebExtendedConfiguerer implements
 		for (SpringWebExtendedConfigurer configurer : configurers)
 		{
 			configurer.configureLocaleSources(sources);
+		}
+	}
+
+	@Override
+	public void configureCDN(CdnConfig config)
+	{
+		for (SpringWebExtendedConfigurer configurer : configurers)
+		{
+			configurer.configureCDN(config);
 		}
 	}
 }

@@ -1,9 +1,3 @@
-*	tests for expressionhandlers
-*	Integrate logging for template rendering time
-*	Templaterendercontextfactory erstellen
-*	remove specialized webjar resourcescanners
-
-Add Licence to files.
 /**
  * Copyright 2014 Daniel Furtlehner
  *
@@ -19,3 +13,31 @@ Add Licence to files.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package at.porscheinformatik.common.spring.web.extended.util;
+
+/**
+ * @author Daniel Furtlehner
+ * 
+ */
+public final class HtmlUtils
+{
+
+	private HtmlUtils()
+	{
+
+	}
+
+	public static String buildScriptLink(String url)
+	{
+		return "<script src=\""
+				+ url + "\" "
+				+ "type=\"text/javascript\"></script>";
+	}
+
+	public static String buildStyleLink(String url)
+	{
+		return "<link href=\""
+				+ url + "\" "
+				+ "type=\"text/css\" rel=\"stylesheet\"></link>";
+	}
+}

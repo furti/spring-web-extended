@@ -1,9 +1,3 @@
-*	tests for expressionhandlers
-*	Integrate logging for template rendering time
-*	Templaterendercontextfactory erstellen
-*	remove specialized webjar resourcescanners
-
-Add Licence to files.
 /**
  * Copyright 2014 Daniel Furtlehner
  *
@@ -19,3 +13,23 @@ Add Licence to files.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package at.porscheinformatik.common.spring.web.extended.asset;
+
+import java.util.List;
+
+/**
+ * @author Daniel Furtlehner
+ * 
+ */
+public interface CdnConfig
+{
+
+	CdnConfig addToStack(String stackName, String name, String location,
+			String minifiedLocation);
+
+	CdnConfig removeFromStack(String stackName, String name);
+
+	CdnConfig removeStack(String stackName);
+
+	List<CdnEntry> getEntries(String stackName);
+}

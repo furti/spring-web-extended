@@ -18,6 +18,8 @@ package at.porscheinformatik.common.spring.web.extended.config;
 import java.util.List;
 import java.util.Map;
 
+import at.porscheinformatik.common.spring.web.extended.asset.CdnConfig;
+import at.porscheinformatik.common.spring.web.extended.expression.CdnExpressionHandler;
 import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHandler;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleSource;
@@ -34,6 +36,16 @@ public interface SpringWebExtendedConfigurer
 	void configureScripts(StackConfig config);
 
 	void configureHtmlTemplates(StackConfig config);
+
+	/**
+	 * Works in combination with the {@link CdnExpressionHandler}. Is
+	 * espessially usefull if you want to load javascript libraries (e.g.
+	 * jquery, angular,...) from their CDN location to optimize loading and
+	 * caching of this resources.
+	 * 
+	 * @param config
+	 */
+	void configureCDN(CdnConfig config);
 
 	void configureApplication(ApplicationConfiguration config);
 

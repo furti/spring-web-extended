@@ -214,7 +214,12 @@ public abstract class AbstractTemplateCache
 
 		for (String name : templates.keySet())
 		{
-			names.add(ResourceUtils.unlocalize(name));
+			String unlocalized = ResourceUtils.unlocalize(name);
+
+			if (!names.contains(unlocalized))
+			{
+				names.add(unlocalized);
+			}
 		}
 
 		return names;

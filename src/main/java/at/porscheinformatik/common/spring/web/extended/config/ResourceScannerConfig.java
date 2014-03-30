@@ -22,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import at.porscheinformatik.common.spring.web.extended.io.AngularResourceScanner;
-import at.porscheinformatik.common.spring.web.extended.io.AngularUiBootstrapResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.io.ClasspathResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.io.ContextResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanner;
@@ -59,21 +57,9 @@ public class ResourceScannerConfig
 	}
 
 	@Bean
-	public AngularResourceScanner angularResourceScanner()
-	{
-		return new AngularResourceScanner();
-	}
-
-	@Bean
 	public WebJarResourceScanner webJarResourceScanner()
 	{
 		return new WebJarResourceScanner();
-	}
-
-	@Bean
-	public AngularUiBootstrapResourceScanner angularUiBootstrapResourceScanner()
-	{
-		return new AngularUiBootstrapResourceScanner();
 	}
 
 	public Map<String, ResourceScanner> getScanners()
@@ -81,11 +67,7 @@ public class ResourceScannerConfig
 		Map<String, ResourceScanner> scanners = new HashMap<>();
 		scanners.put("", contextResourceScanner());
 		scanners.put("classpath", classpathResourceScanner());
-		scanners.put("angular", angularResourceScanner());
 		scanners.put("webjar", webJarResourceScanner());
-
-		// TODO: remove this scanner
-		scanners.put("angularuibootstrap", angularUiBootstrapResourceScanner());
 
 		configurerConfig.configureResourceScanners(scanners);
 

@@ -1,7 +1,6 @@
 *	tests for expressionhandlers
 *	Integrate logging for template rendering time
 *	Templaterendercontextfactory erstellen
-*	remove specialized webjar resourcescanners
 *	add caching to style and script handler
 
 Add Licence to files.

@@ -51,7 +51,8 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Optimiz
 @Import(value = { SpringWebExtendedConfigurerConfig.class,
 		ResourceScannerConfig.class, ExpressionHandlerConfig.class })
 // TODO: maybe we should add a handlerinterceptor that adds no-cache headers
-// for json responses
+// for json responses. Spring security adds this headers by default. So we can
+// skip this i think
 public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 		SchedulingConfigurer
 {

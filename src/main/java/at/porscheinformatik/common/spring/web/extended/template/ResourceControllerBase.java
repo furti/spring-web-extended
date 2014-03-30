@@ -36,24 +36,13 @@ public abstract class ResourceControllerBase
 		if (appConfig.isOptimizeResources())
 		{
 			response.setHeader("Cache-Control", "public, max-age=31536000");
-
-			// TODO: spring security adds this two headers. We cann not delete a
-			// header in java so we set it to a blank value. How should we
-			// handle this??
-			if (response.containsHeader("Pragma"))
-			{
-				response.setHeader("Pragma", "");
-			}
-
-			if (response.containsHeader("Expires"))
-			{
-				response.setHeader("Expires", "");
-			}
+			response.setHeader("Pragma", "cache");
 		}
 		else
 		{
 			response.setHeader("Cache-Control",
 					"no-store, max-age=0, must-revalidate");
+			response.setHeader("Pragma", "no-cache");
 		}
 	}
 

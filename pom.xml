@@ -5,12 +5,26 @@
 	<artifactId>spring-web-extended</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+	
 	<properties>
 		<parboiled.version>1.1.6</parboiled.version>
 		<spring.version>4.0.0.RELEASE</spring.version>
 		<testng.version>6.8.7</testng.version>
 	</properties>
 
+	<scm>
+		<url>https://github.com/furti/spring-web-extended</url>
+		<connection>scm:git:https://github.com/furti/spring-web-extended.git</connection>
+		<developerConnection>scm:git:https://github.com/furti/spring-web-extended.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.parboiled</groupId>

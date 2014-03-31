@@ -22,7 +22,7 @@ public class ClasspathResourceScannerTest
 		ClasspathResourceScanner scanner = new ClasspathResourceScanner();
 
 		Map<String, Resource> actual = scanner
-				.scanResources("at/porscheinformatik/common/springangular/testtemplates");
+				.scanResources("at/porscheinformatik/common/spring/web/extended/testtemplates");
 		assertThat(actual, notNullValue());
 		assertThat(actual.size(), equalTo(5));
 		assertThat(actual.containsKey("index.txt"), equalTo(true));
@@ -38,7 +38,7 @@ public class ClasspathResourceScannerTest
 		ClasspathResourceScanner scanner = new ClasspathResourceScanner();
 
 		Map<String, Resource> actual = scanner.scanResources(
-				"at/porscheinformatik/common/springangular/testtemplates",
+				"at/porscheinformatik/common/spring/web/extended/testtemplates",
 				"index.txt", false);
 
 		assertThat(actual, notNullValue());

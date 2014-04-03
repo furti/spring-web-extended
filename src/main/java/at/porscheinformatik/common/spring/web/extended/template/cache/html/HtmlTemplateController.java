@@ -19,84 +19,93 @@ import at.porscheinformatik.common.spring.web.extended.util.ResourceNotFoundExce
 @Controller
 public class HtmlTemplateController
 {
-	private static final String INDEX = "index.html";
+    private static final String INDEX = "index.html";
 
-	private static final Pattern PATH_PATTERN = Pattern
-			.compile("^.*template/(.*)");
+    private static final Pattern PATH_PATTERN = Pattern
+        .compile("^.*template/(.*)");
 
-	protected HtmlStacks stacks;
-	private Boolean fallbackToIndex;
+    protected HtmlStacks stacks;
+    private Boolean fallbackToIndex;
 
-	public HtmlTemplateController(Boolean fallbackToIndex)
-	{
-		this.fallbackToIndex = fallbackToIndex != null
-				? fallbackToIndex
-				: Boolean.TRUE;
-	}
+    public HtmlTemplateController(Boolean fallbackToIndex)
+    {
+        this.fallbackToIndex = fallbackToIndex != null
+            ? fallbackToIndex
+            : Boolean.TRUE;
+    }
 
-	@RequestMapping(value = "**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-	@ResponseBody
-	public String handleIndex()
-	{
-		if (!indexAvaliable())
-		{
-			throw new ResourceNotFoundException();
-		}
+    @RequestMapping(value = "**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    @ResponseBody
+    public String handleIndex()
+    {
+        if (!indexAvaliable())
+        {
+            throw new ResourceNotFoundException();
+        }
 
-		return stacks.get("").renderTemplate(INDEX);
-	}
+        return renderDefaultTemplate(INDEX);
+    }
 
-	@RequestMapping(value = "**/template/**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
-	@ResponseBody
-	public String handleTemplate(HttpServletRequest request)
-	{
-		String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN)
-				.toLowerCase() + ".html";
-		if (isDefaultTemplate(path))
-		{
-			return stacks.get("").renderTemplate(path);
-		}
-		else
-		{
-			String[] pathAndFile = ResourceUtils.pathAndFile(path);
+    @RequestMapping(value = "**/template/**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    @ResponseBody
+    public String handleTemplate(HttpServletRequest request)
+    {
+        String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN)
+            .toLowerCase() + ".html";
+        if (isDefaultTemplate(path))
+        {
+            return renderDefaultTemplate(path);
+        }
+        else
+        {
+            String[] pathAndFile = ResourceUtils.pathAndFile(path);
 
-			if (StringUtils.hasText(pathAndFile[0]))
-			{
-				if (isTemplate(pathAndFile[0], pathAndFile[1]))
-				{
-					return stacks.get(pathAndFile[0]).renderTemplate(
-							pathAndFile[1]);
-				}
-			}
-		}
+            if (StringUtils.hasText(pathAndFile[0]))
+            {
+                if (isTemplate(pathAndFile[0], pathAndFile[1]))
+                {
+                    return renderTemplate(pathAndFile[0], pathAndFile[1]);
+                }
+            }
+        }
 
-		if (fallbackToIndex.booleanValue() && indexAvaliable())
-		{
-			return stacks.get("").renderTemplate(INDEX);
-		}
+        if (fallbackToIndex.booleanValue() && indexAvaliable())
+        {
+            return renderDefaultTemplate(INDEX);
+        }
 
-		throw new ResourceNotFoundException();
-	}
+        throw new ResourceNotFoundException();
+    }
 
-	private boolean indexAvaliable()
-	{
-		return isDefaultTemplate(INDEX);
-	}
+    private boolean indexAvaliable()
+    {
+        return isDefaultTemplate(INDEX);
+    }
 
-	protected boolean isDefaultTemplate(String templateName)
-	{
-		return isTemplate("", templateName);
-	}
+    protected boolean isDefaultTemplate(String templateName)
+    {
+        return isTemplate("", templateName);
+    }
 
-	protected boolean isTemplate(String stackName, String templateName)
-	{
-		return stacks.hasStack("")
-				&& stacks.get("").hasTemplate(templateName);
-	}
+    protected boolean isTemplate(String stackName, String templateName)
+    {
+        return stacks.hasStack("")
+            && stacks.get("").hasTemplate(templateName);
+    }
 
-	@Autowired
-	public void setStacks(HtmlStacks stacks)
-	{
-		this.stacks = stacks;
-	}
+    protected String renderDefaultTemplate(String templateName)
+    {
+        return renderTemplate("", templateName);
+    }
+
+    protected String renderTemplate(String stackName, String templateName)
+    {
+        return stacks.get("").renderTemplate(templateName);
+    }
+
+    @Autowired
+    public void setStacks(HtmlStacks stacks)
+    {
+        this.stacks = stacks;
+    }
 }

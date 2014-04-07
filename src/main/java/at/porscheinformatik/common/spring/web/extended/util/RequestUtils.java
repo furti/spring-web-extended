@@ -16,13 +16,11 @@ public final class RequestUtils
 	public static final String getPathFromRegex(HttpServletRequest request,
 			Pattern pattern)
 	{
-		String path = request.getServletPath() != null
-				? request.getServletPath()
-				: "";
+		String path = request.getRequestURI();
 
-		if (request.getPathInfo() != null)
+		if (path == null || pattern == null)
 		{
-			path += request.getPathInfo();
+			return null;
 		}
 
 		Matcher m = pattern.matcher(path);

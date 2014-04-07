@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/furti/spring-web-extended.svg?branch=master)](https://travis-ci.org/furti/spring-web-extended)
+
 SpringWebExtended
 ===================
 

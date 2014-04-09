@@ -40,10 +40,10 @@ public class ContextResourceScannerTest
 		deleteDirectory(ROOTDIR);
 		Files.createDirectory(ROOTDIR);
 
-		createFile(ROOTDIR, "test.txt", "Test");
-		createFile(ROOTDIR, "test_en.txt", "Test");
-		createFile(ROOTDIR, "test.min.txt", "Test");
-		createFile(ROOTDIR, "other/test.txt", "Other");
+		createFile(ROOTDIR, "testfile.txt", "Test");
+		createFile(ROOTDIR, "testfile_en.txt", "Test");
+		createFile(ROOTDIR, "testfile.min.txt", "Test");
+		createFile(ROOTDIR, "other/testfile.txt", "Other");
 	}
 
 	@Test
@@ -74,10 +74,10 @@ public class ContextResourceScannerTest
 				.scanResources("springangularcontextscannertest");
 		assertThat(actual, notNullValue());
 		assertThat(actual.size(), equalTo(4));
-		assertThat(actual.containsKey("test.txt"), equalTo(true));
-		assertThat(actual.containsKey("test_en.txt"), equalTo(true));
-		assertThat(actual.containsKey("test.min.txt"), equalTo(true));
-		assertThat(actual.containsKey("other/test.txt"), equalTo(true));
+		assertThat(actual.containsKey("testfile.txt"), equalTo(true));
+		assertThat(actual.containsKey("testfile_en.txt"), equalTo(true));
+		assertThat(actual.containsKey("testfile.min.txt"), equalTo(true));
+		assertThat(actual.containsKey("other/testfile.txt"), equalTo(true));
 	}
 
 	@Test
@@ -105,13 +105,14 @@ public class ContextResourceScannerTest
 		scanner.setServletContext(context);
 
 		Map<String, Resource> actual = scanner
-				.scanResources("springangularcontextscannertest", "test.txt",
+				.scanResources("springangularcontextscannertest",
+						"testfile.txt",
 						false);
 
 		assertThat(actual, notNullValue());
 		assertThat(actual.size(), equalTo(2));
-		assertThat(actual.containsKey("test.txt"), equalTo(true));
-		assertThat(actual.containsKey("test_en.txt"), equalTo(true));
+		assertThat(actual.containsKey("testfile.txt"), equalTo(true));
+		assertThat(actual.containsKey("testfile_en.txt"), equalTo(true));
 	}
 
 	@AfterTest

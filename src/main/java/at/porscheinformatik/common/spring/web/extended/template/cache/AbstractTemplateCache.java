@@ -207,7 +207,7 @@ public abstract class AbstractTemplateCache
 
 		if (templates == null || templates.isEmpty())
 		{
-			return null;
+			return new ArrayList<>();
 		}
 
 		List<String> names = new ArrayList<>();

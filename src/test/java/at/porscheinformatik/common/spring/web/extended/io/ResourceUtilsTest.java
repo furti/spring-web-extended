@@ -10,8 +10,6 @@ import java.util.Locale;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
-
 public class ResourceUtilsTest
 {
 
@@ -40,6 +38,14 @@ public class ResourceUtilsTest
 		assertThat(actual, equalTo(expected));
 	}
 
+	@Test(dataProvider = "localeFromNameData")
+	public void getLocaleFromName(String nameWithoutEnding, String expected)
+	{
+		String actual = ResourceUtils.getLocaleFromName(nameWithoutEnding);
+
+		assertThat(actual, equalTo(expected));
+	}
+
 	@DataProvider
 	public Object[][] localizedResourcesData()
 	{
@@ -51,10 +57,7 @@ public class ResourceUtilsTest
 				{ "index.html", new Locale("de"),
 						Arrays.asList("index_de.html", "index.html") },
 				{ "index", new Locale("de", "AT"),
-						Arrays.asList("index_de_at", "index_de", "index") },
-				{ "index", new Locale("de", "AT", "ABC"),
-						Arrays.asList("index_de_at_abc", "index_de_at",
-								"index_de", "index") }
+						Arrays.asList("index_de-at", "index_de", "index") }
 		};
 	}
 
@@ -67,6 +70,19 @@ public class ResourceUtilsTest
 				{ "test", new String[] { "", "test" } },
 				{ "/test", new String[] { "/", "test" } },
 				{ "/abc/de/test", new String[] { "/abc/de/", "test" } }
+		};
+	}
+
+	@DataProvider
+	public Object[][] localeFromNameData()
+	{
+		return new Object[][] {
+				{ null, null },
+				{ "", null },
+				{ "test", null },
+				{ "test-de", null },
+				{ "test_de", "de" },
+				{ "test_de-AT", "de-AT" }
 		};
 	}
 

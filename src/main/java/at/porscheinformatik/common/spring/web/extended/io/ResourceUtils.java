@@ -35,20 +35,19 @@ public final class ResourceUtils
 		List<String> names = new ArrayList<>();
 
 		String full = localize(resource, locale.getLanguage(),
-				locale.getCountry(), locale.getVariant());
+				locale.getCountry());
 
 		names.add(full);
 
 		String languageCountry = localize(resource, locale.getLanguage(),
-				locale.getCountry(), null);
+				locale.getCountry());
 
 		if (!names.contains(languageCountry))
 		{
 			names.add(languageCountry);
 		}
 
-		String language = localize(resource, locale.getLanguage(), null,
-				null);
+		String language = localize(resource, locale.getLanguage(), null);
 
 		if (!names.contains(language))
 		{
@@ -64,8 +63,7 @@ public final class ResourceUtils
 	}
 
 	private static String localize(String baseName, String language,
-			String country,
-			String variant)
+			String country)
 	{
 		String[] nameAndEnding = getNameAndEnding(baseName);
 		StringBuilder localized = new StringBuilder(nameAndEnding[0]);
@@ -77,12 +75,7 @@ public final class ResourceUtils
 
 		if (StringUtils.hasText(country))
 		{
-			localized.append("_").append(country.toLowerCase());
-		}
-
-		if (StringUtils.hasText(variant))
-		{
-			localized.append("_").append(variant.toLowerCase());
+			localized.append("-").append(country.toLowerCase());
 		}
 
 		if (nameAndEnding[1] != null)
@@ -159,7 +152,7 @@ public final class ResourceUtils
 			return null;
 		}
 
-		return fileName.substring(0, index);
+		return fileName.substring(index + 1);
 	}
 
 	public static String unlocalize(String resource)

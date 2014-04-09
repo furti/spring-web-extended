@@ -61,6 +61,11 @@ public class ChunkTemplateFactory implements TemplateFactory
 	{
 		theme = new Theme();
 
+		if (expressionHandlers == null)
+		{
+			return;
+		}
+
 		Collection<String> expressionHandlerNames = expressionHandlers
 				.getHandlerNames();
 

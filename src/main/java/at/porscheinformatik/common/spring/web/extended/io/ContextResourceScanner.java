@@ -87,7 +87,7 @@ public class ContextResourceScanner implements ServletContextAware,
 						 */
 						if (filename.length() > baselength)
 						{
-							return filename.charAt(nameAndEnding[1].length()) == '_';
+							return filename.charAt(nameAndEnding[0].length()) == '_';
 						}
 
 						return true;

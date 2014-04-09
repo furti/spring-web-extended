@@ -36,7 +36,7 @@ public class DefaultLinkCreator implements LinkCreator
 
 		prefix(url);
 
-		if (url.length() > 0 && url.charAt(url.length() - 1) != '/')
+		if (url.length() == 0 || url.charAt(url.length() - 1) != '/')
 		{
 			url.append("/");
 		}

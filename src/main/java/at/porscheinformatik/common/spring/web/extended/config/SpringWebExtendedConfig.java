@@ -1,17 +1,10 @@
 /**
- * Copyright 2014 Daniel Furtlehner
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2014 Daniel Furtlehner Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package at.porscheinformatik.common.spring.web.extended.config;
 
@@ -37,7 +30,7 @@ import at.porscheinformatik.common.spring.web.extended.io.LocalizedResourceLoade
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleContextHolderBackedLocaleContext;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleHandlerInterceptor;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleSource;
-import at.porscheinformatik.common.spring.web.extended.servlet.ResponseContextHandlerInterceptor;
+import at.porscheinformatik.common.spring.web.extended.servlet.RequestResponseContextHandlerInterceptor;
 import at.porscheinformatik.common.spring.web.extended.template.cache.DefaultStackConfig;
 import at.porscheinformatik.common.spring.web.extended.template.cache.StackConfig;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlStacks;
@@ -48,158 +41,161 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Optimiz
 @Configuration
 @EnableScheduling
 @EnableWebMvc
-@Import(value = { SpringWebExtendedConfigurerConfig.class,
-		ResourceScannerConfig.class, ExpressionHandlerConfig.class })
+@Import(value = {SpringWebExtendedConfigurerConfig.class,
+    ResourceScannerConfig.class, ExpressionHandlerConfig.class})
 // TODO: maybe we should add a handlerinterceptor that adds no-cache headers
 // for json responses. Spring security adds this headers by default. So we can
 // skip this i think
 public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
-		SchedulingConfigurer
+    SchedulingConfigurer
 {
-	@Autowired
-	private SpringWebExtendedConfigurerConfig configurerConfig;
+    @Autowired
+    private SpringWebExtendedConfigurerConfig configurerConfig;
 
-	@Autowired
-	private ResourceScannerConfig scannerConfig;
+    @Autowired
+    private ResourceScannerConfig scannerConfig;
 
-	@Bean
-	public MessageSource messageSource()
-	{
-		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+    @Bean
+    public MessageSource messageSource()
+    {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 
-		configurerConfig.configureMessageSource(messageSource);
+        configurerConfig.configureMessageSource(messageSource);
 
-		return messageSource;
-	}
+        return messageSource;
+    }
 
-	@Bean
-	public LocaleContext localeContext()
-	{
-		return new LocaleContextHolderBackedLocaleContext();
-	}
+    @Bean
+    public LocaleContext localeContext()
+    {
+        return new LocaleContextHolderBackedLocaleContext();
+    }
 
-	@Bean
-	public LocalizedResourceLoader localizedResourceLoader()
-	{
-		return new LocalizedResourceLoaderImpl();
-	}
+    @Bean
+    public LocalizedResourceLoader localizedResourceLoader()
+    {
+        return new LocalizedResourceLoaderImpl();
+    }
 
-	@Bean
-	public StyleStacks styleStacks()
-	{
-		DefaultStackConfig config = configurerConfig.getStyleConfig();
+    @Bean
+    public StyleStacks styleStacks()
+    {
+        DefaultStackConfig config = configurerConfig.getStyleConfig();
 
-		StyleStacks styleStacks = new StyleStacks(config);
-		styleStacks.setAppConfig(configurerConfig.appConfig());
-		styleStacks.setOptimizerChain(optimizerChain());
-		styleStacks.setScanners(scannerConfig.resourceScanners());
-		return styleStacks;
-	}
+        StyleStacks styleStacks = new StyleStacks(config);
+        styleStacks.setAppConfig(configurerConfig.appConfig());
+        styleStacks.setOptimizerChain(optimizerChain());
+        styleStacks.setScanners(scannerConfig.resourceScanners());
+        return styleStacks;
+    }
 
-	@Bean
-	public ScriptStacks scriptStacks()
-	{
-		DefaultStackConfig config = configurerConfig.getScriptConfig();
-		ScriptStacks scriptStacks = new ScriptStacks(config);
-		scriptStacks.setAppConfig(configurerConfig.appConfig());
-		scriptStacks.setOptimizerChain(optimizerChain());
-		scriptStacks.setScanners(scannerConfig.resourceScanners());
-		return scriptStacks;
-	}
+    @Bean
+    public ScriptStacks scriptStacks()
+    {
+        DefaultStackConfig config = configurerConfig.getScriptConfig();
+        ScriptStacks scriptStacks = new ScriptStacks(config);
+        scriptStacks.setAppConfig(configurerConfig.appConfig());
+        scriptStacks.setOptimizerChain(optimizerChain());
+        scriptStacks.setScanners(scannerConfig.resourceScanners());
+        return scriptStacks;
+    }
 
-	@Bean
-	public HtmlStacks htmlStacks()
-	{
-		DefaultStackConfig config = configurerConfig.getHtmlConfig();
+    @Bean
+    public HtmlStacks htmlStacks()
+    {
+        DefaultStackConfig config = configurerConfig.getHtmlConfig();
 
-		HtmlStacks htmlStacks = new HtmlStacks(config);
-		htmlStacks.setAppConfig(configurerConfig.appConfig());
-		htmlStacks.setOptimizerChain(optimizerChain());
-		htmlStacks.setScanners(scannerConfig.resourceScanners());
-		return htmlStacks;
-	}
+        HtmlStacks htmlStacks = new HtmlStacks(config);
+        htmlStacks.setAppConfig(configurerConfig.appConfig());
+        htmlStacks.setOptimizerChain(optimizerChain());
+        htmlStacks.setScanners(scannerConfig.resourceScanners());
+        return htmlStacks;
+    }
 
-	@Bean
-	public OptimizerChain optimizerChain()
-	{
-		return new OptimizerChain(configurerConfig.getOptimizerConfig());
-	}
+    @Bean
+    public OptimizerChain optimizerChain()
+    {
+        return new OptimizerChain(configurerConfig.getOptimizerConfig());
+    }
 
-	@Override
-	public void configureTasks(ScheduledTaskRegistrar taskRegistrar)
-	{
-		StackConfig htmlConfig = configurerConfig.getHtmlConfig();
-		final HtmlStacks htmlStacks = htmlStacks();
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar)
+    {
+        StackConfig htmlConfig = configurerConfig.getHtmlConfig();
+        final HtmlStacks htmlStacks = htmlStacks();
 
-		if (htmlConfig.getRefreshIntervall() > 0
-				&& htmlStacks != null)
-		{
-			taskRegistrar.addFixedDelayTask(
-					new Runnable() {
+        if (htmlConfig.getRefreshIntervall() > 0
+            && htmlStacks != null)
+        {
+            taskRegistrar.addFixedDelayTask(
+                new Runnable()
+                {
 
-						@Override
-						public void run()
-						{
-							htmlStacks.refresh();
-						}
-					},
-					htmlConfig.getRefreshIntervall() * 1000);
-		}
+                    @Override
+                    public void run()
+                    {
+                        htmlStacks.refresh();
+                    }
+                },
+                htmlConfig.getRefreshIntervall() * 1000);
+        }
 
-		StackConfig styleConfig = configurerConfig.getStyleConfig();
-		final StyleStacks styles = styleStacks();
+        StackConfig styleConfig = configurerConfig.getStyleConfig();
+        final StyleStacks styles = styleStacks();
 
-		if (styleConfig.getRefreshIntervall() > 0
-				&& styles != null)
-		{
+        if (styleConfig.getRefreshIntervall() > 0
+            && styles != null)
+        {
 
-			taskRegistrar.addFixedDelayTask(
-					new Runnable() {
+            taskRegistrar.addFixedDelayTask(
+                new Runnable()
+                {
 
-						@Override
-						public void run()
-						{
-							styles.refresh();
-						}
-					},
-					styleConfig.getRefreshIntervall() * 1000);
-		}
+                    @Override
+                    public void run()
+                    {
+                        styles.refresh();
+                    }
+                },
+                styleConfig.getRefreshIntervall() * 1000);
+        }
 
-		StackConfig scriptConfig = configurerConfig.getScriptConfig();
-		final ScriptStacks scripts = scriptStacks();
+        StackConfig scriptConfig = configurerConfig.getScriptConfig();
+        final ScriptStacks scripts = scriptStacks();
 
-		if (scriptConfig.getRefreshIntervall() > 0
-				&& scripts != null)
-		{
+        if (scriptConfig.getRefreshIntervall() > 0
+            && scripts != null)
+        {
 
-			taskRegistrar.addFixedDelayTask(
-					new Runnable() {
+            taskRegistrar.addFixedDelayTask(
+                new Runnable()
+                {
 
-						@Override
-						public void run()
-						{
-							scripts.refresh();
-						}
-					},
-					scriptConfig.getRefreshIntervall() * 1000);
-		}
-	}
+                    @Override
+                    public void run()
+                    {
+                        scripts.refresh();
+                    }
+                },
+                scriptConfig.getRefreshIntervall() * 1000);
+        }
+    }
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry)
-	{
-		registry.addInterceptor(new ResponseContextHandlerInterceptor());
+    @Override
+    public void addInterceptors(InterceptorRegistry registry)
+    {
+        registry.addInterceptor(new RequestResponseContextHandlerInterceptor());
 
-		List<LocaleSource> sources = configurerConfig.getLocaleSources();
+        List<LocaleSource> sources = configurerConfig.getLocaleSources();
 
-		if (!CollectionUtils.isEmpty(sources))
-		{
-			LocaleHandlerInterceptor interceptor = new LocaleHandlerInterceptor(
-					sources);
-			interceptor.setAvailableLocales(
-					configurerConfig.appConfig().getSupportedLocales());
+        if (!CollectionUtils.isEmpty(sources))
+        {
+            LocaleHandlerInterceptor interceptor = new LocaleHandlerInterceptor(
+                sources);
+            interceptor.setAvailableLocales(
+                configurerConfig.appConfig().getSupportedLocales());
 
-			registry.addInterceptor(interceptor);
-		}
-	}
+            registry.addInterceptor(interceptor);
+        }
+    }
 }

@@ -37,9 +37,10 @@ public class ChunkTemplate extends BaseTemplate
 	private String templateContent;
 
 	public ChunkTemplate(ResourceType type, String templateName,
+			String location,
 			boolean alreadyOptimized, Resource resource, Theme theme)
 	{
-		super(type, templateName, alreadyOptimized);
+		super(type, templateName, alreadyOptimized, location);
 		this.resource = resource;
 		this.theme = theme;
 	}

@@ -16,6 +16,8 @@
 package at.porscheinformatik.common.spring.web.extended.template.cache;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,9 +33,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
+import at.porscheinformatik.common.spring.web.extended.http.LinkCreator;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanners;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
+import at.porscheinformatik.common.spring.web.extended.template.CssAssetUrlProcessor;
 import at.porscheinformatik.common.spring.web.extended.template.DefaultTemplateRenderContext;
 import at.porscheinformatik.common.spring.web.extended.template.StringTemplate;
 import at.porscheinformatik.common.spring.web.extended.template.Template;
@@ -54,6 +58,7 @@ public abstract class AbstractTemplateCache
 
 	private LinkedHashMap<String, Template> templates = new LinkedHashMap<>();
 	private LinkedHashMap<String, Template> optimizedTemplates = new LinkedHashMap<>();
+	private CssAssetUrlProcessor urlRewritingProcessor;
 	protected ResourceScanners scanners;
 	private ApplicationConfiguration appConfig;
 	private OptimizerChain optimizerChain;
@@ -142,6 +147,11 @@ public abstract class AbstractTemplateCache
 
 			String result = template.render();
 
+			if (template.getType() == ResourceType.STYLE)
+			{
+				result = prepareRelativeUrls(result, template);
+			}
+
 			TemplateRenderContextHolder.removeCurrentContext();
 
 			if (optimizerChain != null
@@ -163,6 +173,24 @@ public abstract class AbstractTemplateCache
 			throw new RuntimeException("Error rendering template "
 					+ template.getName(), ex);
 		}
+	}
+
+	private String prepareRelativeUrls(String result, Template template)
+			throws IOException
+	{
+		if (result == null)
+		{
+			return null;
+		}
+
+		ro.isdc.wro.model.resource.Resource resource = new ro.isdc.wro.model.resource.Resource();
+		resource.setUri(template.getLocation());
+
+		StringWriter writer = new StringWriter();
+		urlRewritingProcessor.process(resource, new StringReader(result), writer);
+
+		return writer.toString();
+
 	}
 
 	private void addToCache(DefaultTemplateRenderContext context,
@@ -257,7 +285,7 @@ public abstract class AbstractTemplateCache
 		return templates;
 	}
 
-	protected void addTemplate(String name, Resource resource,
+	protected void addTemplate(String name, String location, Resource resource,
 			ResourceType type, boolean optimizedResource, boolean skipProcessing)
 			throws IOException
 	{
@@ -270,13 +298,12 @@ public abstract class AbstractTemplateCache
 		if (skipProcessing)
 		{
 			template = new StringTemplate(type, templateName,
-					optimizedResource, resource);
+					optimizedResource, resource, location);
 		}
 		else
 		{
 			template = templateFactory.createTemplate(resource,
-					templateName, type,
-					optimizedResource);
+					templateName, location, type, optimizedResource);
 		}
 
 		if (optimizedResource)
@@ -352,6 +379,11 @@ public abstract class AbstractTemplateCache
 	public void setTemplateFactory(TemplateFactory templateFactory)
 	{
 		this.templateFactory = templateFactory;
+	}
+
+	public void setLinkCreator(LinkCreator linkCreator)
+	{
+		urlRewritingProcessor = new CssAssetUrlProcessor(linkCreator);
 	}
 
 	/**

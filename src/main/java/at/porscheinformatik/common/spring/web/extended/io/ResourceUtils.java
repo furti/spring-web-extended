@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.util.StringUtils;
 
 public final class ResourceUtils
 {
+	private static final Pattern RELATIVE = Pattern.compile("^(\\.\\./)*(.*)$");
 
 	private ResourceUtils()
 	{
@@ -181,5 +184,38 @@ public final class ResourceUtils
 		}
 
 		return builder.toString();
+	}
+
+	public static String normalize(String base, String relativeUrl)
+	{
+		if (StringUtils.isEmpty(base)
+				|| StringUtils.isEmpty(relativeUrl))
+		{
+			return null;
+		}
+
+		Matcher m = RELATIVE.matcher(relativeUrl);
+
+		if (!m.matches())
+		{
+			return relativeUrl;
+		}
+
+		int upCount = m.end(1) / 3;
+		String path = m.group(2);
+		String basePath = base;
+
+		// Strip the file portion if present
+		if (basePath.indexOf('.', basePath.lastIndexOf("/")) > -1)
+		{
+			upCount++;
+		}
+
+		for (int i = 0; i < upCount; i++)
+		{
+			basePath = basePath.substring(0, basePath.lastIndexOf("/"));
+		}
+
+		return basePath + "/" + path;
 	}
 }

@@ -46,6 +46,14 @@ public class ResourceUtilsTest
 		assertThat(actual, equalTo(expected));
 	}
 
+	@Test(dataProvider = "normalizeData")
+	public void normalize(String base, String realtive, String expected)
+	{
+		String actual = ResourceUtils.normalize(base, realtive);
+
+		assertThat(actual, equalTo(expected));
+	}
+
 	@DataProvider
 	public Object[][] localizedResourcesData()
 	{
@@ -94,4 +102,17 @@ public class ResourceUtilsTest
 				{ "test.jpg", new String[] { "test", ".jpg" } }
 		};
 	}
+
+	@DataProvider
+	public Object[][] normalizeData()
+	{
+		return new Object[][] {
+				{ null, null, null },
+				{ "", "", null },
+				{ "test", null, null },
+				{ "webjar:test/*/css/test.css", "../fonts/font.ff",
+						"webjar:test/*/fonts/font.ff" }
+		};
+	}
+
 }

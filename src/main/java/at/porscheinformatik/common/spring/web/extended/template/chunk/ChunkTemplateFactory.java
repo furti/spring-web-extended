@@ -39,11 +39,13 @@ public class ChunkTemplateFactory implements TemplateFactory
 
 	@Override
 	public Template createTemplate(Resource resource, String templateName,
+			String location,
 			ResourceType type, boolean optimized)
 	{
 		try
 		{
 			ChunkTemplate template = new ChunkTemplate(type, templateName,
+					location,
 					optimized, resource, theme);
 			template.refresh();
 

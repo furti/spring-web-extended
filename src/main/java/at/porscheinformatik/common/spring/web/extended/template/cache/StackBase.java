@@ -59,7 +59,8 @@ public abstract class StackBase extends AbstractTemplateCache
 
 		for (Entry<String, Resource> entry : resources.entrySet())
 		{
-			addTemplate(entry.getKey().toLowerCase(), entry.getValue(),
+			addTemplate(entry.getKey().toLowerCase(), location,
+					entry.getValue(),
 					resourceType, false, skipProcessing);
 		}
 	}
@@ -115,7 +116,8 @@ public abstract class StackBase extends AbstractTemplateCache
 
 		for (Entry<String, Resource> entry : resources.entrySet())
 		{
-			addTemplate(prepareName(name, entry.getKey()), entry.getValue(),
+			addTemplate(prepareName(name, entry.getKey()), location,
+					entry.getValue(),
 					resourceType, optimizedResource, skipProcessing);
 		}
 	}

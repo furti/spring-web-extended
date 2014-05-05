@@ -23,6 +23,7 @@ public interface TemplateFactory
 {
 	Template createTemplate(Resource resource,
 			String templateName,
+			String location,
 			ResourceType type,
 			boolean optimized);
 }

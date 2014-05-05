@@ -33,17 +33,19 @@ public abstract class BaseTemplate implements Template
 
 	protected ResourceType type;
 	protected String templateName;
+	protected String location;
 	protected boolean alreadyOptimized;
 	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private ReadLock readLock = lock.readLock();
 	private WriteLock writeLock = lock.writeLock();
 
 	public BaseTemplate(ResourceType type, String templateName,
-			boolean alreadyOptimized)
+			boolean alreadyOptimized, String location)
 	{
 		this.type = type;
 		this.templateName = templateName;
 		this.alreadyOptimized = alreadyOptimized;
+		this.location = location;
 	}
 
 	public String render() throws IOException
@@ -118,5 +120,11 @@ public abstract class BaseTemplate implements Template
 	public String getName()
 	{
 		return templateName;
+	}
+
+	@Override
+	public String getLocation()
+	{
+		return location;
 	}
 }

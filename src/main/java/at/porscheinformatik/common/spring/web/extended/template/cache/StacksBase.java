@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import at.porscheinformatik.common.spring.web.extended.config.ApplicationConfiguration;
+import at.porscheinformatik.common.spring.web.extended.http.LinkCreator;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanners;
 import at.porscheinformatik.common.spring.web.extended.template.TemplateFactory;
 import at.porscheinformatik.common.spring.web.extended.template.cache.style.StyleStacks;
@@ -42,6 +43,7 @@ public abstract class StacksBase<T extends StackBase>
 	private ResourceScanners scanners;
 	private TemplateFactory templateFactory;
 	private OptimizerChain optimizerChain;
+	private LinkCreator linkCreator;
 
 	private DefaultStackConfig config;
 
@@ -85,6 +87,7 @@ public abstract class StacksBase<T extends StackBase>
 			stack.setScanners(scanners);
 			stack.setOptimizerChain(optimizerChain);
 			stack.setAppConfig(appConfig);
+			stack.setLinkCreator(linkCreator);
 
 			for (Entry<String, StackEntry> resourceEntry : entry.getValue()
 					.entrySet())
@@ -137,5 +140,11 @@ public abstract class StacksBase<T extends StackBase>
 	public void setTemplateFactory(TemplateFactory templateFactory)
 	{
 		this.templateFactory = templateFactory;
+	}
+
+	@Autowired
+	public void setLinkCreator(LinkCreator linkCreator)
+	{
+		this.linkCreator = linkCreator;
 	}
 }

@@ -47,11 +47,12 @@ public class VelocityTemplateFactory implements TemplateFactory
 	 */
 	@Override
 	public Template createTemplate(Resource resource, String templateName,
+			String location,
 			ResourceType type, boolean optimized)
 	{
 		try
 		{
-			return new VelocityTemplate(resource, type, templateName,
+			return new VelocityTemplate(resource, type, templateName, location,
 					optimized,
 					engine,
 					expressionHandlers);

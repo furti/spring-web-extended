@@ -16,9 +16,10 @@ public class StringTemplate extends BaseTemplate
 	private String content;
 
 	public StringTemplate(ResourceType type, String templateName,
-			boolean alreadyOptimized, Resource resource) throws IOException
+			boolean alreadyOptimized, Resource resource, String location)
+			throws IOException
 	{
-		super(type, templateName, alreadyOptimized);
+		super(type, templateName, alreadyOptimized, location);
 		this.resource = resource;
 		doRefresh();
 	}

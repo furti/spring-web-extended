@@ -64,14 +64,11 @@ public class VelocityTemplateTest
 			ResourceType type,
 			String expected) throws Exception
 	{
-		Template t = factory.createTemplate(resource, templateName, type,
+		Template t = factory.createTemplate(resource, templateName,
+				resource.getDescription(), type,
 				false);
 
 		String actual = t.render();
-		System.out.println("ACTUAL:");
-		System.out.println(actual);
-		System.out.println("EXPECTED:");
-		System.out.println(expected);
 
 		Assert.assertThat(actual, CoreMatchers.equalTo(expected));
 	}
@@ -81,7 +78,8 @@ public class VelocityTemplateTest
 			ResourceType type,
 			String expected) throws Exception
 	{
-		Template t = factory.createTemplate(resource, templateName, type,
+		Template t = factory.createTemplate(resource, templateName,
+				resource.getDescription(), type,
 				false);
 
 		for (int i = 0; i < 1000; i++)

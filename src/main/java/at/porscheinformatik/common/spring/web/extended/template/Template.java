@@ -34,4 +34,6 @@ public interface Template
 	boolean isAlreadyOptimized();
 
 	String getName();
+
+	String getLocation();
 }

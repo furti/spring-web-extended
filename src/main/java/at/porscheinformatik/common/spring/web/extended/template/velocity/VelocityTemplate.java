@@ -38,11 +38,11 @@ public class VelocityTemplate extends BaseTemplate
 	private ExpressionHandlers expressionHandlers;
 
 	public VelocityTemplate(Resource resource, ResourceType type,
-			String templateName,
+			String templateName, String location,
 			boolean alreadyOptimized, VelocityEngine engine,
 			ExpressionHandlers expressionHandlers) throws IOException
 	{
-		super(type, templateName, alreadyOptimized);
+		super(type, templateName, alreadyOptimized, location);
 		this.engine = engine;
 		this.resource = resource;
 		this.expressionHandlers = expressionHandlers;

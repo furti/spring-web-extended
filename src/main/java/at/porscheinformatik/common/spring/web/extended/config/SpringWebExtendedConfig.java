@@ -59,6 +59,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
     public MessageSource messageSource()
     {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setFallbackToSystemLocale(false);
 
         configurerConfig.configureMessageSource(messageSource);
 

@@ -21,8 +21,8 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.StackBase;
 public class StyleStack extends StackBase
 {
 
-	public StyleStack(String stackName)
+	public StyleStack(String stackName, boolean noCaching)
 	{
-		super(ResourceType.STYLE, stackName);
+		super(ResourceType.STYLE, stackName, noCaching);
 	}
 }

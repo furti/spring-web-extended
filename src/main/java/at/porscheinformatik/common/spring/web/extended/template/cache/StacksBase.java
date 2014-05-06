@@ -82,7 +82,8 @@ public abstract class StacksBase<T extends StackBase>
 		for (Entry<String, LinkedHashMap<String, StackEntry>> entry : stackConfigs
 				.entrySet())
 		{
-			T stack = createNewInstance(entry.getKey());
+			T stack = createNewInstance(entry.getKey(),
+					config.isNoCaching(entry.getKey()));
 			stack.setTemplateFactory(templateFactory);
 			stack.setScanners(scanners);
 			stack.setOptimizerChain(optimizerChain);
@@ -100,7 +101,7 @@ public abstract class StacksBase<T extends StackBase>
 		}
 	}
 
-	protected abstract T createNewInstance(String stackName);
+	protected abstract T createNewInstance(String stackName, boolean noCaching);
 
 	public void refresh()
 	{

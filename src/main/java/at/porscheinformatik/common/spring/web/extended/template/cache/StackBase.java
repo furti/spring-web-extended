@@ -16,12 +16,15 @@ import at.porscheinformatik.common.spring.web.extended.util.SpringWebExtendedUti
 public abstract class StackBase extends AbstractTemplateCache
 {
 	private ResourceType resourceType;
+	private boolean noCaching;
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	public StackBase(ResourceType resourceType, String stackName)
+	public StackBase(ResourceType resourceType, String stackName,
+			boolean noCaching)
 	{
 		super(stackName);
 		this.resourceType = resourceType;
+		this.noCaching = noCaching;
 		setupLastRefresh();
 	}
 
@@ -151,6 +154,11 @@ public abstract class StackBase extends AbstractTemplateCache
 		}
 
 		return name.toString();
+	}
+
+	public boolean isNoCaching()
+	{
+		return noCaching;
 	}
 
 }

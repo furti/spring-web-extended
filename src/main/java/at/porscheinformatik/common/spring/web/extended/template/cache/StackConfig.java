@@ -108,6 +108,18 @@ public interface StackConfig
 
 	StackConfig removeFromStack(String stackName, String resourceName);
 
+	/**
+	 * Disables caching for a cache. No cache headers will be written for each
+	 * resource in the cache independent of the optimizer resource profile.
+	 * 
+	 * @param stackName
+	 *            - Name of the cache
+	 * @return config for further configurations
+	 */
+	StackConfig noCaching(String stackName);
+
+	boolean isNoCaching(String stackName);
+
 	boolean hasStack(String stackName);
 
 	List<String> getResourceNamesForStack(String stackName);

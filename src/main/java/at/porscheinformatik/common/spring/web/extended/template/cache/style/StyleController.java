@@ -52,7 +52,7 @@ public class StyleController extends ResourceControllerBase
 			throw new ResourceNotFoundException();
 		}
 
-		handleCaching(response);
+		handleCaching(response, stack.isNoCaching());
 
 		return stack.renderTemplate(styleName);
 	}
@@ -69,7 +69,7 @@ public class StyleController extends ResourceControllerBase
 
 		StyleStack stack = stacks.get(stackId);
 
-		handleCaching(response);
+		handleCaching(response, stack.isNoCaching());
 
 		// TODO: is it a good idea to combine all styles in the stack? IE css
 		// file size limit?

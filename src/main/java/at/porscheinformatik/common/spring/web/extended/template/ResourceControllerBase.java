@@ -31,9 +31,9 @@ public abstract class ResourceControllerBase
 
 	private ApplicationConfiguration appConfig;
 
-	protected void handleCaching(HttpServletResponse response)
+	protected void handleCaching(HttpServletResponse response, boolean noCaching)
 	{
-		if (appConfig.isOptimizeResources())
+		if (appConfig.isOptimizeResources() && !noCaching)
 		{
 			response.setHeader("Cache-Control", "public, max-age=31536000");
 			response.setHeader("Pragma", "cache");

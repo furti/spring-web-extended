@@ -53,7 +53,7 @@ public class ScriptController extends ResourceControllerBase
 			throw new ResourceNotFoundException();
 		}
 
-		handleCaching(response);
+		handleCaching(response, stack.isNoCaching());
 
 		return stack.renderTemplate(scriptName);
 	}
@@ -70,7 +70,7 @@ public class ScriptController extends ResourceControllerBase
 
 		ScriptStack stack = stacks.get(stackId);
 
-		handleCaching(response);
+		handleCaching(response, stack.isNoCaching());
 
 		return stack.renderAll();
 	}

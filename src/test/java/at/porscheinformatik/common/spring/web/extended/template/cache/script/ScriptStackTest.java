@@ -91,7 +91,7 @@ public class ScriptStackTest
 
 	private ScriptStack buildStack() throws IOException
 	{
-		ScriptStack stack = new ScriptStack("default");
+		ScriptStack stack = new ScriptStack("default", false);
 		stack.setScanners(buildScanners());
 		ChunkTemplateFactory templateFactory = new ChunkTemplateFactory();
 		templateFactory.buildTheme();

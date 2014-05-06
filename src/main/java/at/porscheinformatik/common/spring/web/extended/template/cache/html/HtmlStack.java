@@ -21,8 +21,8 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.StackBase;
 public class HtmlStack extends StackBase
 {
 
-	public HtmlStack(String stackName)
+	public HtmlStack(String stackName, boolean noCaching)
 	{
-		super(ResourceType.HTML, stackName);
+		super(ResourceType.HTML, stackName, noCaching);
 	}
 }

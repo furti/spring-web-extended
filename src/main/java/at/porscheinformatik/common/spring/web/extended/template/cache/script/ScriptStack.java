@@ -21,9 +21,9 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.StackBase;
 public class ScriptStack extends StackBase
 {
 
-	public ScriptStack(String stackName)
+	public ScriptStack(String stackName, boolean noCaching)
 	{
-		super(ResourceType.SCRIPT, stackName);
+		super(ResourceType.SCRIPT, stackName, noCaching);
 	}
 
 }

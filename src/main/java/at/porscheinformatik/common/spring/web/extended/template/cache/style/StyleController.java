@@ -1,17 +1,10 @@
 /**
- * Copyright 2014 Daniel Furtlehner
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2014 Daniel Furtlehner Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package at.porscheinformatik.common.spring.web.extended.template.cache.style;
 
@@ -31,54 +24,55 @@ import at.porscheinformatik.common.spring.web.extended.util.ResourceNotFoundExce
 @RequestMapping(value = "/**/style")
 public class StyleController extends ResourceControllerBase
 {
-	private StyleStacks stacks;
+    private StyleStacks stacks;
 
-	@RequestMapping(value = "/single/{stackId}/{styleName}", method = RequestMethod.GET, produces = "text/css")
-	@ResponseBody
-	public String handleStylesheet(
-			@PathVariable("stackId") String stackId,
-			@PathVariable("styleName") String styleName,
-			HttpServletResponse response)
-	{
-		if (stacks == null || !stacks.hasStack(stackId))
-		{
-			throw new ResourceNotFoundException();
-		}
+    @RequestMapping(value = "/single/{stackId}/{styleName}", method = RequestMethod.GET,
+        produces = "text/css; charset=UTF-8")
+    @ResponseBody
+    public String handleStylesheet(
+        @PathVariable("stackId") String stackId,
+        @PathVariable("styleName") String styleName,
+        HttpServletResponse response)
+    {
+        if (stacks == null || !stacks.hasStack(stackId))
+        {
+            throw new ResourceNotFoundException();
+        }
 
-		StyleStack stack = stacks.get(stackId);
+        StyleStack stack = stacks.get(stackId);
 
-		if (!stack.hasTemplate(styleName))
-		{
-			throw new ResourceNotFoundException();
-		}
+        if (!stack.hasTemplate(styleName))
+        {
+            throw new ResourceNotFoundException();
+        }
 
-		handleCaching(response, stack.isNoCaching());
+        handleCaching(response, stack.isNoCaching());
 
-		return stack.renderTemplate(styleName);
-	}
+        return stack.renderTemplate(styleName);
+    }
 
-	@RequestMapping(value = "/stack/{stackId}", method = RequestMethod.GET, produces = "text/css")
-	@ResponseBody
-	public String handleStack(@PathVariable("stackId") String stackId,
-			HttpServletResponse response)
-	{
-		if (stacks == null || !stacks.hasStack(stackId))
-		{
-			throw new ResourceNotFoundException();
-		}
+    @RequestMapping(value = "/stack/{stackId}", method = RequestMethod.GET, produces = "text/css; charset=UTF-8")
+    @ResponseBody
+    public String handleStack(@PathVariable("stackId") String stackId,
+        HttpServletResponse response)
+    {
+        if (stacks == null || !stacks.hasStack(stackId))
+        {
+            throw new ResourceNotFoundException();
+        }
 
-		StyleStack stack = stacks.get(stackId);
+        StyleStack stack = stacks.get(stackId);
 
-		handleCaching(response, stack.isNoCaching());
+        handleCaching(response, stack.isNoCaching());
 
-		// TODO: is it a good idea to combine all styles in the stack? IE css
-		// file size limit?
-		return stack.renderAll();
-	}
+        // TODO: is it a good idea to combine all styles in the stack? IE css
+        // file size limit?
+        return stack.renderAll();
+    }
 
-	@Autowired
-	public void setStacks(StyleStacks stacks)
-	{
-		this.stacks = stacks;
-	}
+    @Autowired
+    public void setStacks(StyleStacks stacks)
+    {
+        this.stacks = stacks;
+    }
 }

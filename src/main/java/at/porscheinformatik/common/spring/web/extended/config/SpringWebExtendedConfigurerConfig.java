@@ -1,17 +1,10 @@
 /**
- * Copyright 2014 Daniel Furtlehner
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2014 Daniel Furtlehner Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 package at.porscheinformatik.common.spring.web.extended.config;
 
@@ -46,201 +39,203 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Default
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerConfig;
 
 /**
- * Contains all the functionallity needed for handling the
- * {@link SpringWebExtendedConfigurer}s
+ * Contains all the functionallity needed for handling the {@link SpringWebExtendedConfigurer}s
  * 
  * @author Daniel Furtlehner
- * 
  */
 @Configuration
 public class SpringWebExtendedConfigurerConfig
 {
-	private static final Integer DEFAULT_REFRESH_INTERVALL = Integer.valueOf(5);
-	@Autowired
-	private Environment environment;
+    private static final Integer DEFAULT_REFRESH_INTERVALL = Integer.valueOf(5);
+    @Autowired
+    private Environment environment;
 
-	private DelegatingSpringWebExtendedConfiguerer configurer = new DelegatingSpringWebExtendedConfiguerer();
+    private DelegatingSpringWebExtendedConfiguerer configurer = new DelegatingSpringWebExtendedConfiguerer();
 
-	private DefaultStackConfig scriptConfig, styleConfig, htmlConfig;
-	private OptimizerConfig optimizerConfig;
-	private CdnConfig cdnConfig;
+    private DefaultStackConfig scriptConfig, styleConfig, htmlConfig;
+    private OptimizerConfig optimizerConfig;
+    private CdnConfig cdnConfig;
 
-	@Autowired(required = false)
-	public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
-	{
-		configurer.addConfigurers(configurers);
-	}
+    @Autowired(required = false)
+    public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
+    {
+        configurer.addConfigurers(configurers);
+    }
 
-	@Bean
-	public ApplicationConfiguration appConfig()
-	{
-		ApplicationConfiguration config = new DefaultApplicationConfiguration();
+    @Bean
+    public ApplicationConfiguration appConfig()
+    {
+        ApplicationConfiguration config = new DefaultApplicationConfiguration();
 
-		// Set the default optimize flag
-		config.setOptimizeResources(environment
-				.acceptsProfiles("optimizeresources"));
+        // Set the default optimize flag
+        config.setOptimizeResources(environment
+            .acceptsProfiles("optimizeresources"));
 
-		config.addLocale("en");
+        config.addLocale("en");
 
-		configurer.configureApplication(config);
+        configurer.configureApplication(config);
 
-		if (config.getVersion() == null)
-		{
-			byte[] bytes = new byte[15];
-			new Random().nextBytes(bytes);
+        if (config.getVersion() == null)
+        {
+            byte[] bytes = new byte[15];
+            new Random().nextBytes(bytes);
 
-			try
-			{
-				config.setVersion(Base64.encodeBytes(bytes, Base64.URL_SAFE));
-			} catch (IOException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
+            try
+            {
+                config.setVersion(Base64.encodeBytes(bytes, Base64.URL_SAFE));
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
 
-		return config;
-	}
+        return config;
+    }
 
-	@Bean
-	public LocaleSource requestUriLocaleSource()
-	{
-		return new RequestURILocaleSource();
-	}
+    @Bean
+    public LocaleSource requestUriLocaleSource()
+    {
+        return new RequestURILocaleSource();
+    }
 
-	public DefaultStackConfig getStyleConfig()
-	{
-		if (styleConfig == null)
-		{
-			ApplicationConfiguration appConfig = appConfig();
+    public DefaultStackConfig getStyleConfig()
+    {
+        if (styleConfig == null)
+        {
+            ApplicationConfiguration appConfig = appConfig();
 
-			styleConfig = new DefaultStackConfig();
-			// Default refresh intervall
-			styleConfig.setRefreshIntervall(
-					appConfig.isOptimizeResources()
-							? -1
-							: DEFAULT_REFRESH_INTERVALL);
+            styleConfig = new DefaultStackConfig();
+            // Default refresh intervall
+            styleConfig.setRefreshIntervall(
+                appConfig.isOptimizeResources()
+                    ? -1
+                    : DEFAULT_REFRESH_INTERVALL);
 
-			configurer.configureStyles(styleConfig);
-		}
+            configurer.configureStyles(styleConfig);
+        }
 
-		return styleConfig;
-	}
+        return styleConfig;
+    }
 
-	public DefaultStackConfig getHtmlConfig()
-	{
-		if (htmlConfig == null)
-		{
-			ApplicationConfiguration appConfig = appConfig();
+    public DefaultStackConfig getHtmlConfig()
+    {
+        if (htmlConfig == null)
+        {
+            ApplicationConfiguration appConfig = appConfig();
 
-			htmlConfig = new DefaultStackConfig();
-			htmlConfig.setRefreshIntervall(appConfig.isOptimizeResources()
-					? -1
-					: DEFAULT_REFRESH_INTERVALL);
+            htmlConfig = new DefaultStackConfig();
+            htmlConfig.setRefreshIntervall(appConfig.isOptimizeResources()
+                ? -1
+                : DEFAULT_REFRESH_INTERVALL);
 
-			htmlConfig.scanPath("", "templates");
+            htmlConfig.scanPath("", "templates");
 
-			configurer.configureHtmlTemplates(htmlConfig);
-		}
+            configurer.configureHtmlTemplates(htmlConfig);
+        }
 
-		return htmlConfig;
-	}
+        return htmlConfig;
+    }
 
-	public CdnConfig getCdnConfig()
-	{
-		if (cdnConfig == null)
-		{
-			cdnConfig = new DefaultCdnConfig();
+    public CdnConfig getCdnConfig()
+    {
+        if (cdnConfig == null)
+        {
+            cdnConfig = new DefaultCdnConfig();
 
-			configurer.configureCDN(cdnConfig);
-		}
+            configurer.configureCDN(cdnConfig);
+        }
 
-		return cdnConfig;
-	}
+        return cdnConfig;
+    }
 
-	public DefaultStackConfig getScriptConfig()
-	{
-		if (scriptConfig == null)
-		{
-			ApplicationConfiguration appConfig = appConfig();
+    public DefaultStackConfig getScriptConfig()
+    {
+        if (scriptConfig == null)
+        {
+            ApplicationConfiguration appConfig = appConfig();
 
-			scriptConfig = new DefaultStackConfig();
-			// Default refresh intervall
-			scriptConfig.setRefreshIntervall(appConfig.isOptimizeResources()
-					? -1
-					: DEFAULT_REFRESH_INTERVALL);
+            scriptConfig = new DefaultStackConfig();
+            // Default refresh intervall
+            scriptConfig.setRefreshIntervall(appConfig.isOptimizeResources()
+                ? -1
+                : DEFAULT_REFRESH_INTERVALL);
 
-			configurer.configureScripts(scriptConfig);
-		}
+            configurer.configureScripts(scriptConfig);
+        }
 
-		return scriptConfig;
-	}
+        return scriptConfig;
+    }
 
-	public OptimizerConfig getOptimizerConfig()
-	{
-		if (optimizerConfig == null)
-		{
+    public OptimizerConfig getOptimizerConfig()
+    {
+        if (optimizerConfig == null)
+        {
 
-			optimizerConfig = new DefaultOptimizerConfig();
+            optimizerConfig = new DefaultOptimizerConfig();
 
-			/*
-			 * We have to use the yuicompressor here because the others don't
-			 * recognize @media queries
-			 * https://code.google.com/p/wro4j/issues/detail?id=231
-			 */
-			optimizerConfig.addOptimizer(ResourceType.STYLE, "yuicss", new
-					YUICssCompressorProcessor());
-			optimizerConfig.addOptimizer(ResourceType.SCRIPT, "jsmin",
-					new JSMinProcessor());
+            /*
+             * We have to use the yuicompressor here because the others don't
+             * recognize @media queries
+             * https://code.google.com/p/wro4j/issues/detail?id=231
+             */
+            optimizerConfig.addOptimizer(ResourceType.STYLE, "yuicss", new
+                YUICssCompressorProcessor());
+            optimizerConfig.addOptimizer(ResourceType.SCRIPT, "jsmin",
+                new JSMinProcessor());
 
-			configurer.configureOptimizers(optimizerConfig);
-		}
+            configurer.configureOptimizers(optimizerConfig);
+        }
 
-		return optimizerConfig;
-	}
+        return optimizerConfig;
+    }
 
-	public void configureMessageSource(
-			ReloadableResourceBundleMessageSource messageSource)
-	{
-		ApplicationConfiguration appConfig = appConfig();
+    public void configureMessageSource(
+        ReloadableResourceBundleMessageSource messageSource)
+    {
+        ApplicationConfiguration appConfig = appConfig();
 
-		MessageSourceConfig config = new DefaultMessageSourceConfig();
-		config.addBaseName("WEB-INF/messages/Messages");
-		config.setCacheSeconds(
-				appConfig.isOptimizeResources()
-						? -1
-						: DEFAULT_REFRESH_INTERVALL);
+        MessageSourceConfig config = new DefaultMessageSourceConfig();
+        config.addBaseName("WEB-INF/messages/Messages");
+        config.setCacheSeconds(
+            appConfig.isOptimizeResources()
+                ? -1
+                : DEFAULT_REFRESH_INTERVALL);
+        config.setDefaultEncoding("UTF-8");
 
-		configurer.configureMessageSource(config);
+        configurer.configureMessageSource(config);
 
-		messageSource.setCacheSeconds(config.getCacheSeconds() != null
-				? config.getCacheSeconds()
-				: -1);
+        messageSource.setCacheSeconds(config.getCacheSeconds() != null
+            ? config.getCacheSeconds()
+            : -1);
 
-		if (!CollectionUtils.isEmpty(config.getBaseNames()))
-		{
-			messageSource.setBasenames(config.getBaseNames().toArray(
-					new String[config.getBaseNames().size()]));
-		}
-	}
+        if (!CollectionUtils.isEmpty(config.getBaseNames()))
+        {
+            messageSource.setBasenames(config.getBaseNames().toArray(
+                new String[config.getBaseNames().size()]));
+        }
 
-	public List<LocaleSource> getLocaleSources()
-	{
-		List<LocaleSource> sources = new ArrayList<>();
+        messageSource.setDefaultEncoding(config.getDefaultEncoding());
+    }
 
-		sources.add(requestUriLocaleSource());
-		configurer.configureLocaleSources(sources);
+    public List<LocaleSource> getLocaleSources()
+    {
+        List<LocaleSource> sources = new ArrayList<>();
 
-		return sources;
-	}
+        sources.add(requestUriLocaleSource());
+        configurer.configureLocaleSources(sources);
 
-	public void configureResourceScanners(Map<String, ResourceScanner> scanners)
-	{
-		configurer.configureResourceScanners(scanners);
-	}
+        return sources;
+    }
 
-	public void configureExpressionHandlers(
-			HashMap<String, ExpressionHandler> handlers)
-	{
-		configurer.configureExpressionHandlers(handlers);
-	}
+    public void configureResourceScanners(Map<String, ResourceScanner> scanners)
+    {
+        configurer.configureResourceScanners(scanners);
+    }
+
+    public void configureExpressionHandlers(
+        HashMap<String, ExpressionHandler> handlers)
+    {
+        configurer.configureExpressionHandlers(handlers);
+    }
 }

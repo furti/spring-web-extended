@@ -141,11 +141,6 @@ public abstract class AbstractTemplateCache
 
             String result = template.render();
 
-            if (template.getType() == ResourceType.STYLE)
-            {
-                result = prepareRelativeUrls(result, template);
-            }
-
             TemplateRenderContextHolder.removeCurrentContext();
 
             if (optimizerChain != null
@@ -154,6 +149,11 @@ public abstract class AbstractTemplateCache
             {
                 result = optimizerChain.optimize(template.getType(),
                     template.getName(), result);
+            }
+            
+            if (template.getType() == ResourceType.STYLE)
+            {
+                result = prepareRelativeUrls(result, template);
             }
 
             //If the template should not be cached we don't add it to the cache. sounds logical :)

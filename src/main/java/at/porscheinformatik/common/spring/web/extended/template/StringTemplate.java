@@ -1,9 +1,8 @@
 package at.porscheinformatik.common.spring.web.extended.template;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
-
-import jline.internal.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;

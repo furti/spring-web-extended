@@ -16,11 +16,10 @@
 package at.porscheinformatik.common.spring.web.extended.template.velocity;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Locale;
-
-import jline.internal.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.CoreMatchers;

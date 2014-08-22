@@ -16,10 +16,9 @@
 package at.porscheinformatik.common.spring.web.extended.template.chunk;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-
-import jline.internal.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;

@@ -13,7 +13,7 @@
 
 	<properties>
 		<parboiled.version>1.1.6</parboiled.version>
-		<spring.version>4.0.3.RELEASE</spring.version>
+		<spring.version>4.0.6.RELEASE</spring.version>
 		<testng.version>6.8.7</testng.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>ro.isdc.wro4j</groupId>
 			<artifactId>wro4j-extensions</artifactId>
-			<version>1.7.1</version>
+			<version>1.7.6</version>
 
 			<exclusions>
 				<exclusion>

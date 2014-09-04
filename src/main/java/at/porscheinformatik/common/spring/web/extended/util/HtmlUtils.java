@@ -38,6 +38,6 @@ public final class HtmlUtils
 	{
 		return "<link href=\""
 				+ (url != null ? url : "") + "\" "
-				+ "type=\"text/css\" rel=\"stylesheet\"></link>";
+				+ "type=\"text/css\" rel=\"stylesheet\">";
 	}
 }

@@ -46,16 +46,16 @@ public class HtmlUtilsTest
 		return new Object[][] {
 				{
 						null,
-						"<link href=\"\" type=\"text/css\" rel=\"stylesheet\"></link>" },
+						"<link href=\"\" type=\"text/css\" rel=\"stylesheet\">" },
 				{
 						"",
-						"<link href=\"\" type=\"text/css\" rel=\"stylesheet\"></link>" },
+						"<link href=\"\" type=\"text/css\" rel=\"stylesheet\">" },
 				{
 						"test",
-						"<link href=\"test\" type=\"text/css\" rel=\"stylesheet\"></link>" },
+						"<link href=\"test\" type=\"text/css\" rel=\"stylesheet\">" },
 				{
 						"test/test.css",
-						"<link href=\"test/test.css\" type=\"text/css\" rel=\"stylesheet\"></link>" }
+						"<link href=\"test/test.css\" type=\"text/css\" rel=\"stylesheet\">" }
 		};
 	}
 }

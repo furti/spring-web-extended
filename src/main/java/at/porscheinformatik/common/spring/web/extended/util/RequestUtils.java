@@ -8,28 +8,36 @@ import javax.servlet.http.HttpServletRequest;
 public final class RequestUtils
 {
 
-	private RequestUtils()
-	{
+    private static final Pattern SESSIONIDPATTERN = Pattern.compile(";jsessionid=[^/]*");
 
-	}
+    private RequestUtils()
+    {
 
-	public static final String getPathFromRegex(HttpServletRequest request,
-			Pattern pattern)
-	{
-		String path = request.getRequestURI();
+    }
 
-		if (path == null || pattern == null)
-		{
-			return null;
-		}
+    public static final String getPathFromRegex(HttpServletRequest request,
+        Pattern pattern)
+    {
+        String path = request.getRequestURI();
 
-		Matcher m = pattern.matcher(path);
+        if (path == null || pattern == null)
+        {
+            return null;
+        }
 
-		if (!m.matches() || m.groupCount() < 1)
-		{
-			return null;
-		}
+        //If the sessionId is encoded in the url strip it
+        if (request.isRequestedSessionIdFromURL())
+        {
+            path = SESSIONIDPATTERN.matcher(path).replaceFirst("");
+        }
 
-		return m.group(1);
-	}
+        Matcher m = pattern.matcher(path);
+
+        if (!m.matches() || m.groupCount() < 1)
+        {
+            return null;
+        }
+
+        return m.group(1);
+    }
 }

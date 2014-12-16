@@ -46,7 +46,12 @@ public class DefaultLinkCreator implements LinkCreator
 
         for (String part : parts)
         {
-            url.append("/").append(part);
+            if (!part.startsWith("/"))
+            {
+                url.append("/");
+            }
+
+            url.append(part);
         }
 
         suffix(url);

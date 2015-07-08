@@ -31,11 +31,11 @@ import at.porscheinformatik.common.spring.web.extended.io.ResourceScanners;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
 import at.porscheinformatik.common.spring.web.extended.template.CssAssetUrlProcessor;
-import at.porscheinformatik.common.spring.web.extended.template.DefaultTemplateRenderContext;
 import at.porscheinformatik.common.spring.web.extended.template.StringTemplate;
 import at.porscheinformatik.common.spring.web.extended.template.Template;
 import at.porscheinformatik.common.spring.web.extended.template.TemplateFactory;
 import at.porscheinformatik.common.spring.web.extended.template.TemplateRenderContext;
+import at.porscheinformatik.common.spring.web.extended.template.TemplateRenderContextFactory;
 import at.porscheinformatik.common.spring.web.extended.template.TemplateRenderContextHolder;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
 
@@ -46,6 +46,7 @@ public abstract class AbstractTemplateCache
 {
 
     private TemplateFactory templateFactory;
+    private TemplateRenderContextFactory templateRenderContextFactory;
     private String cacheName;
     private boolean noCaching;
 
@@ -122,11 +123,8 @@ public abstract class AbstractTemplateCache
 
         try
         {
-            // TODO: hier noch eine factory einführen
             // Set the rendercontext before rendering the template
-            DefaultTemplateRenderContext context = new DefaultTemplateRenderContext(
-                locale,
-                template.getType());
+            TemplateRenderContext context = templateRenderContextFactory.createContext(locale, template);
 
             // If the template was rendered and cached before we use the already
             // rendered one
@@ -150,7 +148,7 @@ public abstract class AbstractTemplateCache
                 result = optimizerChain.optimize(template.getType(),
                     template.getName(), result);
             }
-            
+
             if (template.getType() == ResourceType.STYLE)
             {
                 result = prepareRelativeUrls(result, template);
@@ -189,14 +187,14 @@ public abstract class AbstractTemplateCache
 
     }
 
-    private void addToCache(DefaultTemplateRenderContext context,
+    private void addToCache(TemplateRenderContext context,
         Template template, String content)
     {
         RenderCacheKey key = new RenderCacheKey(context, template.getName());
         renderCache.put(key, content);
     }
 
-    private String checkCache(DefaultTemplateRenderContext context,
+    private String checkCache(TemplateRenderContext context,
         Template template)
     {
         RenderCacheKey key = new RenderCacheKey(context, template.getName());
@@ -283,7 +281,7 @@ public abstract class AbstractTemplateCache
 
     protected void addTemplate(String name, String location, Resource resource,
         ResourceType type, boolean optimizedResource, boolean skipProcessing)
-        throws IOException
+            throws IOException
     {
         String templateName = cacheName + ":" + name;
 
@@ -380,6 +378,11 @@ public abstract class AbstractTemplateCache
     public void setLinkCreator(LinkCreator linkCreator)
     {
         urlRewritingProcessor = new CssAssetUrlProcessor(linkCreator);
+    }
+
+    public void setTemplateRenderContextFactory(TemplateRenderContextFactory templateRenderContextFactory)
+    {
+        this.templateRenderContextFactory = templateRenderContextFactory;
     }
 
     public boolean isNoCaching()

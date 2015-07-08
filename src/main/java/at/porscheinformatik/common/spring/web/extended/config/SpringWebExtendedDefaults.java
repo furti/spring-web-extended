@@ -8,7 +8,9 @@ import org.springframework.core.annotation.Order;
 import at.porscheinformatik.common.spring.web.extended.annotation.DefaultBean;
 import at.porscheinformatik.common.spring.web.extended.http.DefaultLinkCreator;
 import at.porscheinformatik.common.spring.web.extended.http.LinkCreator;
+import at.porscheinformatik.common.spring.web.extended.template.DefaultTemplateRenderContextFactory;
 import at.porscheinformatik.common.spring.web.extended.template.TemplateFactory;
+import at.porscheinformatik.common.spring.web.extended.template.TemplateRenderContextFactory;
 import at.porscheinformatik.common.spring.web.extended.template.chunk.ChunkTemplateFactory;
 
 @Configuration
@@ -16,17 +18,24 @@ import at.porscheinformatik.common.spring.web.extended.template.chunk.ChunkTempl
 public class SpringWebExtendedDefaults
 {
 
-	@Bean
-	@DefaultBean(TemplateFactory.class)
-	public TemplateFactory defaultTemplateFactory()
-	{
-		return new ChunkTemplateFactory();
-	}
+    @Bean
+    @DefaultBean(TemplateFactory.class)
+    public TemplateFactory defaultTemplateFactory()
+    {
+        return new ChunkTemplateFactory();
+    }
 
-	@Bean
-	@DefaultBean(LinkCreator.class)
-	public LinkCreator defaultLinkCreator()
-	{
-		return new DefaultLinkCreator();
-	}
+    @Bean
+    @DefaultBean(LinkCreator.class)
+    public LinkCreator defaultLinkCreator()
+    {
+        return new DefaultLinkCreator();
+    }
+
+    @Bean
+    @DefaultBean(TemplateRenderContextFactory.class)
+    public TemplateRenderContextFactory defaultTemplateRenderContextFactory()
+    {
+        return new DefaultTemplateRenderContextFactory();
+    }
 }

@@ -22,9 +22,6 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
 
-import ro.isdc.wro.extensions.processor.css.YUICssCompressorProcessor;
-import ro.isdc.wro.model.resource.processor.impl.js.JSMinProcessor;
-import ro.isdc.wro.util.Base64;
 import at.porscheinformatik.common.spring.web.extended.asset.CdnConfig;
 import at.porscheinformatik.common.spring.web.extended.asset.DefaultCdnConfig;
 import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHandler;
@@ -37,6 +34,9 @@ import at.porscheinformatik.common.spring.web.extended.messagesource.MessageSour
 import at.porscheinformatik.common.spring.web.extended.template.cache.DefaultStackConfig;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.DefaultOptimizerConfig;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerConfig;
+import ro.isdc.wro.extensions.processor.css.YUICssCompressorProcessor;
+import ro.isdc.wro.model.resource.processor.impl.js.JSMinProcessor;
+import ro.isdc.wro.util.Base64;
 
 /**
  * Contains all the functionallity needed for handling the {@link SpringWebExtendedConfigurer}s
@@ -47,6 +47,7 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Optimiz
 public class SpringWebExtendedConfigurerConfig
 {
     private static final Integer DEFAULT_REFRESH_INTERVALL = Integer.valueOf(5);
+
     @Autowired
     private Environment environment;
 
@@ -62,10 +63,9 @@ public class SpringWebExtendedConfigurerConfig
         configurer.addConfigurers(configurers);
     }
 
-    @Bean
-    public ApplicationConfiguration appConfig()
+    public DefaultApplicationConfiguration appConfig()
     {
-        ApplicationConfiguration config = new DefaultApplicationConfiguration();
+        DefaultApplicationConfiguration config = new DefaultApplicationConfiguration();
 
         // Set the default optimize flag
         config.setOptimizeResources(environment
@@ -179,8 +179,7 @@ public class SpringWebExtendedConfigurerConfig
              * recognize @media queries
              * https://code.google.com/p/wro4j/issues/detail?id=231
              */
-            optimizerConfig.addOptimizer(ResourceType.STYLE, "yuicss", new
-                YUICssCompressorProcessor());
+            optimizerConfig.addOptimizer(ResourceType.STYLE, "yuicss", new YUICssCompressorProcessor());
             optimizerConfig.addOptimizer(ResourceType.SCRIPT, "jsmin",
                 new JSMinProcessor());
 

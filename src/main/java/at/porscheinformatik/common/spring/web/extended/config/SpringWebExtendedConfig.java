@@ -8,7 +8,10 @@
  */
 package at.porscheinformatik.common.spring.web.extended.config;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -17,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
@@ -27,6 +31,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import at.porscheinformatik.common.spring.web.extended.io.LocalizedResourceLoader;
 import at.porscheinformatik.common.spring.web.extended.io.LocalizedResourceLoaderImpl;
+import at.porscheinformatik.common.spring.web.extended.io.ResourceScanners;
+import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleContextHolderBackedLocaleContext;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleHandlerInterceptor;
 import at.porscheinformatik.common.spring.web.extended.locale.LocaleSource;
@@ -41,8 +47,7 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Optimiz
 @Configuration
 @EnableScheduling
 @EnableWebMvc
-@Import(value = {SpringWebExtendedConfigurerConfig.class,
-    ResourceScannerConfig.class, ExpressionHandlerConfig.class})
+@Import(value = {ResourceScannerConfig.class, ExpressionHandlerConfig.class, SpringWebExtendedConfigurerConfig.class})
 // TODO: maybe we should add a handlerinterceptor that adds no-cache headers
 // for json responses. Spring security adds this headers by default. So we can
 // skip this i think
@@ -76,6 +81,14 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
     public LocalizedResourceLoader localizedResourceLoader()
     {
         return new LocalizedResourceLoaderImpl();
+    }
+
+    @Bean
+    public ApplicationConfiguration appConfig() throws IOException
+    {
+        DefaultApplicationConfiguration appConfig = configurerConfig.appConfig();
+        setupScannedLocales(appConfig);
+        return appConfig;
     }
 
     @Bean
@@ -197,6 +210,60 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
                 configurerConfig.appConfig().getSupportedLocales());
 
             registry.addInterceptor(interceptor);
+        }
+    }
+
+    private void setupScannedLocales(DefaultApplicationConfiguration appConfig) throws IOException
+    {
+        if (appConfig.getMessagesToScan().isEmpty())
+        {
+            return;
+        }
+
+        //We scan the messages directory for all locales that are translated.
+        ResourceScanners resourceScanners = scannerConfig.resourceScanners();
+
+        for (String path : appConfig.getMessagesToScan())
+        {
+
+            Map<String, Resource> messages = resourceScanners.scanResources(path);
+
+            if (messages == null || messages.isEmpty())
+            {
+                throw new RuntimeException("No Messages found for supported locales");
+            }
+            else
+            {
+                for (String messageName : messages.keySet())
+                {
+                    String localeString =
+                        ResourceUtils.getLocaleFromName(ResourceUtils.getNameAndEnding(messageName)[0]);
+
+                    if (localeString != null)
+                    {
+                        String[] localeParts = localeString.split("_");
+                        Locale locale = null;
+
+                        if (localeParts.length == 3)
+                        {
+                            locale = new Locale(localeParts[0], localeParts[1], localeParts[2]);
+                        }
+                        else if (localeParts.length == 2)
+                        {
+                            locale = new Locale(localeParts[0], localeParts[1]);
+                        }
+                        else
+                        {
+                            locale = new Locale(localeParts[0]);
+                        }
+
+                        if (locale != null && !appConfig.getRawSupportedLocales().contains(locale))
+                        {
+                            appConfig.getRawSupportedLocales().add(locale);
+                        }
+                    }
+                }
+            }
         }
     }
 }

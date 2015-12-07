@@ -21,91 +21,109 @@ import java.util.List;
 import java.util.Locale;
 
 public class DefaultApplicationConfiguration implements
-		ApplicationConfiguration
+    ApplicationConfiguration
 {
-	private String version;
-	private boolean optimizeResources;
-	private List<Locale> supportedLocales = new ArrayList<>();
+    private String version;
+    private boolean optimizeResources;
+    private List<Locale> supportedLocales = new ArrayList<>();
+    private List<String> messagesToScan = new ArrayList<>();
 
-	@Override
-	public String getVersion()
-	{
-		return version;
-	}
+    @Override
+    public String getVersion()
+    {
+        return version;
+    }
 
-	@Override
-	public boolean isOptimizeResources()
-	{
-		return optimizeResources;
-	}
+    @Override
+    public boolean isOptimizeResources()
+    {
+        return optimizeResources;
+    }
 
-	@Override
-	public ApplicationConfiguration setOptimizeResources(
-			boolean optimizeResources)
-	{
-		this.optimizeResources = optimizeResources;
+    @Override
+    public ApplicationConfiguration setOptimizeResources(
+        boolean optimizeResources)
+    {
+        this.optimizeResources = optimizeResources;
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public ApplicationConfiguration setVersion(String version)
-	{
-		this.version = version;
+    @Override
+    public ApplicationConfiguration setVersion(String version)
+    {
+        this.version = version;
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public ApplicationConfiguration addLocale(String language)
-	{
+    @Override
+    public ApplicationConfiguration addLocale(String language)
+    {
 
-		return addLocale(language, "", "");
-	}
+        return addLocale(language, "", "");
+    }
 
-	@Override
-	public ApplicationConfiguration addLocale(String language, String country)
-	{
-		return addLocale(language, country, "");
-	}
+    @Override
+    public ApplicationConfiguration addLocale(String language, String country)
+    {
+        return addLocale(language, country, "");
+    }
 
-	@Override
-	public ApplicationConfiguration addLocale(String language, String country,
-			String variant)
-	{
-		Locale locale = new Locale(language, country, variant);
+    @Override
+    public ApplicationConfiguration addLocale(String language, String country,
+        String variant)
+    {
+        Locale locale = new Locale(language, country, variant);
 
-		supportedLocales.add(locale);
+        supportedLocales.add(locale);
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public ApplicationConfiguration removeLocale(String language)
-	{
-		return removeLocale(language, null, null);
-	}
+    @Override
+    public ApplicationConfiguration removeLocale(String language)
+    {
+        return removeLocale(language, null, null);
+    }
 
-	@Override
-	public ApplicationConfiguration removeLocale(String language, String country)
-	{
-		return removeLocale(language, country, null);
-	}
+    @Override
+    public ApplicationConfiguration removeLocale(String language, String country)
+    {
+        return removeLocale(language, country, null);
+    }
 
-	@Override
-	public ApplicationConfiguration removeLocale(String language,
-			String country, String variant)
-	{
-		Locale locale = new Locale(language, country, variant);
+    @Override
+    public ApplicationConfiguration removeLocale(String language,
+        String country, String variant)
+    {
+        Locale locale = new Locale(language, country, variant);
 
-		supportedLocales.remove(locale);
+        supportedLocales.remove(locale);
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public List<Locale> getSupportedLocales()
-	{
-		return Collections.unmodifiableList(supportedLocales);
-	}
+    @Override
+    public List<Locale> getSupportedLocales()
+    {
+        return Collections.unmodifiableList(supportedLocales);
+    }
+
+    public List<Locale> getRawSupportedLocales()
+    {
+        return supportedLocales;
+    }
+
+    @Override
+    public ApplicationConfiguration scanMessagesForLocale(String messageLocation)
+    {
+        this.messagesToScan.add(messageLocation);
+        return this;
+    }
+
+    public List<String> getMessagesToScan()
+    {
+        return messagesToScan;
+    }
 }

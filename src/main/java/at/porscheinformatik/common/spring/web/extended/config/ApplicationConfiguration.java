@@ -21,27 +21,34 @@ import java.util.Locale;
 public interface ApplicationConfiguration
 {
 
-	String getVersion();
+    String getVersion();
 
-	ApplicationConfiguration setVersion(String version);
+    ApplicationConfiguration setVersion(String version);
 
-	boolean isOptimizeResources();
+    boolean isOptimizeResources();
 
-	ApplicationConfiguration setOptimizeResources(boolean optimizeResources);
+    ApplicationConfiguration setOptimizeResources(boolean optimizeResources);
 
-	ApplicationConfiguration addLocale(String language);
+    ApplicationConfiguration addLocale(String language);
 
-	ApplicationConfiguration addLocale(String language, String country);
+    ApplicationConfiguration addLocale(String language, String country);
 
-	ApplicationConfiguration addLocale(String language, String country,
-			String variant);
+    ApplicationConfiguration addLocale(String language, String country,
+        String variant);
 
-	ApplicationConfiguration removeLocale(String language);
+    ApplicationConfiguration removeLocale(String language);
 
-	ApplicationConfiguration removeLocale(String language, String country);
+    ApplicationConfiguration removeLocale(String language, String country);
 
-	ApplicationConfiguration removeLocale(String language, String country,
-			String variant);
+    ApplicationConfiguration removeLocale(String language, String country,
+        String variant);
 
-	List<Locale> getSupportedLocales();
+    List<Locale> getSupportedLocales();
+
+    /**
+     * Scans all messages found by this location for supported locales
+     * 
+     * @return
+     */
+    ApplicationConfiguration scanMessagesForLocale(String messageLocation);
 }

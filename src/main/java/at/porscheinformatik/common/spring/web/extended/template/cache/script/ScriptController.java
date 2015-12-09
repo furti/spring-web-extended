@@ -30,7 +30,7 @@ public class ScriptController extends ResourceControllerBase
     @RequestMapping(value = "/single/{stackId}/{scriptName}", method = RequestMethod.GET,
         produces = "text/javascript; charset=UTF-8")
     @ResponseBody
-    public String handleStylesheet(
+    public String handleScript(
         @PathVariable("stackId") String stackId,
         @PathVariable("scriptName") String scriptName,
         HttpServletResponse response)

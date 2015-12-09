@@ -1,20 +1,17 @@
 package at.porscheinformatik.common.spring.web.extended.io;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.util.Assert;
+import org.springframework.core.io.UrlResource;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.ServletContextAware;
 
@@ -22,165 +19,149 @@ import org.springframework.web.context.ServletContextAware;
  * Scans the webapp directory for resources.
  * 
  * @author Daniel Furtlehner
- * 
  */
 public class ContextResourceScanner implements ServletContextAware,
-		ResourceScanner
+    ResourceScanner
 {
 
-	private ServletContext context;
+    private ServletContext context;
 
-	public void setServletContext(ServletContext context)
-	{
-		this.context = context;
-	}
+    public void setServletContext(ServletContext context)
+    {
+        this.context = context;
+    }
 
-	@Override
-	public Map<String, Resource> scanResources(String path) throws IOException
-	{
-		Path rootPath = buildRootPath(path);
+    @Override
+    public Map<String, Resource> scanResources(String path) throws IOException
+    {
+        Set<String> templatePaths = new HashSet<>();
+        addTemplates(preparePath(path), true, null, templatePaths);
 
-		List<Path> templateFiles = findTemplates(
-				Files.newDirectoryStream(rootPath), null, true);
+        return createResources(path, templatePaths);
+    }
 
-		return createResources(rootPath, templateFiles);
-	}
+    @Override
+    public Map<String, Resource> scanResources(String path, String file,
+        boolean scanSubDirectories) throws IOException
+    {
+        Set<String> templatePaths = new HashSet<>();
+        final String[] nameAndEnding = ResourceUtils.getNameAndEnding(file);
 
-	@Override
-	public Map<String, Resource> scanResources(String path, String file,
-			boolean scanSubDirectories) throws IOException
-	{
-		Path rootPath = buildRootPath(path);
-		final String[] nameAndEnding = ResourceUtils
-				.getNameAndEnding(file);
+        addTemplates(preparePath(path), scanSubDirectories, new FileMatcher()
+        {
 
-		List<Path> templateFiles = findTemplates(
-				Files.newDirectoryStream(rootPath),
-				new FileMatcher() {
+            @Override
+            public boolean matches(String path)
+            {
+                String filename = ResourceUtils.pathAndFile(path)[1];
+                int baselength = nameAndEnding[0].length();
 
-					@Override
-					public boolean matches(Path path)
-					{
-						String filename = path.getFileName().toString();
-						int baselength = nameAndEnding[0].length();
+                if (!filename.startsWith(nameAndEnding[0]))
+                {
+                    return false;
+                }
 
-						if (!filename.startsWith(nameAndEnding[0]))
-						{
-							return false;
-						}
+                if (nameAndEnding[1] != null)
+                {
+                    baselength += nameAndEnding[1].length();
 
-						if (nameAndEnding[1] != null)
-						{
-							baselength += nameAndEnding[1].length();
+                    if (!filename.endsWith(nameAndEnding[1]))
+                    {
+                        return false;
+                    }
+                }
 
-							if (!filename.endsWith(nameAndEnding[1]))
-							{
-								return false;
-							}
-						}
+                /*
+                 * If the file has more characters than the basename the
+                 * character following the filename must be a _ to be an
+                 * locale. Else we might have a minimized version of the
+                 * same resource. So ignore it
+                 */
+                if (filename.length() > baselength)
+                {
+                    return filename.charAt(nameAndEnding[0].length()) == '_';
+                }
 
-						/*
-						 * If the file has more characters than the basename the
-						 * character following the filename must be a _ to be an
-						 * locale. Else we might have a minimized version of the
-						 * same resource. So ignore it
-						 */
-						if (filename.length() > baselength)
-						{
-							return filename.charAt(nameAndEnding[0].length()) == '_';
-						}
+                return true;
+            }
 
-						return true;
-					}
+        }, templatePaths);
 
-				}, scanSubDirectories);
+        return createResources(path, templatePaths);
+    }
 
-		return createResources(rootPath, templateFiles);
-	}
+    private void addTemplates(String path, boolean scanSubDirectories, FileMatcher matcher, Set<String> templates)
+    {
+        Set<String> paths = context.getResourcePaths(path);
 
-	private Path buildRootPath(String path) throws IOException
-	{
-		Assert.hasText(path, "Path must not be empty");
+        if (paths == null || paths.isEmpty())
+        {
+            return;
+        }
 
-		String contextPath = context.getRealPath("/");
+        for (String resourcePath : paths)
+        {
+            //We have a directory and we must scan it
+            if (resourcePath.endsWith("/"))
+            {
+                if (scanSubDirectories)
+                {
+                    addTemplates(resourcePath, scanSubDirectories, matcher, templates);
+                }
+            }
+            else
+            {
+                if (matcher == null || matcher.matches(resourcePath))
+                {
+                    templates.add(resourcePath);
+                }
+            }
+        }
+    }
 
-		/*
-		 * TODO: we should handle null response here if we start the app on an
-		 * embeddet tomcat. The root of the webapp is in a war file and we get a
-		 * null response from the servletcontext
-		 */
-		Assert.notNull(contextPath,
-				"Could not get contextPath from ServletContext");
+    /**
+     * @param path
+     * @return
+     */
+    private String preparePath(String path)
+    {
+        if (!path.startsWith("/"))
+        {
+            return "/" + path;
+        }
 
-		Path rootPath = Paths.get(contextPath, path);
+        return path;
+    }
 
-		if (!Files.isDirectory(rootPath))
-		{
-			throw new IOException("Directory " + rootPath.toAbsolutePath()
-					+ " does not exist or is no directory");
-		}
+    private Map<String, Resource> createResources(String path, Set<String> templateFiles) throws MalformedURLException
+    {
+        if (CollectionUtils.isEmpty(templateFiles))
+        {
+            return null;
+        }
 
-		return rootPath;
-	}
+        Map<String, Resource> resources = new HashMap<String, Resource>();
 
-	private List<Path> findTemplates(DirectoryStream<Path> directory,
-			FileMatcher matcher, boolean scanSubDirectories)
-			throws IOException
-	{
-		List<Path> files = new ArrayList<>();
+        for (String templateFile : templateFiles)
+        {
+            String relative = templateFile.substring(path.length() + 1).replace("\\", "/");
 
-		try
-		{
-			for (Path p : directory)
-			{
-				if (Files.isDirectory(p) && scanSubDirectories)
-				{
-					files.addAll(findTemplates(
-							Files.newDirectoryStream(p),
-							matcher,
-							scanSubDirectories));
-				}
-				else
-				{
-					if (matcher == null || matcher.matches(p))
-					{
-						files.add(p);
-					}
-				}
-			}
-		} finally
-		{
-			directory.close();
-		}
+            if (relative.startsWith("/"))
+            {
+                relative = relative.substring(1);
+            }
 
-		return files;
-	}
+            URL resourceURL = context.getResource(templateFile);
+            
+            resources.put(relative, new UrlResource(resourceURL));
+        }
 
-	private Map<String, Resource> createResources(Path rootPath,
-			List<Path> templateFiles)
-	{
-		if (CollectionUtils.isEmpty(templateFiles))
-		{
-			return null;
-		}
+        return resources;
+    }
 
-		Map<String, Resource> resources = new HashMap<String, Resource>();
+    private static interface FileMatcher
+    {
 
-		for (Path templateFile : templateFiles)
-		{
-			Path relative = rootPath.relativize(templateFile);
-
-			resources.put(relative.toString().replace("\\", "/"),
-					new FileSystemResource(
-							templateFile.toFile()));
-		}
-
-		return resources;
-	}
-
-	private static interface FileMatcher
-	{
-
-		boolean matches(Path path);
-	}
+        boolean matches(String path);
+    }
 }

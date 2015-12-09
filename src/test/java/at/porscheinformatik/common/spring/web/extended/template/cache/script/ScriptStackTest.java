@@ -13,6 +13,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import at.porscheinformatik.common.spring.web.extended.http.DefaultLinkCreator;
 import at.porscheinformatik.common.spring.web.extended.io.ClasspathResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanner;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceScanners;
@@ -98,6 +99,7 @@ public class ScriptStackTest
         templateFactory.buildTheme();
         stack.setTemplateFactory(templateFactory);
         stack.setTemplateRenderContextFactory(new DefaultTemplateRenderContextFactory());
+        stack.setLinkCreator(new DefaultLinkCreator());
 
         stack.addResource("script1",
             new StackEntry(buildLocation("script1.js"), false));

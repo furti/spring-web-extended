@@ -31,6 +31,7 @@ import at.porscheinformatik.common.spring.web.extended.io.ResourceScanners;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
 import at.porscheinformatik.common.spring.web.extended.template.CssAssetUrlProcessor;
+import at.porscheinformatik.common.spring.web.extended.template.SourceMappingUrlProcessor;
 import at.porscheinformatik.common.spring.web.extended.template.StringTemplate;
 import at.porscheinformatik.common.spring.web.extended.template.Template;
 import at.porscheinformatik.common.spring.web.extended.template.TemplateFactory;
@@ -53,6 +54,7 @@ public abstract class AbstractTemplateCache
     private LinkedHashMap<String, Template> templates = new LinkedHashMap<>();
     private LinkedHashMap<String, Template> optimizedTemplates = new LinkedHashMap<>();
     private CssAssetUrlProcessor urlRewritingProcessor;
+    private SourceMappingUrlProcessor sourceMappingProcessor;
     protected ResourceScanners scanners;
     private ApplicationConfiguration appConfig;
     private OptimizerChain optimizerChain;
@@ -154,6 +156,11 @@ public abstract class AbstractTemplateCache
                 result = prepareRelativeUrls(result, template);
             }
 
+            if (template.getType() == ResourceType.SCRIPT)
+            {
+                result = prepareSourceMappings(result, template);
+            }
+
             //If the template should not be cached we don't add it to the cache. sounds logical :)
             if (shouldOptimize() && !isNoCaching())
             {
@@ -167,6 +174,28 @@ public abstract class AbstractTemplateCache
             throw new RuntimeException("Error rendering template "
                 + template.getName(), ex);
         }
+    }
+
+    /**
+     * @param result
+     * @param template
+     * @return
+     * @throws IOException
+     */
+    private String prepareSourceMappings(String result, Template template) throws IOException
+    {
+        if (result == null)
+        {
+            return null;
+        }
+
+        ro.isdc.wro.model.resource.Resource resource = new ro.isdc.wro.model.resource.Resource();
+        resource.setUri(template.getLocation());
+
+        StringWriter writer = new StringWriter();
+        sourceMappingProcessor.process(resource, new StringReader(result), writer);
+
+        return writer.toString();
     }
 
     private String prepareRelativeUrls(String result, Template template)
@@ -378,6 +407,7 @@ public abstract class AbstractTemplateCache
     public void setLinkCreator(LinkCreator linkCreator)
     {
         urlRewritingProcessor = new CssAssetUrlProcessor(linkCreator);
+        sourceMappingProcessor = new SourceMappingUrlProcessor(linkCreator);
     }
 
     public void setTemplateRenderContextFactory(TemplateRenderContextFactory templateRenderContextFactory)

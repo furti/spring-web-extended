@@ -12,7 +12,8 @@
 	</licenses>
 
 	<properties>
-		<parboiled.version>1.1.6</parboiled.version>
+		<parboiled.version>1.1.7</parboiled.version>
+		<chunk-templates.version>2.6.4</chunk-templates.version>
 		<spring.version>4.0.6.RELEASE</spring.version>
 		<testng.version>6.8.7</testng.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,7 +42,7 @@
 		<dependency>
 			<groupId>com.x5dev</groupId>
 			<artifactId>chunk-templates</artifactId>
-			<version>2.4</version>
+			<version>${chunk-templates.version}</version>
 		</dependency>
 
 		<dependency>

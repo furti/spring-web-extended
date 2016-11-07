@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -54,6 +55,12 @@ public class ChunkTemplateTest
 
         TemplateRenderContextHolder
             .setCurrentContext(new DefaultTemplateRenderContext(Locale.getDefault(), ResourceType.HTML));
+    }
+
+    @AfterClass
+    public void cleanup()
+    {
+        TemplateRenderContextHolder.removeCurrentContext();
     }
 
     @Test(dataProvider = "renderTemplateData")

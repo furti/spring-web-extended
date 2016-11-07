@@ -2,17 +2,37 @@ package at.porscheinformatik.common.spring.web.extended.expression;
 
 import static org.mockito.Mockito.*;
 
+import java.util.Locale;
+
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.springframework.beans.factory.BeanFactory;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
+import at.porscheinformatik.common.spring.web.extended.template.DefaultTemplateRenderContext;
+import at.porscheinformatik.common.spring.web.extended.template.TemplateRenderContextHolder;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlStack;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlStacks;
 
 public class InlineTemplateExpressionHandlerTest
 {
+
+    @BeforeClass
+    public void setupFactory()
+    {
+        TemplateRenderContextHolder
+            .setCurrentContext(new DefaultTemplateRenderContext(Locale.getDefault(), ResourceType.HTML));
+    }
+
+    @AfterClass
+    public void cleanup()
+    {
+        TemplateRenderContextHolder.removeCurrentContext();
+    }
 
     @Test
     public void testSimpleProcessing()
@@ -40,7 +60,7 @@ public class InlineTemplateExpressionHandlerTest
             createHandler("testtemplate.html", "\nThis\r\n\tis\t\ra\f\"T  E  S  T\".\r");
         String result = handler.process("testTemplate");
 
-        MatcherAssert.assertThat(result, CoreMatchers.equalTo("This  is a \"T  E  S  T\"."));
+        MatcherAssert.assertThat(result, CoreMatchers.equalTo("This  is a &quot;T  E  S  T&quot;."));
     }
 
     private InlineTemplateExpressionHandler createHandler(String templateName, String renderedTemplate)

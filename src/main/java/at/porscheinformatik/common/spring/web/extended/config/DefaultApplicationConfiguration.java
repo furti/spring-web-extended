@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class DefaultApplicationConfiguration implements
-    ApplicationConfiguration
+public class DefaultApplicationConfiguration implements ApplicationConfiguration
 {
     private String version;
     private boolean optimizeResources;
-    private List<Locale> supportedLocales = new ArrayList<>();
-    private List<String> messagesToScan = new ArrayList<>();
+    private final List<Locale> supportedLocales = new ArrayList<>();
+    private final List<String> messagesToScan = new ArrayList<>();
 
     @Override
     public String getVersion()
@@ -41,8 +40,7 @@ public class DefaultApplicationConfiguration implements
     }
 
     @Override
-    public ApplicationConfiguration setOptimizeResources(
-        boolean optimizeResources)
+    public ApplicationConfiguration setOptimizeResources(boolean optimizeResources)
     {
         this.optimizeResources = optimizeResources;
 
@@ -71,8 +69,7 @@ public class DefaultApplicationConfiguration implements
     }
 
     @Override
-    public ApplicationConfiguration addLocale(String language, String country,
-        String variant)
+    public ApplicationConfiguration addLocale(String language, String country, String variant)
     {
         Locale locale = new Locale(language, country, variant);
 
@@ -94,8 +91,7 @@ public class DefaultApplicationConfiguration implements
     }
 
     @Override
-    public ApplicationConfiguration removeLocale(String language,
-        String country, String variant)
+    public ApplicationConfiguration removeLocale(String language, String country, String variant)
     {
         Locale locale = new Locale(language, country, variant);
 
@@ -118,7 +114,7 @@ public class DefaultApplicationConfiguration implements
     @Override
     public ApplicationConfiguration scanMessagesForLocale(String messageLocation)
     {
-        this.messagesToScan.add(messageLocation);
+        messagesToScan.add(messageLocation);
         return this;
     }
 

@@ -6,7 +6,7 @@ import at.porscheinformatik.common.spring.web.extended.util.AssetUtils;
  * Produces a realtive url for an asset Resource Handler names must be separated from the content with a # in asset
  * expressions. Because the chunk template engine strips everything after ":" or "|". So we won't get the full path if
  * we use the default separator ":".
- * 
+ *
  * @author Daniel Furtlehner
  */
 public class AssetExpressionHandler extends UrlGeneratingExpressionHandler

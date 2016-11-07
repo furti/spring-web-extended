@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,102 +29,102 @@ import at.porscheinformatik.common.spring.web.extended.io.ResourceType;
 
 public abstract class BaseTemplate implements Template
 {
-	protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected ResourceType type;
-	protected String templateName;
-	protected String location;
-	protected boolean alreadyOptimized;
-	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-	private ReadLock readLock = lock.readLock();
-	private WriteLock writeLock = lock.writeLock();
+    protected ResourceType type;
+    protected String templateName;
+    protected String location;
+    protected boolean alreadyOptimized;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReadLock readLock = lock.readLock();
+    private final WriteLock writeLock = lock.writeLock();
 
-	public BaseTemplate(ResourceType type, String templateName,
-			boolean alreadyOptimized, String location)
-	{
-		this.type = type;
-		this.templateName = templateName;
-		this.alreadyOptimized = alreadyOptimized;
-		this.location = location;
-	}
+    public BaseTemplate(ResourceType type, String templateName, boolean alreadyOptimized, String location)
+    {
+        this.type = type;
+        this.templateName = templateName;
+        this.alreadyOptimized = alreadyOptimized;
+        this.location = location;
+    }
 
-	public String render() throws IOException
-	{
-		logger.debug("Thread " + Thread.currentThread().getName()
-				+ " obtains readLock for template " + getName());
+    @Override
+    public String render() throws IOException
+    {
+        logger.debug("Thread " + Thread.currentThread().getName() + " obtains readLock for template " + getName());
 
-		readLock.lock();
-		try
-		{
-			String template = getContent();
+        readLock.lock();
+        try
+        {
+            String template = getContent();
 
-			if (!StringUtils.hasText(template))
-			{
-				return template;
-			}
+            if (!StringUtils.hasText(template))
+            {
+                return template;
+            }
 
-			return template;
-		} finally
-		{
-			logger.debug("Thread " + Thread.currentThread().getName()
-					+ " releases readLock for template " + getName());
-			readLock.unlock();
-		}
-	}
+            return template;
+        }
+        finally
+        {
+            logger.debug("Thread " + Thread.currentThread().getName() + " releases readLock for template " + getName());
+            readLock.unlock();
+        }
+    }
 
-	@Override
-	public boolean isChanged(Date since) throws IOException
-	{
-		long lastmodified = getLastModified();
+    @Override
+    public boolean isChanged(Date since) throws IOException
+    {
+        long lastmodified = getLastModified();
 
-		return lastmodified > since.getTime();
-	}
+        return lastmodified > since.getTime();
+    }
 
-	@Override
-	public void refresh() throws IOException
-	{
-		logger.debug("Thread " + Thread.currentThread().getName()
-				+ " obtains writeLock for template " + getName());
+    @Override
+    public void refresh() throws IOException
+    {
+        logger.debug("Thread " + Thread.currentThread().getName() + " obtains writeLock for template " + getName());
 
-		writeLock.lock();
-		try
-		{
-			doRefresh();
-		} finally
-		{
-			logger.debug("Thread " + Thread.currentThread().getName()
-					+ " releases writeLock for template " + getName());
+        writeLock.lock();
+        try
+        {
+            doRefresh();
+        }
+        finally
+        {
+            logger
+                .debug("Thread " + Thread.currentThread().getName() + " releases writeLock for template " + getName());
 
-			writeLock.unlock();
-		}
-	}
+            writeLock.unlock();
+        }
+    }
 
-	protected abstract String getContent() throws IOException;
+    protected abstract String getContent() throws IOException;
 
-	protected abstract void doRefresh() throws IOException;
+    protected abstract void doRefresh() throws IOException;
 
-	protected abstract long getLastModified() throws IOException;
+    protected abstract long getLastModified() throws IOException;
 
-	public ResourceType getType()
-	{
-		return type;
-	}
+    @Override
+    public ResourceType getType()
+    {
+        return type;
+    }
 
-	@Override
-	public boolean isAlreadyOptimized()
-	{
-		return alreadyOptimized;
-	}
+    @Override
+    public boolean isAlreadyOptimized()
+    {
+        return alreadyOptimized;
+    }
 
-	@Override
-	public String getName()
-	{
-		return templateName;
-	}
+    @Override
+    public String getName()
+    {
+        return templateName;
+    }
 
-	@Override
-	public String getLocation()
-	{
-		return location;
-	}
+    @Override
+    public String getLocation()
+    {
+        return location;
+    }
 }

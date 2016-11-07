@@ -8,7 +8,7 @@ import org.springframework.core.io.Resource;
 public abstract class ClasspathShortcutResourceScanner extends ClasspathResourceScanner
 {
 
-    private String basePath;
+    private final String basePath;
 
     public ClasspathShortcutResourceScanner(String basePath)
     {

@@ -27,7 +27,7 @@ import at.porscheinformatik.common.spring.web.extended.util.LocaleUtils;
 public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
 {
 
-    private List<LocaleSource> sources;
+    private final List<LocaleSource> sources;
     private List<Locale> availableLocales;
 
     public LocaleHandlerInterceptor(List<LocaleSource> sources)
@@ -38,8 +38,7 @@ public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request,
-        HttpServletResponse response, Object handler) throws Exception
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
     {
         for (LocaleSource source : sources)
         {
@@ -60,8 +59,7 @@ public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
 
         // If no locale was found we check if the one from the request is
         // supported
-        Locale locale = LocaleUtils.closestSupportedLocale(availableLocales,
-            LocaleContextHolder.getLocale());
+        Locale locale = LocaleUtils.closestSupportedLocale(availableLocales, LocaleContextHolder.getLocale());
         if (locale != null)
         {
             LocaleContextHolder.setLocale(locale);
@@ -78,8 +76,7 @@ public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
     @Autowired
     public void setAvailableLocales(List<Locale> availableLocales)
     {
-        Assert.notNull(availableLocales,
-            "No supported locales are configured. Please configure at least one locale");
+        Assert.notNull(availableLocales, "No supported locales are configured. Please configure at least one locale");
 
         this.availableLocales = availableLocales;
     }

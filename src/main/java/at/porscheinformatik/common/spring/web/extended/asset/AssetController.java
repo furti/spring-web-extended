@@ -23,96 +23,90 @@ import at.porscheinformatik.common.spring.web.extended.util.RequestUtils;
 
 /**
  * Controller that sends static resources to the client.
- * 
+ *
  * @author Daniel Furtlehner
- * 
+ *
  */
 @Controller
 public class AssetController extends ResourceHttpRequestHandler
 {
 
-	private static final Pattern PATH_PATTERN = Pattern
-			.compile("^.*asset/(.*)");
+    private static final Pattern PATH_PATTERN = Pattern.compile("^.*asset/(.*)");
 
-	private LocalizedResourceLoader resourceLoader;
-	private ApplicationConfiguration appConfig;
+    private LocalizedResourceLoader resourceLoader;
+    private ApplicationConfiguration appConfig;
 
-	/**
-	 * Handles every URL that cotains "asset" and streams the requested Resource
-	 * to the client.
-	 * 
-	 * @param request
-	 *            - The Request
-	 * @param response
-	 *            - The Response
-	 * @throws IOException
-	 *             - If an exception occurs while streaming the resource
-	 * @throws ServletException
-	 */
-	@RequestMapping(value = "/**/asset/**", method = RequestMethod.GET)
-	public void handleAsset(HttpServletRequest request,
-			HttpServletResponse response) throws IOException, ServletException
-	{
-		handleRequest(request, response);
-	}
+    /**
+     * Handles every URL that cotains "asset" and streams the requested Resource to the client.
+     * 
+     * @param request - The Request
+     * @param response - The Response
+     * @throws IOException - If an exception occurs while streaming the resource
+     * @throws ServletException
+     */
+    @RequestMapping(value = "/**/asset/**", method = RequestMethod.GET)
+    public void handleAsset(HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException
+    {
+        handleRequest(request, response);
+    }
 
-	private String buildResourceFromPath(String path)
-	{
-		if (path == null)
-		{
-			return null;
-		}
+    private String buildResourceFromPath(String path)
+    {
+        if (path == null)
+        {
+            return null;
+        }
 
-		int index = path.indexOf("/");
-		Assert.isTrue(index > -1, "Could not get Asset for path " + path);
+        int index = path.indexOf("/");
+        Assert.isTrue(index > -1, "Could not get Asset for path " + path);
 
-		String prefix = path.substring(0, index);
-		String resource = path.substring(index + 1);
+        String prefix = path.substring(0, index);
+        String resource = path.substring(index + 1);
 
-		StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
-		if (!prefix.equals("context"))
-		{
-			builder.append(prefix).append(":");
-		}
+        if (!prefix.equals("context"))
+        {
+            builder.append(prefix).append(":");
+        }
 
-		builder.append(resource);
+        builder.append(resource);
 
-		return builder.toString();
-	}
+        return builder.toString();
+    }
 
-	@Autowired
-	public void setResourceLoader(LocalizedResourceLoader resourceLoader)
-	{
-		this.resourceLoader = resourceLoader;
-	}
+    @Autowired
+    public void setResourceLoader(LocalizedResourceLoader resourceLoader)
+    {
+        this.resourceLoader = resourceLoader;
+    }
 
-	@Override
-	protected Resource getResource(HttpServletRequest request)
-	{
-		String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN);
-		String resourcePath = buildResourceFromPath(path);
+    @Override
+    protected Resource getResource(HttpServletRequest request)
+    {
+        String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN);
+        String resourcePath = buildResourceFromPath(path);
 
-		return resourceLoader.getResource(resourcePath,
-				LocaleContextHolder.getLocale());
-	}
+        return resourceLoader.getResource(resourcePath, LocaleContextHolder.getLocale());
+    }
 
-	@Autowired
-	public void setAppConfig(ApplicationConfiguration appConfig)
-	{
-		this.appConfig = appConfig;
-	}
+    @Autowired
+    public void setAppConfig(ApplicationConfiguration appConfig)
+    {
+        this.appConfig = appConfig;
+    }
 
-	@PostConstruct
-	public void init()
-	{
-		if (appConfig.isOptimizeResources())
-		{
-			setCacheSeconds(365 * 24 * 60 * 60);
-		}
-		else
-		{
-			setCacheSeconds(0);
-		}
-	}
+    @PostConstruct
+    public void init()
+    {
+        if (appConfig.isOptimizeResources())
+        {
+            setCacheSeconds(365 * 24 * 60 * 60);
+        }
+        else
+        {
+            setCacheSeconds(0);
+        }
+    }
 }

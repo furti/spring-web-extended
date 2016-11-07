@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package at.porscheinformatik.common.spring.web.extended.template;
 
@@ -24,7 +24,7 @@ public class SourceMappingUrlProcessor implements ResourcePreProcessor
 {
     private static final Pattern PATTERN = Pattern.compile("^//# sourceMappingURL=(.*)$", Pattern.MULTILINE);
 
-    private LinkCreator linkCreator;
+    private final LinkCreator linkCreator;
 
     public SourceMappingUrlProcessor(LinkCreator linkCreator)
     {

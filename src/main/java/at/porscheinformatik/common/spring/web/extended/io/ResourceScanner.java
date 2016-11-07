@@ -19,11 +19,5 @@ public interface ResourceScanner
      */
     Map<String, Resource> scanResources(String pattern, @Nullable String basePath) throws IOException;
 
-    /**
-     * @param path
-     * @param file
-     * @param scanSubDirectories
-     * @return Map<relativePath, Resource>
-     */
     Map<String, Resource> scanResources(String path, String file, boolean scanSubDirectories) throws IOException;
 }

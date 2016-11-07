@@ -15,8 +15,7 @@ public final class RequestUtils
 
     }
 
-    public static final String getPathFromRegex(HttpServletRequest request,
-        Pattern pattern)
+    public static final String getPathFromRegex(HttpServletRequest request, Pattern pattern)
     {
         String path = request.getRequestURI();
 

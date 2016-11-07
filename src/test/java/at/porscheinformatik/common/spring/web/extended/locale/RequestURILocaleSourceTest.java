@@ -1,7 +1,7 @@
 package at.porscheinformatik.common.spring.web.extended.locale;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.util.Locale;
 
@@ -62,8 +62,7 @@ public class RequestURILocaleSourceTest
             {"/de", "/test", new Locale("de")},
             {"/de-AT", "/test", new Locale("de", "AT")},
             {"/de-DE", "/test", new Locale("de")},
-            {"/xy-AB", "/test", null}
-        };
+            {"/xy-AB", "/test", null}};
     }
 
     @DataProvider
@@ -79,7 +78,6 @@ public class RequestURILocaleSourceTest
             {"/de", "/test", "de"},
             {"de_AT", "/test", "de_AT"},
             {"/xy_AB", "/test/", "xy_AB"},
-            {"xy-AB", "/test/", "xy-AB"}
-        };
+            {"xy-AB", "/test/", "xy-AB"}};
     }
 }

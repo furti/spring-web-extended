@@ -11,7 +11,7 @@ import at.porscheinformatik.common.spring.web.extended.util.SpringWebExtendedUti
 public class ResourceScanners
 {
 
-    private Map<String, ResourceScanner> scanners;
+    private final Map<String, ResourceScanner> scanners;
 
     public ResourceScanners(Map<String, ResourceScanner> scanners)
     {

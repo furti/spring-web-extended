@@ -19,11 +19,11 @@ public final class ResourceUtils
     }
 
     /**
-     * @param resource
-     * @return
+     * @param resource the name of the resource
+     * @param locale the locale
+     * @return the list of resources
      */
-    public static List<String> localizedResources(String resource,
-        Locale locale)
+    public static List<String> localizedResources(String resource, Locale locale)
     {
         if (resource == null)
         {
@@ -37,13 +37,11 @@ public final class ResourceUtils
 
         List<String> names = new ArrayList<>();
 
-        String full = localize(resource, locale.getLanguage(),
-            locale.getCountry());
+        String full = localize(resource, locale.getLanguage(), locale.getCountry());
 
         names.add(full);
 
-        String languageCountry = localize(resource, locale.getLanguage(),
-            locale.getCountry());
+        String languageCountry = localize(resource, locale.getLanguage(), locale.getCountry());
 
         if (!names.contains(languageCountry))
         {
@@ -65,8 +63,7 @@ public final class ResourceUtils
         return names;
     }
 
-    private static String localize(String baseName, String language,
-        String country)
+    private static String localize(String baseName, String language, String country)
     {
         String[] nameAndEnding = getNameAndEnding(baseName);
         StringBuilder localized = new StringBuilder(nameAndEnding[0]);
@@ -112,9 +109,7 @@ public final class ResourceUtils
             return new String[]{baseName, null};
         }
 
-        return new String[]{
-            baseName.substring(0, pointIndex),
-            baseName.substring(pointIndex)};
+        return new String[]{baseName.substring(0, pointIndex), baseName.substring(pointIndex)};
     }
 
     public static String[] pathAndFile(String location)
@@ -131,10 +126,7 @@ public final class ResourceUtils
             return new String[]{"", location};
         }
 
-        return new String[]{
-            location.substring(0, index + 1),
-            location.substring(index + 1)
-        };
+        return new String[]{location.substring(0, index + 1), location.substring(index + 1)};
     }
 
     public static String getLocaleFromName(String nameWithoutEnding)
@@ -186,15 +178,9 @@ public final class ResourceUtils
         return builder.toString();
     }
 
-    /**
-     * @param base
-     * @param relativeUrl
-     * @return
-     */
     public static String normalize(String base, String relativeUrl)
     {
-        if (StringUtils.isEmpty(base)
-            || StringUtils.isEmpty(relativeUrl))
+        if (StringUtils.isEmpty(base) || StringUtils.isEmpty(relativeUrl))
         {
             return null;
         }

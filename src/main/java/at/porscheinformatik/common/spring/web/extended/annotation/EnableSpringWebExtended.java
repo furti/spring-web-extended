@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,16 +35,14 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlT
 //CHECKSTYLE:ON
 
 /**
- * Add this annotation to @{@link Configuration} classes to enable extended web
- * support configured in {@link SpringWebExtendedConfig} and
- * {@link SpringWebExtendedRegistrar}.
- * 
+ * Add this annotation to @{@link Configuration} classes to enable extended web support configured in
+ * {@link SpringWebExtendedConfig} and {@link SpringWebExtendedRegistrar}.
+ *
  * <p>
- * You can customize the configuration by implementing the
- * {@link SpringWebExtendedConfigurer} or extending the
+ * You can customize the configuration by implementing the {@link SpringWebExtendedConfigurer} or extending the
  * {@link SpringWebExtendedConfigurerAdapter}
  * </p>
- * 
+ *
  * <pre>
  * &#064;Configuration
  * &#064;EnableSpringWebExtended
@@ -58,35 +56,34 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlT
  * 	}
  * }
  * </pre>
- * 
+ *
  * @author Daniel Furtlehner
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import(value = { SpringWebExtendedRegistrar.class,
-		SpringWebExtendedImportSelector.class })
+@Import(value = {SpringWebExtendedRegistrar.class, SpringWebExtendedImportSelector.class})
 @EnableWebMvc
 public @interface EnableSpringWebExtended
 {
 
-	/**
-	 * @return the configuration for the {@link HtmlTemplateController}
-	 */
-	HtmlTemplateControllerConfig htmlTemplateControllerConfig() default @HtmlTemplateControllerConfig;
+    /**
+     * @return the configuration for the {@link HtmlTemplateController}
+     */
+    HtmlTemplateControllerConfig htmlTemplateControllerConfig() default @HtmlTemplateControllerConfig;
 
-	/**
-	 * @return true if the default Assetcontroller should be registered
-	 */
-	boolean registerAssetController() default true;
+    /**
+     * @return true if the default Assetcontroller should be registered
+     */
+    boolean registerAssetController() default true;
 
-	/**
-	 * @return true if the default Stylecontroller should be registered
-	 */
-	boolean registerStyleController() default true;
+    /**
+     * @return true if the default Stylecontroller should be registered
+     */
+    boolean registerStyleController() default true;
 
-	/**
-	 * @return true if the default Scriptcontroller should be registered
-	 */
-	boolean registerScriptController() default true;
+    /**
+     * @return true if the default Scriptcontroller should be registered
+     */
+    boolean registerScriptController() default true;
 }

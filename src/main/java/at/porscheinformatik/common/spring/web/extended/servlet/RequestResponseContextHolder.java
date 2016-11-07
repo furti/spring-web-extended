@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class RequestResponseContextHolder
 {
 
-    private static ThreadLocal<Holder> holder = new ThreadLocal<Holder>();
+    private static ThreadLocal<Holder> holder = new ThreadLocal<>();
 
     private RequestResponseContextHolder()
     {

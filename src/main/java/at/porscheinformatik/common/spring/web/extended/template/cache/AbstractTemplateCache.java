@@ -48,11 +48,11 @@ public abstract class AbstractTemplateCache
 
     private TemplateFactory templateFactory;
     private TemplateRenderContextFactory templateRenderContextFactory;
-    private String cacheName;
-    private boolean noCaching;
+    private final String cacheName;
+    private final boolean noCaching;
 
-    private LinkedHashMap<String, Template> templates = new LinkedHashMap<>();
-    private LinkedHashMap<String, Template> optimizedTemplates = new LinkedHashMap<>();
+    private final LinkedHashMap<String, Template> templates = new LinkedHashMap<>();
+    private final LinkedHashMap<String, Template> optimizedTemplates = new LinkedHashMap<>();
     private CssAssetUrlProcessor urlRewritingProcessor;
     private SourceMappingUrlProcessor sourceMappingProcessor;
     protected ResourceScanners scanners;
@@ -60,7 +60,7 @@ public abstract class AbstractTemplateCache
     private OptimizerChain optimizerChain;
     private Date lastRefresh;
 
-    private Map<RenderCacheKey, String> renderCache = new HashMap<RenderCacheKey, String>();
+    private final Map<RenderCacheKey, String> renderCache = new HashMap<>();
 
     public AbstractTemplateCache(String cacheName, boolean noCaching)
     {
@@ -77,11 +77,9 @@ public abstract class AbstractTemplateCache
     {
         Locale locale = LocaleContextHolder.getLocale();
 
-        List<String> localizedTemplates = ResourceUtils.localizedResources(
-            templateName, locale);
+        List<String> localizedTemplates = ResourceUtils.localizedResources(templateName, locale);
 
-        Assert.notNull(localizedTemplates,
-            "Could not localize templates for locale " + locale);
+        Assert.notNull(localizedTemplates, "Could not localize templates for locale " + locale);
 
         for (String name : localizedTemplates)
         {
@@ -98,18 +96,15 @@ public abstract class AbstractTemplateCache
     {
         Locale locale = LocaleContextHolder.getLocale();
 
-        List<String> localizedTemplates = ResourceUtils.localizedResources(
-            templateName, locale);
+        List<String> localizedTemplates = ResourceUtils.localizedResources(templateName, locale);
 
-        Assert.notNull(localizedTemplates,
-            "Could not localize templates for locale " + locale);
+        Assert.notNull(localizedTemplates, "Could not localize templates for locale " + locale);
 
         Template template = null;
 
         if (shouldOptimize())
         {
-            template = getTemplateFromMap(localizedTemplates,
-                optimizedTemplates);
+            template = getTemplateFromMap(localizedTemplates, optimizedTemplates);
         }
 
         // IF no optimized template was found search for a not optimized one
@@ -136,19 +131,15 @@ public abstract class AbstractTemplateCache
                 return fromCache;
             }
 
-            TemplateRenderContextHolder
-                .setCurrentContext(context);
+            TemplateRenderContextHolder.setCurrentContext(context);
 
             String result = template.render();
 
             TemplateRenderContextHolder.removeCurrentContext();
 
-            if (optimizerChain != null
-                && shouldOptimize()
-                && !template.isAlreadyOptimized())
+            if (optimizerChain != null && shouldOptimize() && !template.isAlreadyOptimized())
             {
-                result = optimizerChain.optimize(template.getType(),
-                    template.getName(), result);
+                result = optimizerChain.optimize(template.getType(), template.getName(), result);
             }
 
             if (template.getType() == ResourceType.STYLE)
@@ -171,8 +162,7 @@ public abstract class AbstractTemplateCache
         }
         catch (IOException ex)
         {
-            throw new RuntimeException("Error rendering template "
-                + template.getName(), ex);
+            throw new RuntimeException("Error rendering template " + template.getName(), ex);
         }
     }
 
@@ -198,8 +188,7 @@ public abstract class AbstractTemplateCache
         return writer.toString();
     }
 
-    private String prepareRelativeUrls(String result, Template template)
-        throws IOException
+    private String prepareRelativeUrls(String result, Template template) throws IOException
     {
         if (result == null)
         {
@@ -216,15 +205,13 @@ public abstract class AbstractTemplateCache
 
     }
 
-    private void addToCache(TemplateRenderContext context,
-        Template template, String content)
+    private void addToCache(TemplateRenderContext context, Template template, String content)
     {
         RenderCacheKey key = new RenderCacheKey(context, template.getName());
         renderCache.put(key, content);
     }
 
-    private String checkCache(TemplateRenderContext context,
-        Template template)
+    private String checkCache(TemplateRenderContext context, Template template)
     {
         RenderCacheKey key = new RenderCacheKey(context, template.getName());
         return renderCache.get(key);
@@ -308,9 +295,8 @@ public abstract class AbstractTemplateCache
         return templates;
     }
 
-    protected void addTemplate(String name, String location, Resource resource,
-        ResourceType type, boolean optimizedResource, boolean skipProcessing)
-            throws IOException
+    protected void addTemplate(String name, String location, Resource resource, ResourceType type,
+        boolean optimizedResource, boolean skipProcessing) throws IOException
     {
         String templateName = cacheName + ":" + name;
 
@@ -320,28 +306,21 @@ public abstract class AbstractTemplateCache
         // the StringTemplate
         if (skipProcessing)
         {
-            template = new StringTemplate(type, templateName,
-                optimizedResource, resource, location);
+            template = new StringTemplate(type, templateName, optimizedResource, resource, location);
         }
         else
         {
-            template = templateFactory.createTemplate(resource,
-                templateName, location, type, optimizedResource);
+            template = templateFactory.createTemplate(resource, templateName, location, type, optimizedResource);
         }
 
         if (optimizedResource)
         {
-            Assert.isNull(
-                optimizedTemplates.put(name, template),
-                "Template "
-                    + name
-                    + " was added twice to the cache for optimized Templates");
+            Assert.isNull(optimizedTemplates.put(name, template),
+                "Template " + name + " was added twice to the cache for optimized Templates");
         }
         else
         {
-            Assert.isNull(
-                templates.put(name, template),
-                "Template " + name + " was added twice to the cache");
+            Assert.isNull(templates.put(name, template), "Template " + name + " was added twice to the cache");
         }
     }
 
@@ -352,8 +331,7 @@ public abstract class AbstractTemplateCache
             return;
         }
 
-        Iterator<Entry<String, Template>> iterator = templates.entrySet()
-            .iterator();
+        Iterator<Entry<String, Template>> iterator = templates.entrySet().iterator();
         while (iterator.hasNext())
         {
             if (iterator.next().getKey().startsWith(templateName))
@@ -368,8 +346,7 @@ public abstract class AbstractTemplateCache
         return appConfig != null && appConfig.isOptimizeResources();
     }
 
-    private Template getTemplateFromMap(List<String> localizedTemplates,
-        LinkedHashMap<String, Template> templatesToUse)
+    private Template getTemplateFromMap(List<String> localizedTemplates, LinkedHashMap<String, Template> templatesToUse)
     {
         for (String name : localizedTemplates)
         {
@@ -425,8 +402,8 @@ public abstract class AbstractTemplateCache
      */
     private static class RenderCacheKey
     {
-        private TemplateRenderContext context;
-        private String template;
+        private final TemplateRenderContext context;
+        private final String template;
 
         public RenderCacheKey(TemplateRenderContext context, String template)
         {
@@ -440,10 +417,8 @@ public abstract class AbstractTemplateCache
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result
-                + ((context == null) ? 0 : context.hashCode());
-            result = prime * result
-                + ((template == null) ? 0 : template.hashCode());
+            result = prime * result + ((context == null) ? 0 : context.hashCode());
+            result = prime * result + ((template == null) ? 0 : template.hashCode());
             return result;
         }
 

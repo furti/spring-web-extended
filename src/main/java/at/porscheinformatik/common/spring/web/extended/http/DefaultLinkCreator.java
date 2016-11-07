@@ -61,7 +61,7 @@ public class DefaultLinkCreator implements LinkCreator
 
     /**
      * Subclasses may add something to the url before the default url parts get added
-     * 
+     *
      * @param url the URL
      */
     protected void prefix(StringBuilder url)
@@ -76,7 +76,7 @@ public class DefaultLinkCreator implements LinkCreator
 
     /**
      * Subclasses may add something to the url after the default url parts were added.
-     * 
+     *
      * @param url the URL
      */
     protected void suffix(StringBuilder url)

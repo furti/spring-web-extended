@@ -1,7 +1,7 @@
 package at.porscheinformatik.common.spring.web.extended.util;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.util.regex.Pattern;
 
@@ -36,7 +36,6 @@ public class RequestUtilsTest
             {"/test/templates/ab/cd", "^.*templates/(.*)", "ab/cd", false},
             {"/test/templates/ab/cd", "^.*template/(.*)", null, false},
             {"/test/templates/ab/cd;jsessionid=Aabasce", "^.*templates/(.*)", "ab/cd", true},
-            {"/test/templates/ab;jsessionid=abasce/cd", "^.*templates/(.*)", "ab/cd", true}
-        };
+            {"/test/templates/ab;jsessionid=abasce/cd", "^.*templates/(.*)", "ab/cd", true}};
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 public class ClasspathResourceScanner extends AbstractResourceScanner
 {
 
-    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+    private final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     @Override
     public Map<String, Resource> doScanResources(String pattern, String basePath) throws IOException
@@ -47,7 +47,7 @@ public class ClasspathResourceScanner extends AbstractResourceScanner
 
     /**
      * Remove all resources that are not a localized form of the base resource
-     * 
+     *
      * @param resources
      * @param file
      * @return

@@ -15,7 +15,7 @@ import at.porscheinformatik.common.spring.web.extended.util.SpringWebExtendedUti
 
 public abstract class StackBase extends AbstractTemplateCache
 {
-    private ResourceType resourceType;
+    private final ResourceType resourceType;
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     public StackBase(ResourceType resourceType, String stackName, boolean noCaching)
@@ -40,7 +40,7 @@ public abstract class StackBase extends AbstractTemplateCache
 
     /**
      * Scan all resources in the location and add them to the stack
-     * 
+     *
      * @param location
      * @throws IOException
      */
@@ -114,7 +114,7 @@ public abstract class StackBase extends AbstractTemplateCache
 
     /**
      * Add the locale to the name
-     * 
+     *
      * @param name
      * @param key
      * @return

@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,31 +29,29 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Optimiz
 
 public interface SpringWebExtendedConfigurer
 {
-	void configureMessageSource(MessageSourceConfig config);
+    void configureMessageSource(MessageSourceConfig config);
 
-	void configureStyles(StackConfig config);
+    void configureStyles(StackConfig config);
 
-	void configureScripts(StackConfig config);
+    void configureScripts(StackConfig config);
 
-	void configureHtmlTemplates(StackConfig config);
+    void configureHtmlTemplates(StackConfig config);
 
-	/**
-	 * Works in combination with the {@link CdnExpressionHandler}. Is
-	 * espessially usefull if you want to load javascript libraries (e.g.
-	 * jquery, angular,...) from their CDN location to optimize loading and
-	 * caching of this resources.
-	 * 
-	 * @param config
-	 */
-	void configureCDN(CdnConfig config);
+    /**
+     * Works in combination with the {@link CdnExpressionHandler}. Is espessially usefull if you want to load javascript
+     * libraries (e.g. jquery, angular,...) from their CDN location to optimize loading and caching of this resources.
+     * 
+     * @param config
+     */
+    void configureCDN(CdnConfig config);
 
-	void configureApplication(ApplicationConfiguration config);
+    void configureApplication(ApplicationConfiguration config);
 
-	void configureOptimizers(OptimizerConfig config);
+    void configureOptimizers(OptimizerConfig config);
 
-	void configureResourceScanners(Map<String, ResourceScanner> config);
+    void configureResourceScanners(Map<String, ResourceScanner> config);
 
-	void configureExpressionHandlers(Map<String, ExpressionHandler> config);
+    void configureExpressionHandlers(Map<String, ExpressionHandler> config);
 
-	void configureLocaleSources(List<LocaleSource> sources);
+    void configureLocaleSources(List<LocaleSource> sources);
 }

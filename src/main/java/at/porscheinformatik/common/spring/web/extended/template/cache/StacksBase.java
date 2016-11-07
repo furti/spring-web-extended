@@ -30,8 +30,7 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Optimiz
 public abstract class StacksBase<T extends StackBase>
 {
 
-    private static final Logger LOG = LoggerFactory
-        .getLogger(StyleStacks.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StyleStacks.class);
 
     private LinkedHashMap<String, T> stacks;
     private ResourceScanners scanners;
@@ -40,7 +39,7 @@ public abstract class StacksBase<T extends StackBase>
     private OptimizerChain optimizerChain;
     private LinkCreator linkCreator;
 
-    private DefaultStackConfig config;
+    private final DefaultStackConfig config;
 
     private ApplicationConfiguration appConfig;
 
@@ -57,28 +56,23 @@ public abstract class StacksBase<T extends StackBase>
 
     public T get(String stackId)
     {
-        return stacks != null
-            ? stacks.get(stackId)
-            : null;
+        return stacks != null ? stacks.get(stackId) : null;
     }
 
     @PostConstruct
     private void setupStacks() throws IOException
     {
         stacks = new LinkedHashMap<>();
-        Map<String, LinkedHashMap<String, StackEntry>> stackConfigs = config
-            .getStacks();
+        Map<String, LinkedHashMap<String, StackEntry>> stackConfigs = config.getStacks();
 
         if (stackConfigs == null)
         {
             return;
         }
 
-        for (Entry<String, LinkedHashMap<String, StackEntry>> entry : stackConfigs
-            .entrySet())
+        for (Entry<String, LinkedHashMap<String, StackEntry>> entry : stackConfigs.entrySet())
         {
-            T stack = createNewInstance(entry.getKey(),
-                config.isNoCaching(entry.getKey()));
+            T stack = createNewInstance(entry.getKey(), config.isNoCaching(entry.getKey()));
             stack.setTemplateFactory(templateFactory);
             stack.setScanners(scanners);
             stack.setOptimizerChain(optimizerChain);
@@ -86,11 +80,9 @@ public abstract class StacksBase<T extends StackBase>
             stack.setLinkCreator(linkCreator);
             stack.setTemplateRenderContextFactory(templateRenderContextFactory);
 
-            for (Entry<String, StackEntry> resourceEntry : entry.getValue()
-                .entrySet())
+            for (Entry<String, StackEntry> resourceEntry : entry.getValue().entrySet())
             {
-                stack.addResource(resourceEntry.getKey(),
-                    resourceEntry.getValue());
+                stack.addResource(resourceEntry.getKey(), resourceEntry.getValue());
             }
 
             stacks.put(entry.getKey(), stack);

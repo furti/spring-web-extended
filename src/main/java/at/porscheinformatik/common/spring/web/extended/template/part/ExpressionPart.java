@@ -7,33 +7,32 @@ import at.porscheinformatik.common.spring.web.extended.expression.ExpressionHand
 public class ExpressionPart implements TemplatePart
 {
 
-	private String expression;
-	private ExpressionHandlers handlers;
+    private final String expression;
+    private final ExpressionHandlers handlers;
 
-	public ExpressionPart(String handler, String value,
-			ExpressionHandlers handlers)
-	{
-		this(handler + ":" + value, handlers);
-	}
+    public ExpressionPart(String handler, String value, ExpressionHandlers handlers)
+    {
+        this(handler + ":" + value, handlers);
+    }
 
-	public ExpressionPart(String expression, ExpressionHandlers handlers)
-	{
-		super();
-		Assert.notNull(handlers, "Handlers must be set");
-		Assert.notNull(expression, "Expression must not be null");
-		this.expression = expression;
-		this.handlers = handlers;
-	}
+    public ExpressionPart(String expression, ExpressionHandlers handlers)
+    {
+        super();
+        Assert.notNull(handlers, "Handlers must be set");
+        Assert.notNull(expression, "Expression must not be null");
+        this.expression = expression;
+        this.handlers = handlers;
+    }
 
-	@Override
-	public String render()
-	{
-		return handlers.processExpression(expression);
-	}
+    @Override
+    public String render()
+    {
+        return handlers.processExpression(expression);
+    }
 
-	@Override
-	public String toString()
-	{
-		return "${" + expression + "}";
-	}
+    @Override
+    public String toString()
+    {
+        return "${" + expression + "}";
+    }
 }

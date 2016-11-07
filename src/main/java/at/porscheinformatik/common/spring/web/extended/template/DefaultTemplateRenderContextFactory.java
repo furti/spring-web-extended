@@ -7,7 +7,7 @@ import java.util.Locale;
  * <p>
  * Create a {@link DefaultTemplateRenderContext} with the locale and the template type
  * </p>
- * 
+ *
  * @author Daniel Furtlehner
  */
 public class DefaultTemplateRenderContextFactory implements TemplateRenderContextFactory
@@ -16,8 +16,6 @@ public class DefaultTemplateRenderContextFactory implements TemplateRenderContex
     @Override
     public TemplateRenderContext createContext(Locale locale, Template template)
     {
-        return new DefaultTemplateRenderContext(
-            locale,
-            template.getType());
+        return new DefaultTemplateRenderContext(locale, template.getType());
     }
 }

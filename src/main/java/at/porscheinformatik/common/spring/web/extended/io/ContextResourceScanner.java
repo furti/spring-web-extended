@@ -20,7 +20,7 @@ import org.springframework.web.context.ServletContextAware;
 
 /**
  * Scans the webapp directory for resources.
- * 
+ *
  * @author Daniel Furtlehner
  */
 public class ContextResourceScanner extends AbstractResourceScanner implements ServletContextAware
@@ -28,6 +28,7 @@ public class ContextResourceScanner extends AbstractResourceScanner implements S
 
     private ServletContext context;
 
+    @Override
     public void setServletContext(ServletContext context)
     {
         this.context = context;
@@ -49,44 +50,37 @@ public class ContextResourceScanner extends AbstractResourceScanner implements S
         Set<String> templatePaths = new HashSet<>();
         final String[] nameAndEnding = ResourceUtils.getNameAndEnding(file);
 
-        addTemplates(ensureLeadingSlash(path), scanSubDirectories, new FileMatcher()
-        {
+        addTemplates(ensureLeadingSlash(path), scanSubDirectories, path1 -> {
+            String filename = ResourceUtils.pathAndFile(path1)[1];
+            int baselength = nameAndEnding[0].length();
 
-            @Override
-            public boolean matches(String path)
+            if (!filename.startsWith(nameAndEnding[0]))
             {
-                String filename = ResourceUtils.pathAndFile(path)[1];
-                int baselength = nameAndEnding[0].length();
+                return false;
+            }
 
-                if (!filename.startsWith(nameAndEnding[0]))
+            if (nameAndEnding[1] != null)
+            {
+                baselength += nameAndEnding[1].length();
+
+                if (!filename.endsWith(nameAndEnding[1]))
                 {
                     return false;
                 }
-
-                if (nameAndEnding[1] != null)
-                {
-                    baselength += nameAndEnding[1].length();
-
-                    if (!filename.endsWith(nameAndEnding[1]))
-                    {
-                        return false;
-                    }
-                }
-
-                /*
-                 * If the file has more characters than the basename the
-                 * character following the filename must be a _ to be an
-                 * locale. Else we might have a minimized version of the
-                 * same resource. So ignore it
-                 */
-                if (filename.length() > baselength)
-                {
-                    return filename.charAt(nameAndEnding[0].length()) == '_';
-                }
-
-                return true;
             }
 
+            /*
+             * If the file has more characters than the basename the
+             * character following the filename must be a _ to be an
+             * locale. Else we might have a minimized version of the
+             * same resource. So ignore it
+             */
+            if (filename.length() > baselength)
+            {
+                return filename.charAt(nameAndEnding[0].length()) == '_';
+            }
+
+            return true;
         }, templatePaths);
 
         return createResources(path, templatePaths);
@@ -128,7 +122,7 @@ public class ContextResourceScanner extends AbstractResourceScanner implements S
             return null;
         }
 
-        Map<String, Resource> resources = new HashMap<String, Resource>();
+        Map<String, Resource> resources = new HashMap<>();
 
         for (String templateFile : templateFiles)
         {

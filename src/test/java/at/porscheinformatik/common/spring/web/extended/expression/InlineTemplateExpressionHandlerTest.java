@@ -27,7 +27,7 @@ public class InlineTemplateExpressionHandlerTest
     public void testUnknownTemplate()
     {
         InlineTemplateExpressionHandler handler = createHandler("testtemplate.html", "Test Content");
-        
+
         handler.process("unknownTemplate");
 
         Assert.fail("Expected exception");

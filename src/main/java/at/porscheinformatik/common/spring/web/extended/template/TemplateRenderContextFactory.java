@@ -4,7 +4,7 @@ import java.util.Locale;
 
 /**
  * Factory to create a TemplateRenderContext
- * 
+ *
  * @author Daniel Furtlehner
  */
 public interface TemplateRenderContextFactory

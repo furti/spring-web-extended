@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,47 +30,47 @@ import at.porscheinformatik.common.spring.web.extended.io.WebJarResourceScanner;
 
 /**
  * @author Daniel Furtlehner
- * 
+ *
  */
 @Configuration
 public class ResourceScannerConfig
 {
-	@Autowired
-	private SpringWebExtendedConfigurerConfig configurerConfig;
+    @Autowired
+    private SpringWebExtendedConfigurerConfig configurerConfig;
 
-	@Bean
-	public ResourceScanners resourceScanners()
-	{
-		return new ResourceScanners(getScanners());
-	}
+    @Bean
+    public ResourceScanners resourceScanners()
+    {
+        return new ResourceScanners(getScanners());
+    }
 
-	@Bean
-	public ContextResourceScanner contextResourceScanner()
-	{
-		return new ContextResourceScanner();
-	}
+    @Bean
+    public ContextResourceScanner contextResourceScanner()
+    {
+        return new ContextResourceScanner();
+    }
 
-	@Bean
-	public ClasspathResourceScanner classpathResourceScanner()
-	{
-		return new ClasspathResourceScanner();
-	}
+    @Bean
+    public ClasspathResourceScanner classpathResourceScanner()
+    {
+        return new ClasspathResourceScanner();
+    }
 
-	@Bean
-	public WebJarResourceScanner webJarResourceScanner()
-	{
-		return new WebJarResourceScanner();
-	}
+    @Bean
+    public WebJarResourceScanner webJarResourceScanner()
+    {
+        return new WebJarResourceScanner();
+    }
 
-	public Map<String, ResourceScanner> getScanners()
-	{
-		Map<String, ResourceScanner> scanners = new HashMap<>();
-		scanners.put("", contextResourceScanner());
-		scanners.put("classpath", classpathResourceScanner());
-		scanners.put("webjar", webJarResourceScanner());
+    public Map<String, ResourceScanner> getScanners()
+    {
+        Map<String, ResourceScanner> scanners = new HashMap<>();
+        scanners.put("", contextResourceScanner());
+        scanners.put("classpath", classpathResourceScanner());
+        scanners.put("webjar", webJarResourceScanner());
 
-		configurerConfig.configureResourceScanners(scanners);
+        configurerConfig.configureResourceScanners(scanners);
 
-		return scanners;
-	}
+        return scanners;
+    }
 }

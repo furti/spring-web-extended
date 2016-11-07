@@ -28,8 +28,7 @@ public class RequestURILocaleSource extends NthPathPartLocaleSource
     }
 
     @Override
-    protected String getPath(HttpServletRequest request,
-        HttpServletResponse response)
+    protected String getPath(HttpServletRequest request, HttpServletResponse response)
     {
         StringBuilder builder = new StringBuilder();
 

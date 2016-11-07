@@ -140,15 +140,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements 
 
         if (htmlConfig.getRefreshIntervall() > 0 && htmlStacks != null)
         {
-            taskRegistrar.addFixedDelayTask(new Runnable()
-            {
-
-                @Override
-                public void run()
-                {
-                    htmlStacks.refresh();
-                }
-            }, htmlConfig.getRefreshIntervall() * 1000);
+            taskRegistrar.addFixedDelayTask(() -> htmlStacks.refresh(), htmlConfig.getRefreshIntervall() * 1000);
         }
 
         StackConfig styleConfig = configurerConfig.getStyleConfig();
@@ -157,15 +149,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements 
         if (styleConfig.getRefreshIntervall() > 0 && styles != null)
         {
 
-            taskRegistrar.addFixedDelayTask(new Runnable()
-            {
-
-                @Override
-                public void run()
-                {
-                    styles.refresh();
-                }
-            }, styleConfig.getRefreshIntervall() * 1000);
+            taskRegistrar.addFixedDelayTask(() -> styles.refresh(), styleConfig.getRefreshIntervall() * 1000);
         }
 
         StackConfig scriptConfig = configurerConfig.getScriptConfig();
@@ -174,15 +158,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements 
         if (scriptConfig.getRefreshIntervall() > 0 && scripts != null)
         {
 
-            taskRegistrar.addFixedDelayTask(new Runnable()
-            {
-
-                @Override
-                public void run()
-                {
-                    scripts.refresh();
-                }
-            }, scriptConfig.getRefreshIntervall() * 1000);
+            taskRegistrar.addFixedDelayTask(() -> scripts.refresh(), scriptConfig.getRefreshIntervall() * 1000);
         }
     }
 

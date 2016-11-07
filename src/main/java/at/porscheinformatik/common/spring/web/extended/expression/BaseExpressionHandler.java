@@ -7,50 +7,50 @@ import at.porscheinformatik.common.spring.web.extended.template.TemplateRenderCo
 
 public abstract class BaseExpressionHandler implements ExpressionHandler
 {
-	private boolean valueNeeded;
+    private final boolean valueNeeded;
 
-	public BaseExpressionHandler(boolean valueNeeded)
-	{
-		super();
-		this.valueNeeded = valueNeeded;
-	}
+    public BaseExpressionHandler(boolean valueNeeded)
+    {
+        super();
+        this.valueNeeded = valueNeeded;
+    }
 
-	@Override
-	public String process(String value)
-	{
-		return escape(doProcess(value));
-	}
+    @Override
+    public String process(String value)
+    {
+        return escape(doProcess(value));
+    }
 
-	protected abstract String doProcess(String value);
+    protected abstract String doProcess(String value);
 
-	protected TemplateRenderContext getTemplateRenderContext()
-	{
-		return TemplateRenderContextHolder.actualContext();
-	}
+    protected TemplateRenderContext getTemplateRenderContext()
+    {
+        return TemplateRenderContextHolder.actualContext();
+    }
 
-	private String escape(String value)
-	{
-		TemplateRenderContext context = getTemplateRenderContext();
+    private String escape(String value)
+    {
+        TemplateRenderContext context = getTemplateRenderContext();
 
-		if (context == null || context.getResourceType() == null)
-		{
-			return value;
-		}
+        if (context == null || context.getResourceType() == null)
+        {
+            return value;
+        }
 
-		switch (context.getResourceType())
-		{
-		case HTML:
-			return StringEscapeUtils.escapeHtml(value);
-		case SCRIPT:
-			return StringEscapeUtils.escapeJavaScript(value);
-		default:
-			return value;
-		}
-	}
+        switch (context.getResourceType())
+        {
+            case HTML:
+                return StringEscapeUtils.escapeHtml(value);
+            case SCRIPT:
+                return StringEscapeUtils.escapeJavaScript(value);
+            default:
+                return value;
+        }
+    }
 
-	@Override
-	public boolean valueNeeded()
-	{
-		return valueNeeded;
-	}
+    @Override
+    public boolean valueNeeded()
+    {
+        return valueNeeded;
+    }
 }

@@ -1,7 +1,7 @@
 package at.porscheinformatik.common.spring.web.extended.template.cache.script;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.HashMap;

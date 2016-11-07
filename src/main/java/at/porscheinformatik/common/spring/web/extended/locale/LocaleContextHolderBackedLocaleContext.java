@@ -12,10 +12,10 @@ import org.springframework.context.i18n.LocaleContextHolder;
 public class LocaleContextHolderBackedLocaleContext implements LocaleContext
 {
 
-	@Override
-	public Locale getLocale()
-	{
-		return LocaleContextHolder.getLocale();
-	}
+    @Override
+    public Locale getLocale()
+    {
+        return LocaleContextHolder.getLocale();
+    }
 
 }

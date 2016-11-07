@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,8 +28,8 @@ import java.util.Set;
 public class DefaultStackConfig implements StackConfig
 {
     private int refreshIntervall;
-    private LinkedHashMap<String, LinkedHashMap<String, StackEntry>> stacks = new LinkedHashMap<>();
-    private Set<String> noCachingStacks = new HashSet<>();
+    private final LinkedHashMap<String, LinkedHashMap<String, StackEntry>> stacks = new LinkedHashMap<>();
+    private final Set<String> noCachingStacks = new HashSet<>();
 
     public DefaultStackConfig()
     {
@@ -39,7 +39,7 @@ public class DefaultStackConfig implements StackConfig
     @Override
     public StackConfig setRefreshIntervall(int intervall)
     {
-        this.refreshIntervall = intervall;
+        refreshIntervall = intervall;
 
         return this;
     }
@@ -99,7 +99,7 @@ public class DefaultStackConfig implements StackConfig
             return null;
         }
 
-        return new ArrayList<String>(stacks.get(stackName).keySet());
+        return new ArrayList<>(stacks.get(stackName).keySet());
     }
 
     public LinkedHashMap<String, LinkedHashMap<String, StackEntry>> getStacks()

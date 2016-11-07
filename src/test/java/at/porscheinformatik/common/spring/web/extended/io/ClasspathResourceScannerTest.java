@@ -1,8 +1,7 @@
 package at.porscheinformatik.common.spring.web.extended.io;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.Map;
@@ -10,8 +9,6 @@ import java.util.Map;
 import org.springframework.core.io.Resource;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import at.porscheinformatik.common.spring.web.extended.io.ClasspathResourceScanner;
 
 public class ClasspathResourceScannerTest
 {

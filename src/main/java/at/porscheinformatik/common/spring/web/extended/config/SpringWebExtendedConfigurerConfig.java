@@ -40,7 +40,7 @@ import ro.isdc.wro.util.Base64;
 
 /**
  * Contains all the functionallity needed for handling the {@link SpringWebExtendedConfigurer}s
- * 
+ *
  * @author Daniel Furtlehner
  */
 @Configuration
@@ -51,7 +51,7 @@ public class SpringWebExtendedConfigurerConfig
     @Autowired
     private Environment environment;
 
-    private DelegatingSpringWebExtendedConfiguerer configurer = new DelegatingSpringWebExtendedConfiguerer();
+    private final DelegatingSpringWebExtendedConfiguerer configurer = new DelegatingSpringWebExtendedConfiguerer();
 
     private DefaultStackConfig scriptConfig, styleConfig, htmlConfig;
     private OptimizerConfig optimizerConfig;
@@ -68,8 +68,7 @@ public class SpringWebExtendedConfigurerConfig
         DefaultApplicationConfiguration config = new DefaultApplicationConfiguration();
 
         // Set the default optimize flag
-        config.setOptimizeResources(environment
-            .acceptsProfiles("optimizeresources"));
+        config.setOptimizeResources(environment.acceptsProfiles("optimizeresources"));
 
         config.addLocale("en");
 
@@ -107,10 +106,7 @@ public class SpringWebExtendedConfigurerConfig
 
             styleConfig = new DefaultStackConfig();
             // Default refresh intervall
-            styleConfig.setRefreshIntervall(
-                appConfig.isOptimizeResources()
-                    ? -1
-                    : DEFAULT_REFRESH_INTERVALL);
+            styleConfig.setRefreshIntervall(appConfig.isOptimizeResources() ? -1 : DEFAULT_REFRESH_INTERVALL);
 
             configurer.configureStyles(styleConfig);
         }
@@ -125,9 +121,7 @@ public class SpringWebExtendedConfigurerConfig
             ApplicationConfiguration appConfig = appConfig();
 
             htmlConfig = new DefaultStackConfig();
-            htmlConfig.setRefreshIntervall(appConfig.isOptimizeResources()
-                ? -1
-                : DEFAULT_REFRESH_INTERVALL);
+            htmlConfig.setRefreshIntervall(appConfig.isOptimizeResources() ? -1 : DEFAULT_REFRESH_INTERVALL);
 
             htmlConfig.scanPattern("", "templates/**/*.html");
 
@@ -157,9 +151,7 @@ public class SpringWebExtendedConfigurerConfig
 
             scriptConfig = new DefaultStackConfig();
             // Default refresh intervall
-            scriptConfig.setRefreshIntervall(appConfig.isOptimizeResources()
-                ? -1
-                : DEFAULT_REFRESH_INTERVALL);
+            scriptConfig.setRefreshIntervall(appConfig.isOptimizeResources() ? -1 : DEFAULT_REFRESH_INTERVALL);
 
             configurer.configureScripts(scriptConfig);
         }
@@ -180,8 +172,7 @@ public class SpringWebExtendedConfigurerConfig
              * https://code.google.com/p/wro4j/issues/detail?id=231
              */
             optimizerConfig.addOptimizer(ResourceType.STYLE, "yuicss", new YUICssCompressorProcessor());
-            optimizerConfig.addOptimizer(ResourceType.SCRIPT, "jsmin",
-                new JSMinProcessor());
+            optimizerConfig.addOptimizer(ResourceType.SCRIPT, "jsmin", new JSMinProcessor());
 
             configurer.configureOptimizers(optimizerConfig);
         }
@@ -189,29 +180,22 @@ public class SpringWebExtendedConfigurerConfig
         return optimizerConfig;
     }
 
-    public void configureMessageSource(
-        ReloadableResourceBundleMessageSource messageSource)
+    public void configureMessageSource(ReloadableResourceBundleMessageSource messageSource)
     {
         ApplicationConfiguration appConfig = appConfig();
 
         MessageSourceConfig config = new DefaultMessageSourceConfig();
         config.addBaseName("WEB-INF/messages/Messages");
-        config.setCacheSeconds(
-            appConfig.isOptimizeResources()
-                ? -1
-                : DEFAULT_REFRESH_INTERVALL);
+        config.setCacheSeconds(appConfig.isOptimizeResources() ? -1 : DEFAULT_REFRESH_INTERVALL);
         config.setDefaultEncoding("UTF-8");
 
         configurer.configureMessageSource(config);
 
-        messageSource.setCacheSeconds(config.getCacheSeconds() != null
-            ? config.getCacheSeconds()
-            : -1);
+        messageSource.setCacheSeconds(config.getCacheSeconds() != null ? config.getCacheSeconds() : -1);
 
         if (!CollectionUtils.isEmpty(config.getBaseNames()))
         {
-            messageSource.setBasenames(config.getBaseNames().toArray(
-                new String[config.getBaseNames().size()]));
+            messageSource.setBasenames(config.getBaseNames().toArray(new String[config.getBaseNames().size()]));
         }
 
         messageSource.setDefaultEncoding(config.getDefaultEncoding());
@@ -232,8 +216,7 @@ public class SpringWebExtendedConfigurerConfig
         configurer.configureResourceScanners(scanners);
     }
 
-    public void configureExpressionHandlers(
-        HashMap<String, ExpressionHandler> handlers)
+    public void configureExpressionHandlers(HashMap<String, ExpressionHandler> handlers)
     {
         configurer.configureExpressionHandlers(handlers);
     }

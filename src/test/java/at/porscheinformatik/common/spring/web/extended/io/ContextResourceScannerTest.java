@@ -6,7 +6,6 @@ import static org.junit.Assert.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -19,9 +18,8 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import org.mockito.Matchers;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 import org.testng.annotations.AfterTest;
@@ -136,70 +134,58 @@ public class ContextResourceScannerTest
     private ServletContext buildServletContext() throws MalformedURLException
     {
         ServletContext context = Mockito.mock(ServletContext.class);
-        Mockito.when(context.getResource(Mockito.anyString())).then(new Answer<URL>()
-        {
+        Mockito.when(context.getResource(Matchers.anyString())).then(invocation -> {
+            String path = (String) invocation.getArguments()[0];
 
-            @Override
-            public URL answer(InvocationOnMock invocation) throws Throwable
+            if (!path.startsWith("/"))
             {
-                String path = (String) invocation.getArguments()[0];
-
-                if (!path.startsWith("/"))
-                {
-                    throw new IllegalArgumentException("Path " + path + " must start with a / ");
-                }
-
-                //Remove the leading slash
-                path = path.substring(1);
-
-                Path fullPath = TMPDIR.resolve(path);
-
-                if (!Files.exists(fullPath))
-                {
-                    return null;
-                }
-
-                return fullPath.toUri().toURL();
+                throw new IllegalArgumentException("Path " + path + " must start with a / ");
             }
+
+            //Remove the leading slash
+            path = path.substring(1);
+
+            Path fullPath = TMPDIR.resolve(path);
+
+            if (!Files.exists(fullPath))
+            {
+                return null;
+            }
+
+            return fullPath.toUri().toURL();
         });
 
-        Mockito.when(context.getResourcePaths(Mockito.anyString())).then(new Answer<Set<String>>()
-        {
+        Mockito.when(context.getResourcePaths(Matchers.anyString())).then(invocation -> {
+            String path = (String) invocation.getArguments()[0];
 
-            @Override
-            public Set<String> answer(InvocationOnMock invocation) throws Throwable
+            if (!path.startsWith("/"))
             {
-                String path = (String) invocation.getArguments()[0];
+                throw new IllegalArgumentException("Path " + path + " must start with a / ");
+            }
 
-                if (!path.startsWith("/"))
+            //Remove the leading slash
+            path = path.substring(1);
+
+            Set<String> paths = new HashSet<>();
+
+            try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(TMPDIR.resolve(path));)
+            {
+                for (Path dirPath : dirStream)
                 {
-                    throw new IllegalArgumentException("Path " + path + " must start with a / ");
-                }
+                    Path relative = TMPDIR.relativize(dirPath);
 
-                //Remove the leading slash
-                path = path.substring(1);
-
-                Set<String> paths = new HashSet<>();
-
-                try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(TMPDIR.resolve(path));)
-                {
-                    for (Path dirPath : dirStream)
+                    if (Files.isDirectory(dirPath))
                     {
-                        Path relative = TMPDIR.relativize(dirPath);
-
-                        if (Files.isDirectory(dirPath))
-                        {
-                            paths.add("/" + relative.toString().replace("\\", "/") + "/");
-                        }
-                        else
-                        {
-                            paths.add("/" + relative.toString().replace("\\", "/"));
-                        }
+                        paths.add("/" + relative.toString().replace("\\", "/") + "/");
+                    }
+                    else
+                    {
+                        paths.add("/" + relative.toString().replace("\\", "/"));
                     }
                 }
-
-                return paths.isEmpty() ? null : paths;
             }
+
+            return paths.isEmpty() ? null : paths;
         });
 
         return context;

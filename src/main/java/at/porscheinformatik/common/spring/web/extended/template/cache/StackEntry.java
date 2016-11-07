@@ -3,59 +3,60 @@ package at.porscheinformatik.common.spring.web.extended.template.cache;
 public class StackEntry
 {
 
-	private String location;
-	private String minifiedLocation;
-	private boolean scanLocation;
-	private boolean skipProcessing;
+    public static StackEntry scan(String pattern, String basePath)
+    {
+        return new StackEntry(pattern, null, basePath, false, true);
+    }
 
-	public StackEntry(String location, String minifiedLocation,
-			boolean skipProcessing)
-	{
-		super();
-		this.location = location;
-		this.minifiedLocation = minifiedLocation;
-		this.scanLocation = false;
-		this.skipProcessing = skipProcessing;
-	}
+    public static StackEntry resource(String location, String minifiedLocation, boolean skipProcessing)
+    {
+        return new StackEntry(location, minifiedLocation, null, skipProcessing, false);
+    }
 
-	public StackEntry(String location, boolean scanLocation)
-	{
-		this.location = location;
-		this.scanLocation = scanLocation;
-	}
+    public static StackEntry resource(String location, boolean skipProcessing)
+    {
+        return new StackEntry(location, null, null, skipProcessing, false);
+    }
 
-	public String getLocation()
-	{
-		return location;
-	}
+    private final String location;
+    private final String minifiedLocation;
+    private final String basePath;
+    private final boolean scanLocation;
+    private final boolean skipProcessing;
 
-	public void setLocation(String location)
-	{
-		this.location = location;
-	}
+    private StackEntry(String location, String minifiedLocation, String basePath, boolean skipProcessing,
+        boolean scanLocation)
+    {
+        super();
+        this.location = location;
+        this.minifiedLocation = minifiedLocation;
+        this.basePath = basePath;
+        this.skipProcessing = skipProcessing;
+        this.scanLocation = scanLocation;
+    }
 
-	public String getMinifiedLocation()
-	{
-		return minifiedLocation;
-	}
+    public String getBasePath()
+    {
+        return basePath;
+    }
 
-	public void setMinifiedLocation(String minifiedLocation)
-	{
-		this.minifiedLocation = minifiedLocation;
-	}
+    public String getLocation()
+    {
+        return location;
+    }
 
-	public boolean isScanLocation()
-	{
-		return scanLocation;
-	}
+    public String getMinifiedLocation()
+    {
+        return minifiedLocation;
+    }
 
-	public void setScanLocation(boolean scanLocation)
-	{
-		this.scanLocation = scanLocation;
-	}
+    public boolean isScanLocation()
+    {
+        return scanLocation;
+    }
 
-	public boolean isSkipProcessing()
-	{
-		return skipProcessing;
-	}
+    public boolean isSkipProcessing()
+    {
+        return skipProcessing;
+    }
 }

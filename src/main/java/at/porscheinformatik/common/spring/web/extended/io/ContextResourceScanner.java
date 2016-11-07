@@ -1,5 +1,7 @@
 package at.porscheinformatik.common.spring.web.extended.io;
 
+import static at.porscheinformatik.common.spring.web.extended.util.PathUtils.*;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,6 +14,7 @@ import javax.servlet.ServletContext;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.ServletContextAware;
 
@@ -20,8 +23,7 @@ import org.springframework.web.context.ServletContextAware;
  * 
  * @author Daniel Furtlehner
  */
-public class ContextResourceScanner implements ServletContextAware,
-    ResourceScanner
+public class ContextResourceScanner extends AbstractResourceScanner implements ServletContextAware
 {
 
     private ServletContext context;
@@ -32,22 +34,22 @@ public class ContextResourceScanner implements ServletContextAware,
     }
 
     @Override
-    public Map<String, Resource> scanResources(String path) throws IOException
+    public Map<String, Resource> doScanResources(String pattern, String basePath) throws IOException
     {
         Set<String> templatePaths = new HashSet<>();
-        addTemplates(preparePath(path), true, null, templatePaths);
+        addTemplates(ensureLeadingSlash(basePath), true, new PatternFileMatcher(ensureLeadingSlash(pattern)),
+            templatePaths);
 
-        return createResources(path, templatePaths);
+        return createResources(basePath, templatePaths);
     }
 
     @Override
-    public Map<String, Resource> scanResources(String path, String file,
-        boolean scanSubDirectories) throws IOException
+    public Map<String, Resource> scanResources(String path, String file, boolean scanSubDirectories) throws IOException
     {
         Set<String> templatePaths = new HashSet<>();
         final String[] nameAndEnding = ResourceUtils.getNameAndEnding(file);
 
-        addTemplates(preparePath(path), scanSubDirectories, new FileMatcher()
+        addTemplates(ensureLeadingSlash(path), scanSubDirectories, new FileMatcher()
         {
 
             @Override
@@ -119,20 +121,6 @@ public class ContextResourceScanner implements ServletContextAware,
         }
     }
 
-    /**
-     * @param path
-     * @return
-     */
-    private String preparePath(String path)
-    {
-        if (!path.startsWith("/"))
-        {
-            return "/" + path;
-        }
-
-        return path;
-    }
-
     private Map<String, Resource> createResources(String path, Set<String> templateFiles) throws MalformedURLException
     {
         if (CollectionUtils.isEmpty(templateFiles))
@@ -146,13 +134,10 @@ public class ContextResourceScanner implements ServletContextAware,
         {
             String relative = templateFile.substring(path.length() + 1).replace("\\", "/");
 
-            if (relative.startsWith("/"))
-            {
-                relative = relative.substring(1);
-            }
+            relative = removeLeadingSlashes(relative);
 
             URL resourceURL = context.getResource(templateFile);
-            
+
             resources.put(relative, new UrlResource(resourceURL));
         }
 
@@ -163,5 +148,24 @@ public class ContextResourceScanner implements ServletContextAware,
     {
 
         boolean matches(String path);
+    }
+
+    private static class PatternFileMatcher implements FileMatcher
+    {
+        private final AntPathMatcher pathMatcher;
+        private final String pattern;
+
+        public PatternFileMatcher(String pattern)
+        {
+            pathMatcher = new AntPathMatcher();
+            this.pattern = pattern;
+        }
+
+        @Override
+        public boolean matches(String path)
+        {
+            return pathMatcher.match(pattern, path);
+        }
+
     }
 }

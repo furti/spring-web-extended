@@ -24,103 +24,102 @@ import java.util.List;
 public interface StackConfig
 {
 
-	/**
-	 * If the intervall is less than 1 no refresh will be performed.
-	 * 
-	 * @param intervall
-	 *            in seconds.
-	 */
-	StackConfig setRefreshIntervall(int intervall);
+    /**
+     * If the intervall is less than 1 no refresh will be performed.
+     * 
+     * @param intervall in seconds.
+     */
+    StackConfig setRefreshIntervall(int intervall);
 
-	/**
-	 * Defaults to 5 seconds
-	 * 
-	 * @return intervall in seconds. -1 for no refresh
-	 */
-	int getRefreshIntervall();
+    /**
+     * Defaults to 5 seconds
+     * 
+     * @return intervall in seconds. -1 for no refresh
+     */
+    int getRefreshIntervall();
 
-	StackConfig removeStack(String stackName);
+    StackConfig removeStack(String stackName);
 
-	/**
-	 * equals to addToStack(stackName, resourceName, location, false)
-	 * 
-	 * @param stackName
-	 * @param resourceName
-	 * @param location
-	 * @return
-	 */
-	StackConfig addToStack(String stackName, String resourceName,
-			String location);
+    /**
+     * equals to addToStack(stackName, resourceName, location, false)
+     * 
+     * @param stackName
+     * @param resourceName
+     * @param location
+     * @return
+     */
+    StackConfig addToStack(String stackName, String resourceName, String location);
 
-	/**
-	 * @param stackName
-	 * @param resourceName
-	 * @param location
-	 * @param skipProcessing
-	 *            - if true the resource will be used as it is and no template
-	 *            processing is performed. Especially usefull for external
-	 *            scripts or styles that contains some special characters the
-	 *            template engine uses and that cant't be escaped by the
-	 *            application
-	 * @return
-	 */
-	StackConfig addToStack(String stackName, String resourceName,
-			String location, boolean skipProcessing);
+    /**
+     * @param stackName
+     * @param resourceName
+     * @param location
+     * @param skipProcessing - if true the resource will be used as it is and no template processing is performed.
+     *            Especially usefull for external scripts or styles that contains some special characters the template
+     *            engine uses and that cant't be escaped by the application
+     * @return
+     */
+    StackConfig addToStack(String stackName, String resourceName, String location, boolean skipProcessing);
 
-	/**
-	 * equals to addToStack(stackName, resourceName, location, minifiedLocation,
-	 * true)
-	 * 
-	 * @param stackName
-	 * @param resourceName
-	 * @param location
-	 * @param minifiedLocation
-	 * @return
-	 */
-	StackConfig addToStack(String stackName, String resourceName,
-			String location,
-			String minifiedLocation);
+    /**
+     * equals to addToStack(stackName, resourceName, location, minifiedLocation, true)
+     * 
+     * @param stackName
+     * @param resourceName
+     * @param location
+     * @param minifiedLocation
+     * @return
+     */
+    StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation);
 
-	/**
-	 * 
-	 * 
-	 * @param stackName
-	 * @param resourceName
-	 * @param location
-	 * @param minifiedLocation
-	 * @param skipProcessing
-	 * @return
-	 */
-	StackConfig addToStack(String stackName, String resourceName,
-			String location,
-			String minifiedLocation, boolean skipProcessing);
+    /**
+     * 
+     * 
+     * @param stackName
+     * @param resourceName
+     * @param location
+     * @param minifiedLocation
+     * @param skipProcessing
+     * @return
+     */
+    StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation,
+        boolean skipProcessing);
 
-	/**
-	 * Scans all resources in a path and adds them to the stack. The ordering of
-	 * the resources is unspecified. Especially usefull for html template
-	 * scanning where the ordering of the resources does not matter
-	 * 
-	 * @param stackName
-	 * @param path
-	 * @return
-	 */
-	StackConfig scanPath(String stackName, String path);
+    /**
+     * Uses the given pattern to scan for resources.
+     * 
+     * Valid Patterns are:
+     * <ul>
+     * <li>classpath:my/package/&#42;&#42;/&#42;</li>
+     * <li>classpath:my/package/&#42;&#42;/&#42;.html</li>
+     * <li>classpath:my/package&#42;</li>
+     * </ul>
+     * 
+     * @param stackName name of the stack to add the scanned resources to
+     * @param pattern the pattern to scan for
+     * @return this config for a fluent api
+     */
+    StackConfig scanPattern(String stackName, String pattern, String basePath);
 
-	StackConfig removeFromStack(String stackName, String resourceName);
+    default StackConfig scanPattern(String stackName, String pattern)
+    {
+        return scanPattern(stackName, pattern, null);
+    }
 
-	/**
-	 * Disables caching for a cache. No cache headers will be written for each
-	 * resource in the cache independent of the optimizer resource profile.
-	 * 
-	 * @param stackName
-	 *            - Name of the cache
-	 * @return config for further configurations
-	 */
-	StackConfig noCaching(String stackName);
+    StackConfig removeFromStack(String stackName, String resourceName);
 
-	boolean isNoCaching(String stackName);
+    /**
+     * Disables caching for a cache. No cache headers will be written for each resource in the cache independent of the
+     * optimizer resource profile.
+     * 
+     * @param stackName - Name of the cache
+     * @return config for further configurations
+     */
+    StackConfig noCaching(String stackName);
 
-	boolean hasStack(String stackName);
+    boolean isNoCaching(String stackName);
 
-	List<String> getResourceNamesForStack(String stackName);
+    boolean hasStack(String stackName);
+
+    List<String> getResourceNamesForStack(String stackName);
 }

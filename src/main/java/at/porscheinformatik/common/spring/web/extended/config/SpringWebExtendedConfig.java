@@ -43,6 +43,7 @@ import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlS
 import at.porscheinformatik.common.spring.web.extended.template.cache.script.ScriptStacks;
 import at.porscheinformatik.common.spring.web.extended.template.cache.style.StyleStacks;
 import at.porscheinformatik.common.spring.web.extended.template.optimize.OptimizerChain;
+import at.porscheinformatik.common.spring.web.extended.util.PathUtils;
 
 @Configuration
 @EnableScheduling
@@ -51,8 +52,7 @@ import at.porscheinformatik.common.spring.web.extended.template.optimize.Optimiz
 // TODO: maybe we should add a handlerinterceptor that adds no-cache headers
 // for json responses. Spring security adds this headers by default. So we can
 // skip this i think
-public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
-    SchedulingConfigurer
+public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements SchedulingConfigurer
 {
     @Autowired
     private SpringWebExtendedConfigurerConfig configurerConfig;
@@ -138,60 +138,51 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
         StackConfig htmlConfig = configurerConfig.getHtmlConfig();
         final HtmlStacks htmlStacks = htmlStacks();
 
-        if (htmlConfig.getRefreshIntervall() > 0
-            && htmlStacks != null)
+        if (htmlConfig.getRefreshIntervall() > 0 && htmlStacks != null)
         {
-            taskRegistrar.addFixedDelayTask(
-                new Runnable()
-                {
+            taskRegistrar.addFixedDelayTask(new Runnable()
+            {
 
-                    @Override
-                    public void run()
-                    {
-                        htmlStacks.refresh();
-                    }
-                },
-                htmlConfig.getRefreshIntervall() * 1000);
+                @Override
+                public void run()
+                {
+                    htmlStacks.refresh();
+                }
+            }, htmlConfig.getRefreshIntervall() * 1000);
         }
 
         StackConfig styleConfig = configurerConfig.getStyleConfig();
         final StyleStacks styles = styleStacks();
 
-        if (styleConfig.getRefreshIntervall() > 0
-            && styles != null)
+        if (styleConfig.getRefreshIntervall() > 0 && styles != null)
         {
 
-            taskRegistrar.addFixedDelayTask(
-                new Runnable()
-                {
+            taskRegistrar.addFixedDelayTask(new Runnable()
+            {
 
-                    @Override
-                    public void run()
-                    {
-                        styles.refresh();
-                    }
-                },
-                styleConfig.getRefreshIntervall() * 1000);
+                @Override
+                public void run()
+                {
+                    styles.refresh();
+                }
+            }, styleConfig.getRefreshIntervall() * 1000);
         }
 
         StackConfig scriptConfig = configurerConfig.getScriptConfig();
         final ScriptStacks scripts = scriptStacks();
 
-        if (scriptConfig.getRefreshIntervall() > 0
-            && scripts != null)
+        if (scriptConfig.getRefreshIntervall() > 0 && scripts != null)
         {
 
-            taskRegistrar.addFixedDelayTask(
-                new Runnable()
-                {
+            taskRegistrar.addFixedDelayTask(new Runnable()
+            {
 
-                    @Override
-                    public void run()
-                    {
-                        scripts.refresh();
-                    }
-                },
-                scriptConfig.getRefreshIntervall() * 1000);
+                @Override
+                public void run()
+                {
+                    scripts.refresh();
+                }
+            }, scriptConfig.getRefreshIntervall() * 1000);
         }
     }
 
@@ -204,10 +195,8 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
 
         if (!CollectionUtils.isEmpty(sources))
         {
-            LocaleHandlerInterceptor interceptor = new LocaleHandlerInterceptor(
-                sources);
-            interceptor.setAvailableLocales(
-                configurerConfig.appConfig().getSupportedLocales());
+            LocaleHandlerInterceptor interceptor = new LocaleHandlerInterceptor(sources);
+            interceptor.setAvailableLocales(configurerConfig.appConfig().getSupportedLocales());
 
             registry.addInterceptor(interceptor);
         }
@@ -226,7 +215,7 @@ public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements
         for (String path : appConfig.getMessagesToScan())
         {
 
-            Map<String, Resource> messages = resourceScanners.scanResources(path);
+            Map<String, Resource> messages = resourceScanners.scanResources(PathUtils.join(path, "**/*"), null);
 
             if (messages == null || messages.isEmpty())
             {

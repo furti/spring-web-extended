@@ -30,21 +30,19 @@ public class ScriptController extends ResourceControllerBase
     @RequestMapping(value = "/single/{stackId}/{scriptName}", method = RequestMethod.GET,
         produces = "text/javascript; charset=UTF-8")
     @ResponseBody
-    public String handleScript(
-        @PathVariable("stackId") String stackId,
-        @PathVariable("scriptName") String scriptName,
+    public String handleScript(@PathVariable("stackId") String stackId, @PathVariable("scriptName") String scriptName,
         HttpServletResponse response)
     {
         if (stacks == null || !stacks.hasStack(stackId))
         {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(String.format("%s:%s", stackId, scriptName));
         }
 
         ScriptStack stack = stacks.get(stackId);
 
         if (!stack.hasTemplate(scriptName))
         {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(String.format("%s:%s", stackId, scriptName));
         }
 
         handleCaching(response, stack.isNoCaching());
@@ -54,12 +52,11 @@ public class ScriptController extends ResourceControllerBase
 
     @RequestMapping(value = "/stack/{stackId}", method = RequestMethod.GET, produces = "text/javascript; charset=UTF-8")
     @ResponseBody
-    public String handleStack(@PathVariable("stackId") String stackId,
-        HttpServletResponse response)
+    public String handleStack(@PathVariable("stackId") String stackId, HttpServletResponse response)
     {
         if (stacks == null || !stacks.hasStack(stackId))
         {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(String.format("%s:*", stackId));
         }
 
         ScriptStack stack = stacks.get(stackId);

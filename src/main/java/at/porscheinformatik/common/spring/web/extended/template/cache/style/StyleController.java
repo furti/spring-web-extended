@@ -29,21 +29,19 @@ public class StyleController extends ResourceControllerBase
     @RequestMapping(value = "/single/{stackId}/{styleName}", method = RequestMethod.GET,
         produces = "text/css; charset=UTF-8")
     @ResponseBody
-    public String handleStylesheet(
-        @PathVariable("stackId") String stackId,
-        @PathVariable("styleName") String styleName,
+    public String handleStylesheet(@PathVariable("stackId") String stackId, @PathVariable("styleName") String styleName,
         HttpServletResponse response)
     {
         if (stacks == null || !stacks.hasStack(stackId))
         {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(String.format("%s:%s", stackId, styleName));
         }
 
         StyleStack stack = stacks.get(stackId);
 
         if (!stack.hasTemplate(styleName))
         {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(String.format("%s:%s", stackId, styleName));
         }
 
         handleCaching(response, stack.isNoCaching());
@@ -53,12 +51,11 @@ public class StyleController extends ResourceControllerBase
 
     @RequestMapping(value = "/stack/{stackId}", method = RequestMethod.GET, produces = "text/css; charset=UTF-8")
     @ResponseBody
-    public String handleStack(@PathVariable("stackId") String stackId,
-        HttpServletResponse response)
+    public String handleStack(@PathVariable("stackId") String stackId, HttpServletResponse response)
     {
         if (stacks == null || !stacks.hasStack(stackId))
         {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(String.format("%s:*", stackId));
         }
 
         StyleStack stack = stacks.get(stackId);

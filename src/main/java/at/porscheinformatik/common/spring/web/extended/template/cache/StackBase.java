@@ -18,8 +18,7 @@ public abstract class StackBase extends AbstractTemplateCache
     private ResourceType resourceType;
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    public StackBase(ResourceType resourceType, String stackName,
-        boolean noCaching)
+    public StackBase(ResourceType resourceType, String stackName, boolean noCaching)
     {
         super(stackName, noCaching);
         this.resourceType = resourceType;
@@ -30,14 +29,12 @@ public abstract class StackBase extends AbstractTemplateCache
     {
         if (entry.isScanLocation())
         {
-            scanResources(entry.getLocation(), entry.isSkipProcessing());
+            scanResources(entry.getLocation(), entry.getBasePath(), entry.isSkipProcessing());
         }
         else
         {
-            addResource(name, entry.getLocation(), false,
-                entry.isSkipProcessing());
-            addResource(name, entry.getMinifiedLocation(), true,
-                entry.isSkipProcessing());
+            addResource(name, entry.getLocation(), false, entry.isSkipProcessing());
+            addResource(name, entry.getMinifiedLocation(), true, entry.isSkipProcessing());
         }
     }
 
@@ -47,10 +44,9 @@ public abstract class StackBase extends AbstractTemplateCache
      * @param location
      * @throws IOException
      */
-    private void scanResources(String location, boolean skipProcessing)
-        throws IOException
+    private void scanResources(String location, String basePath, boolean skipProcessing) throws IOException
     {
-        Map<String, Resource> resources = scanners.scanResources(location);
+        Map<String, Resource> resources = scanners.scanResources(location, basePath);
 
         if (resources == null)
         {
@@ -60,14 +56,11 @@ public abstract class StackBase extends AbstractTemplateCache
 
         for (Entry<String, Resource> entry : resources.entrySet())
         {
-            addTemplate(entry.getKey().toLowerCase(), location,
-                entry.getValue(),
-                resourceType, false, skipProcessing);
+            addTemplate(entry.getKey().toLowerCase(), location, entry.getValue(), resourceType, false, skipProcessing);
         }
     }
 
-    private void addResource(String name, String location,
-        boolean optimizedResource, boolean skipProcessing)
+    private void addResource(String name, String location, boolean optimizedResource, boolean skipProcessing)
         throws IOException
     {
         if (location == null)
@@ -75,8 +68,7 @@ public abstract class StackBase extends AbstractTemplateCache
             return;
         }
 
-        String[] prefixAndPath = SpringWebExtendedUtils
-            .parseExpression(location);
+        String[] prefixAndPath = SpringWebExtendedUtils.parseExpression(location);
         String[] pathAndFile = ResourceUtils.pathAndFile(prefixAndPath[1]);
 
         if (pathAndFile == null)
@@ -97,8 +89,7 @@ public abstract class StackBase extends AbstractTemplateCache
 
         locationToUse += pathAndFile[0];
 
-        Map<String, Resource> resources = scanners.scanResources(
-            locationToUse, pathAndFile[1], false);
+        Map<String, Resource> resources = scanners.scanResources(locationToUse, pathAndFile[1], false);
 
         /*
          * Spring does not log the message right if we only throw a
@@ -106,8 +97,7 @@ public abstract class StackBase extends AbstractTemplateCache
          */
         if (resources == null)
         {
-            String message = "No Resources for name " + name
-                + " and location " + location + " found";
+            String message = "No Resources for name " + name + " and location " + location + " found";
 
             IllegalArgumentException ex = new IllegalArgumentException(message);
             logger.error(message, ex);
@@ -117,9 +107,8 @@ public abstract class StackBase extends AbstractTemplateCache
 
         for (Entry<String, Resource> entry : resources.entrySet())
         {
-            addTemplate(prepareName(name, entry.getKey()), location,
-                entry.getValue(),
-                resourceType, optimizedResource, skipProcessing);
+            addTemplate(prepareName(name, entry.getKey()), location, entry.getValue(), resourceType, optimizedResource,
+                skipProcessing);
         }
     }
 
@@ -133,11 +122,9 @@ public abstract class StackBase extends AbstractTemplateCache
     private String prepareName(String styleName, String resourceName)
     {
         String[] styleNameAndEnding = ResourceUtils.getNameAndEnding(styleName);
-        String[] resourceNameAndEnding = ResourceUtils
-            .getNameAndEnding(resourceName);
+        String[] resourceNameAndEnding = ResourceUtils.getNameAndEnding(resourceName);
 
-        String locale = ResourceUtils
-            .getLocaleFromName(resourceNameAndEnding[0]);
+        String locale = ResourceUtils.getLocaleFromName(resourceNameAndEnding[0]);
 
         StringBuilder name = new StringBuilder(styleNameAndEnding[0]);
 

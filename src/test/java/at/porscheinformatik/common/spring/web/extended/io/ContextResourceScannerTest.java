@@ -1,8 +1,7 @@
 package at.porscheinformatik.common.spring.web.extended.io;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -32,10 +31,8 @@ import org.testng.annotations.Test;
 public class ContextResourceScannerTest
 {
 
-    private static final Path TMPDIR = Paths.get(System
-        .getProperty("java.io.tmpdir"));
-    private static final Path ROOTDIR = TMPDIR
-        .resolve("springangularcontextscannertest");
+    private static final Path TMPDIR = Paths.get(System.getProperty("java.io.tmpdir"));
+    private static final Path ROOTDIR = TMPDIR.resolve("springangularcontextscannertest");
 
     @BeforeTest
     public void setup() throws IOException
@@ -47,6 +44,7 @@ public class ContextResourceScannerTest
         createFile(ROOTDIR, "testfile_en.txt", "Test");
         createFile(ROOTDIR, "testfile.min.txt", "Test");
         createFile(ROOTDIR, "other/testfile.txt", "Other");
+        createFile(ROOTDIR, "other/test.log", "Other");
     }
 
     @Test
@@ -55,8 +53,7 @@ public class ContextResourceScannerTest
         ContextResourceScanner scanner = new ContextResourceScanner();
         scanner.setServletContext(buildServletContext());
 
-        Map<String, Resource> actual = scanner
-            .scanResources("springangularcontextscannertest");
+        Map<String, Resource> actual = scanner.scanResources("/springangularcontextscannertest/**/*.txt", null);
         assertThat(actual, notNullValue());
         assertThat(actual.size(), equalTo(4));
         assertThat(actual.containsKey("testfile.txt"), equalTo(true));
@@ -66,15 +63,28 @@ public class ContextResourceScannerTest
     }
 
     @Test
+    public void subDirectoriesShouldNotBeInTheList() throws IOException
+    {
+        ContextResourceScanner scanner = new ContextResourceScanner();
+        scanner.setServletContext(buildServletContext());
+
+        Map<String, Resource> actual = scanner.scanResources("springangularcontextscannertest/**/*", null);
+        assertThat(actual, notNullValue());
+        assertThat(actual.size(), equalTo(5));
+        assertThat(actual.containsKey("testfile.txt"), equalTo(true));
+        assertThat(actual.containsKey("testfile_en.txt"), equalTo(true));
+        assertThat(actual.containsKey("testfile.min.txt"), equalTo(true));
+        assertThat(actual.containsKey("other/testfile.txt"), equalTo(true));
+        assertThat(actual.containsKey("other/test.log"), equalTo(true));
+    }
+
+    @Test
     public void scanResourcesWithFileAndNoSubdirectories() throws IOException
     {
         ContextResourceScanner scanner = new ContextResourceScanner();
         scanner.setServletContext(buildServletContext());
 
-        Map<String, Resource> actual = scanner
-            .scanResources("springangularcontextscannertest",
-                "testfile.txt",
-                false);
+        Map<String, Resource> actual = scanner.scanResources("springangularcontextscannertest", "testfile.txt", false);
 
         assertThat(actual, notNullValue());
         assertThat(actual.size(), equalTo(2));
@@ -100,16 +110,13 @@ public class ContextResourceScannerTest
         Files.walkFileTree(ROOTDIR, new DeleteFileVisitor());
     }
 
-    private void createFile(Path dir, String file, String content)
-        throws IOException
+    private void createFile(Path dir, String file, String content) throws IOException
     {
         Path p = dir.resolve(file);
 
         Files.createDirectories(p.getParent());
 
-        BufferedWriter writer = Files.newBufferedWriter(p,
-            Charset.forName("UTF-8"),
-            StandardOpenOption.CREATE);
+        BufferedWriter writer = Files.newBufferedWriter(p, Charset.forName("UTF-8"), StandardOpenOption.CREATE);
 
         try
         {

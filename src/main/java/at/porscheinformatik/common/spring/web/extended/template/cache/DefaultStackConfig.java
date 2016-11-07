@@ -27,136 +27,130 @@ import java.util.Set;
  */
 public class DefaultStackConfig implements StackConfig
 {
-	private int refreshIntervall;
-	private LinkedHashMap<String, LinkedHashMap<String, StackEntry>> stacks = new LinkedHashMap<>();
-	private Set<String> noCachingStacks = new HashSet<>();
+    private int refreshIntervall;
+    private LinkedHashMap<String, LinkedHashMap<String, StackEntry>> stacks = new LinkedHashMap<>();
+    private Set<String> noCachingStacks = new HashSet<>();
 
-	public DefaultStackConfig()
-	{
-		super();
-	}
+    public DefaultStackConfig()
+    {
+        super();
+    }
 
-	@Override
-	public StackConfig setRefreshIntervall(int intervall)
-	{
-		this.refreshIntervall = intervall;
+    @Override
+    public StackConfig setRefreshIntervall(int intervall)
+    {
+        this.refreshIntervall = intervall;
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public int getRefreshIntervall()
-	{
-		return refreshIntervall;
-	}
+    @Override
+    public int getRefreshIntervall()
+    {
+        return refreshIntervall;
+    }
 
-	@Override
-	public StackConfig removeStack(String stackName)
-	{
-		stacks.remove(stackName);
+    @Override
+    public StackConfig removeStack(String stackName)
+    {
+        stacks.remove(stackName);
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public StackConfig addToStack(String stackName, String resourceName,
-			String location)
-	{
-		addToStack(stackName, resourceName, location, null);
+    @Override
+    public StackConfig addToStack(String stackName, String resourceName, String location)
+    {
+        addToStack(stackName, resourceName, location, null);
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public StackConfig addToStack(String stackName, String resourceName,
-			String location, boolean skipProcessing)
-	{
-		return addToStack(stackName, resourceName, location, null,
-				skipProcessing);
-	}
+    @Override
+    public StackConfig addToStack(String stackName, String resourceName, String location, boolean skipProcessing)
+    {
+        return addToStack(stackName, resourceName, location, null, skipProcessing);
+    }
 
-	@Override
-	public StackConfig removeFromStack(String stackName, String resourceName)
-	{
-		if (!hasStack(stackName))
-		{
-			return this;
-		}
+    @Override
+    public StackConfig removeFromStack(String stackName, String resourceName)
+    {
+        if (!hasStack(stackName))
+        {
+            return this;
+        }
 
-		stacks.get(stackName).remove(resourceName);
+        stacks.get(stackName).remove(resourceName);
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public boolean hasStack(String stackName)
-	{
-		return stacks.containsKey(stackName);
-	}
+    @Override
+    public boolean hasStack(String stackName)
+    {
+        return stacks.containsKey(stackName);
+    }
 
-	@Override
-	public List<String> getResourceNamesForStack(String stackName)
-	{
-		if (!hasStack(stackName))
-		{
-			return null;
-		}
+    @Override
+    public List<String> getResourceNamesForStack(String stackName)
+    {
+        if (!hasStack(stackName))
+        {
+            return null;
+        }
 
-		return new ArrayList<String>(stacks.get(stackName).keySet());
-	}
+        return new ArrayList<String>(stacks.get(stackName).keySet());
+    }
 
-	public LinkedHashMap<String, LinkedHashMap<String, StackEntry>> getStacks()
-	{
-		return stacks;
-	}
+    public LinkedHashMap<String, LinkedHashMap<String, StackEntry>> getStacks()
+    {
+        return stacks;
+    }
 
-	@Override
-	public StackConfig addToStack(String stackName, String resourceName,
-			String location, String minifiedLocation)
-	{
-		return addToStack(stackName, resourceName, location, minifiedLocation,
-				false);
-	}
+    @Override
+    public StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation)
+    {
+        return addToStack(stackName, resourceName, location, minifiedLocation, false);
+    }
 
-	@Override
-	public StackConfig addToStack(String stackName, String resourceName,
-			String location, String minifiedLocation, boolean skipProcessing)
-	{
-		if (!hasStack(stackName))
-		{
-			stacks.put(stackName, new LinkedHashMap<String, StackEntry>());
-		}
+    @Override
+    public StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation,
+        boolean skipProcessing)
+    {
+        if (!hasStack(stackName))
+        {
+            stacks.put(stackName, new LinkedHashMap<String, StackEntry>());
+        }
 
-		stacks.get(stackName).put(resourceName,
-				new StackEntry(location, minifiedLocation, skipProcessing));
+        stacks.get(stackName).put(resourceName, StackEntry.resource(location, minifiedLocation, skipProcessing));
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public StackConfig scanPath(String stackName, String path)
-	{
-		if (!hasStack(stackName))
-		{
-			stacks.put(stackName, new LinkedHashMap<String, StackEntry>());
-		}
+    @Override
+    public StackConfig scanPattern(String stackName, String pattern, String basePath)
+    {
+        if (!hasStack(stackName))
+        {
+            stacks.put(stackName, new LinkedHashMap<String, StackEntry>());
+        }
 
-		stacks.get(stackName).put(path, new StackEntry(path, true));
+        stacks.get(stackName).put(pattern, StackEntry.scan(pattern, basePath));
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public StackConfig noCaching(String stackName)
-	{
-		noCachingStacks.add(stackName);
+    @Override
+    public StackConfig noCaching(String stackName)
+    {
+        noCachingStacks.add(stackName);
 
-		return this;
-	}
+        return this;
+    }
 
-	@Override
-	public boolean isNoCaching(String stackName)
-	{
-		return noCachingStacks.contains(stackName);
-	}
+    @Override
+    public boolean isNoCaching(String stackName)
+    {
+        return noCachingStacks.contains(stackName);
+    }
 }

@@ -52,8 +52,7 @@ public class ScriptStackTest
     }
 
     @Test(dataProvider = "renderData")
-    public void render(Locale locale, String name, String expected)
-        throws IOException
+    public void render(Locale locale, String name, String expected) throws IOException
     {
         ScriptStack stack = buildStack();
         LocaleContextHolder.setLocale(locale);
@@ -67,14 +66,9 @@ public class ScriptStackTest
     public Object[][] renderAllData()
     {
         return new Object[][]{
-            {new Locale("de"),
-                "content1\ncontent2\nsubcontent\nsubcontent1\nde\n"},
-            {new Locale("en"),
-                "content1\ncontent2\nsubcontent\nsubcontent1\nen\n"},
-            {
-                new Locale("fr"),
-                "content1\ncontent2\nsubcontent\nsubcontent1\ndefaultlocale\n"}
-        };
+            {new Locale("de"), "content1\ncontent2\nsubcontent\nsubcontent1\nde\n"},
+            {new Locale("en"), "content1\ncontent2\nsubcontent\nsubcontent1\nen\n"},
+            {new Locale("fr"), "content1\ncontent2\nsubcontent\nsubcontent1\ndefaultlocale\n"}};
     }
 
     @DataProvider
@@ -87,8 +81,7 @@ public class ScriptStackTest
             // { new Locale("fr"), "localized", "defaultlocale" },
             // { new Locale("de"), "localized", "de" },
             // { new Locale("en"), "localized", "en" },
-            {new Locale("de", "AT"), "localized", "de-at"}
-        };
+            {new Locale("de", "AT"), "localized", "de-at"}};
     }
 
     private ScriptStack buildStack() throws IOException
@@ -101,16 +94,11 @@ public class ScriptStackTest
         stack.setTemplateRenderContextFactory(new DefaultTemplateRenderContextFactory());
         stack.setLinkCreator(new DefaultLinkCreator());
 
-        stack.addResource("script1",
-            new StackEntry(buildLocation("script1.js"), false));
-        stack.addResource("script2",
-            new StackEntry(buildLocation("script2.js"), false));
-        stack.addResource("subscript",
-            new StackEntry(buildLocation("sub/subscript.js"), false));
-        stack.addResource("subscript1",
-            new StackEntry(buildLocation("sub/script1.js"), false));
-        stack.addResource("localized",
-            new StackEntry(buildLocation("script-localized.js"), false));
+        stack.addResource("script1", StackEntry.resource(buildLocation("script1.js"), false));
+        stack.addResource("script2", StackEntry.resource(buildLocation("script2.js"), false));
+        stack.addResource("subscript", StackEntry.resource(buildLocation("sub/subscript.js"), false));
+        stack.addResource("subscript1", StackEntry.resource(buildLocation("sub/script1.js"), false));
+        stack.addResource("localized", StackEntry.resource(buildLocation("script-localized.js"), false));
 
         return stack;
     }
@@ -125,7 +113,6 @@ public class ScriptStackTest
 
     private String buildLocation(String script)
     {
-        return "classpath:at/porscheinformatik/common/spring/web/extended/scripts/"
-            + script;
+        return "classpath:at/porscheinformatik/common/spring/web/extended/scripts/" + script;
     }
 }

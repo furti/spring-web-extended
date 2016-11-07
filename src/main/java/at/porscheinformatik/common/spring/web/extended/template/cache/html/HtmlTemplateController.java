@@ -29,17 +29,14 @@ public class HtmlTemplateController
 {
     private static final String INDEX = "index.html";
 
-    private static final Pattern PATH_PATTERN = Pattern
-        .compile("^.*template/(.*)");
+    private static final Pattern PATH_PATTERN = Pattern.compile("^.*template/(.*)");
 
     protected HtmlStacks stacks;
-    private Boolean fallbackToIndex;
+    private final Boolean fallbackToIndex;
 
     public HtmlTemplateController(Boolean fallbackToIndex)
     {
-        this.fallbackToIndex = fallbackToIndex != null
-            ? fallbackToIndex
-            : Boolean.TRUE;
+        this.fallbackToIndex = fallbackToIndex != null ? fallbackToIndex : Boolean.TRUE;
     }
 
     @RequestMapping(value = "**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
@@ -48,7 +45,7 @@ public class HtmlTemplateController
     {
         if (!indexAvaliable())
         {
-            throw new ResourceNotFoundException();
+            throw new ResourceNotFoundException(INDEX);
         }
 
         return renderDefaultTemplate(INDEX);
@@ -58,8 +55,7 @@ public class HtmlTemplateController
     @ResponseBody
     public String handleTemplate(HttpServletRequest request)
     {
-        String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN)
-            .toLowerCase() + ".html";
+        String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN).toLowerCase() + ".html";
         if (isDefaultTemplate(path))
         {
             return renderDefaultTemplate(path);
@@ -82,7 +78,7 @@ public class HtmlTemplateController
             return renderDefaultTemplate(INDEX);
         }
 
-        throw new ResourceNotFoundException();
+        throw new ResourceNotFoundException(path);
     }
 
     private boolean indexAvaliable()
@@ -97,8 +93,7 @@ public class HtmlTemplateController
 
     protected boolean isTemplate(String stackName, String templateName)
     {
-        return stacks.hasStack("")
-            && stacks.get("").hasTemplate(templateName);
+        return stacks.hasStack(stackName) && stacks.get(stackName).hasTemplate(templateName);
     }
 
     protected String renderDefaultTemplate(String templateName)
@@ -106,9 +101,14 @@ public class HtmlTemplateController
         return renderTemplate("", templateName);
     }
 
-    protected String renderTemplate(String stackName, String templateName)
+    protected String renderTemplate(String stackName, String templateName) throws ResourceNotFoundException
     {
-        return stacks.get("").renderTemplate(templateName);
+        if (!stacks.hasStack(stackName))
+        {
+            throw new ResourceNotFoundException(String.format("%s:%s", stackName, templateName));
+        }
+
+        return stacks.get(stackName).renderTemplate(templateName);
     }
 
     @Autowired

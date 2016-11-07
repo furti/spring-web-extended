@@ -129,7 +129,7 @@ public class SpringWebExtendedConfigurerConfig
                 ? -1
                 : DEFAULT_REFRESH_INTERVALL);
 
-            htmlConfig.scanPath("", "templates");
+            htmlConfig.scanPattern("", "templates/**/*.html");
 
             configurer.configureHtmlTemplates(htmlConfig);
         }

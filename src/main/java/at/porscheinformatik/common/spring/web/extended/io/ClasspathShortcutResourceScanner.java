@@ -5,37 +5,35 @@ import java.util.Map;
 
 import org.springframework.core.io.Resource;
 
-public abstract class ClasspathShortcutResourceScanner extends
-		ClasspathResourceScanner
+public abstract class ClasspathShortcutResourceScanner extends ClasspathResourceScanner
 {
 
-	private String basePath;
+    private String basePath;
 
-	public ClasspathShortcutResourceScanner(String basePath)
-	{
-		this.basePath = basePath;
-	}
+    public ClasspathShortcutResourceScanner(String basePath)
+    {
+        this.basePath = basePath;
+    }
 
-	@Override
-	public Map<String, Resource> scanResources(String path) throws IOException
-	{
-		return super.scanResources(preparePath(path));
-	}
+    @Override
+    public Map<String, Resource> doScanResources(String pattern, String basePath) throws IOException
+    {
+        return super.doScanResources(preparePath(pattern), preparePath(basePath));
+    }
 
-	@Override
-	public Map<String, Resource> scanResources(String path, String file,
-			boolean scanSubDirectories) throws IOException
-	{
-		return super.scanResources(preparePath(path), file, scanSubDirectories);
-	}
+    @Override
+    public Map<String, Resource> scanResources(String path, String file, boolean scanSubDirectories) throws IOException
+    {
+        return super.scanResources(preparePath(path), file, scanSubDirectories);
+    }
 
-	private String preparePath(String path)
-	{
-		if (path == null)
-		{
-			return basePath;
-		}
+    private String preparePath(String path)
+    {
+        if (path == null)
+        {
+            return basePath;
+        }
 
-		return basePath + path;
-	}
+        return basePath + path;
+    }
 }

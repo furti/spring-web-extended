@@ -1,115 +1,84 @@
 package at.porscheinformatik.common.spring.web.extended.expression;
 
-import java.util.List;
+import java.util.regex.Pattern;
 
-import org.parboiled.Parboiled;
-import org.parboiled.parserunners.RecoveringParseRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-import at.porscheinformatik.common.spring.web.extended.expression.parser.InlineTemplateParser;
 import at.porscheinformatik.common.spring.web.extended.io.ResourceUtils;
 import at.porscheinformatik.common.spring.web.extended.template.cache.html.HtmlStacks;
-import at.porscheinformatik.common.spring.web.extended.util.ParboiledUtils;
 
-public class InlineTemplateExpressionHandler extends BaseExpressionHandler
-		implements BeanFactoryAware
+public class InlineTemplateExpressionHandler extends BaseExpressionHandler implements BeanFactoryAware
 {
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Pattern PATTERN = Pattern.compile("(\r\n)|([\r\n\f\t]+)");
 
-	private HtmlStacks stacks;
-	private BeanFactory beanFactory;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public InlineTemplateExpressionHandler()
-	{
-		super(true);
-	}
+    private HtmlStacks stacks;
+    private BeanFactory beanFactory;
 
-	@Override
-	public String doProcess(String value)
-	{
-		logger.info("Rendering inlinetemplate " + value);
+    public InlineTemplateExpressionHandler()
+    {
+        super(true);
+    }
 
-		HtmlStacks htmlStacks = getStacks();
+    @Override
+    public String doProcess(String value)
+    {
+        logger.info("Rendering inlinetemplate " + value);
 
-		String templateName = value.toLowerCase() + ".html";
+        HtmlStacks htmlStacks = getStacks();
 
-		if (isTemplate("", templateName, htmlStacks))
-		{
-			return prepareResult(htmlStacks.get("")
-					.renderTemplate(templateName));
-		}
+        String templateName = value.toLowerCase() + ".html";
 
-		String[] pathAndFile = ResourceUtils.pathAndFile(templateName);
+        if (isTemplate("", templateName, htmlStacks))
+        {
+            return prepareResult(htmlStacks.get("").renderTemplate(templateName));
+        }
 
-		if (isTemplate(pathAndFile[0], pathAndFile[1], htmlStacks))
-		{
-			return prepareResult(htmlStacks.get(pathAndFile[0]).renderTemplate(
-					pathAndFile[1]));
-		}
+        String[] pathAndFile = ResourceUtils.pathAndFile(templateName);
 
-		throw new IllegalArgumentException("Template " + value
-				+ " not found");
-	}
+        if (isTemplate(pathAndFile[0], pathAndFile[1], htmlStacks))
+        {
+            return prepareResult(htmlStacks.get(pathAndFile[0]).renderTemplate(pathAndFile[1]));
+        }
 
-	private boolean isTemplate(String stackName, String templateName,
-			HtmlStacks htmlStacks)
-	{
-		return htmlStacks.hasStack(stackName)
-				&& htmlStacks.get(stackName).hasTemplate(templateName);
-	}
+        throw new IllegalArgumentException("Template " + value + " not found");
+    }
 
-	private String prepareResult(String template)
-	{
-		if (template == null)
-		{
-			return null;
-		}
+    private boolean isTemplate(String stackName, String templateName, HtmlStacks htmlStacks)
+    {
+        return htmlStacks.hasStack(stackName) && htmlStacks.get(stackName).hasTemplate(templateName);
+    }
 
-		InlineTemplateParser parser = Parboiled
-				.createParser(InlineTemplateParser.class);
+    private String prepareResult(String template)
+    {
+        if (template == null)
+        {
+            return null;
+        }
 
-		RecoveringParseRunner<String> runner = new RecoveringParseRunner<String>(
-				parser.inlineTemplate());
+        return PATTERN.matcher(template).replaceAll(" ").trim();
+    }
 
-		try
-		{
-			List<String> parts = ParboiledUtils.buildFromResult(
-					runner.run(template), template);
+    private HtmlStacks getStacks()
+    {
+        // We need this because of the circular dependency between handler and
+        // stack
+        if (stacks == null)
+        {
+            stacks = beanFactory.getBean(HtmlStacks.class);
+        }
 
-			StringBuilder prepared = new StringBuilder();
+        return stacks;
+    }
 
-			for (String part : parts)
-			{
-				prepared.append(part);
-			}
-
-			return prepared.toString();
-		} catch (Exception ex)
-		{
-			logger.error("Error rendering inline template " + template, ex);
-			throw ex;
-		}
-	}
-
-	private HtmlStacks getStacks()
-	{
-		// We need this because of the circular dependency between handler and
-		// stack
-		if (stacks == null)
-		{
-			stacks = beanFactory.getBean(HtmlStacks.class);
-		}
-
-		return stacks;
-	}
-
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException
-	{
-		this.beanFactory = beanFactory;
-	}
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException
+    {
+        this.beanFactory = beanFactory;
+    }
 }

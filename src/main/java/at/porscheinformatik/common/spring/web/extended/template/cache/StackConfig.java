@@ -28,6 +28,7 @@ public interface StackConfig
      * If the intervall is less than 1 no refresh will be performed.
      * 
      * @param intervall in seconds.
+     * @return the stack config
      */
     StackConfig setRefreshIntervall(int intervall);
 
@@ -46,7 +47,7 @@ public interface StackConfig
      * @param stackName
      * @param resourceName
      * @param location
-     * @return
+     * @return the stack config
      */
     StackConfig addToStack(String stackName, String resourceName, String location);
 
@@ -57,7 +58,7 @@ public interface StackConfig
      * @param skipProcessing - if true the resource will be used as it is and no template processing is performed.
      *            Especially usefull for external scripts or styles that contains some special characters the template
      *            engine uses and that cant't be escaped by the application
-     * @return
+     * @return the stack config
      */
     StackConfig addToStack(String stackName, String resourceName, String location, boolean skipProcessing);
 
@@ -68,7 +69,7 @@ public interface StackConfig
      * @param resourceName
      * @param location
      * @param minifiedLocation
-     * @return
+     * @return the stack config
      */
     StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation);
 
@@ -80,7 +81,7 @@ public interface StackConfig
      * @param location
      * @param minifiedLocation
      * @param skipProcessing
-     * @return
+     * @return the stack config
      */
     StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation,
         boolean skipProcessing);
@@ -97,6 +98,7 @@ public interface StackConfig
      * 
      * @param stackName name of the stack to add the scanned resources to
      * @param pattern the pattern to scan for
+     * @param basePath the base path
      * @return this config for a fluent api
      */
     StackConfig scanPattern(String stackName, String pattern, String basePath);

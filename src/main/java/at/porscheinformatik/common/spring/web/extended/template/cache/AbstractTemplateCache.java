@@ -250,7 +250,7 @@ public abstract class AbstractTemplateCache
     }
 
     /**
-     * @return
+     * @return the list of names
      */
     public List<String> getNames()
     {

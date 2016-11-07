@@ -12,7 +12,6 @@
 	</licenses>
 
 	<properties>
-		<parboiled.version>1.1.7</parboiled.version>
 		<chunk-templates.version>2.6.4</chunk-templates.version>
 		<spring.version>4.0.6.RELEASE</spring.version>
 		<testng.version>6.8.7</testng.version>
@@ -27,12 +26,6 @@
 	</scm>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.parboiled</groupId>
-			<artifactId>parboiled-java</artifactId>
-			<version>${parboiled.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>

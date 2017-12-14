@@ -3,6 +3,8 @@
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
+import javax.servlet.ServletContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScannerConfig;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
+import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 
 /**
  * A Configuration that enables static folder style. Static folder style means, that there is a single root folder per
@@ -37,5 +40,11 @@ public class StaticFolderConfiguration extends WebMvcConfigurerAdapter
         StaticFolderRegistry staticFolderRegistry = configurerConfiguration.getStaticFolderRegistry();
 
         return new StaticFolderCache(staticFolderRegistry, scanners, mimeTypeHandler);
+    }
+
+    @Bean
+    public MimeTypeHandler mimeTypeHandler(ServletContext servletContext)
+    {
+        return new MimeTypeHandler(servletContext, configurerConfiguration.getMimeTypes());
     }
 }

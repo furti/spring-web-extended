@@ -50,7 +50,7 @@ public abstract class BaseTemplate implements Template
     @Override
     public String render() throws IOException
     {
-        logger.debug("Thread " + Thread.currentThread().getName() + " obtains readLock for template " + getName());
+        logger.trace("Thread " + Thread.currentThread().getName() + " obtains readLock for template " + getName());
 
         readLock.lock();
         try
@@ -66,7 +66,7 @@ public abstract class BaseTemplate implements Template
         }
         finally
         {
-            logger.debug("Thread " + Thread.currentThread().getName() + " releases readLock for template " + getName());
+            logger.trace("Thread " + Thread.currentThread().getName() + " releases readLock for template " + getName());
             readLock.unlock();
         }
     }

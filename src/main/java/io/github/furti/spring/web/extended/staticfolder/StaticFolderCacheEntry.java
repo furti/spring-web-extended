@@ -25,15 +25,17 @@ public class StaticFolderCacheEntry
     private static final String FILE_PATTERN = "**/*";
 
     private final Object lock = new Object();
-    private final ResourceScanners scanners;
-    private final String location;
-
     private final ConcurrentHashMap<String, Resource> files = new ConcurrentHashMap<>(30);
 
-    public StaticFolderCacheEntry(ResourceScanners scanners, String location)
+    private final ResourceScanners scanners;
+    private final String location;
+    private final Charset charset;
+
+    public StaticFolderCacheEntry(ResourceScanners scanners, String location, Charset charset)
     {
         this.scanners = scanners;
         this.location = location;
+        this.charset = charset;
     }
 
     public void refresh()
@@ -86,14 +88,18 @@ public class StaticFolderCacheEntry
         return doRender(resource);
     }
 
+    public Charset getCharset()
+    {
+        return charset;
+    }
+
     private String doRender(Resource resource) throws ResourceRenderException
     {
         try
         {
             InputStream input = resource.getInputStream();
 
-            // TODO: make charset configurabe per folder
-            return IOUtils.toString(input, Charset.forName("UTF-8"));
+            return IOUtils.toString(input, charset);
         }
         catch (IOException e)
         {

@@ -90,12 +90,13 @@ public class ChunkTemplateTest
     @DataProvider
     public Object[][] renderTemplateData()
     {
-        return new Object[][]{{
-            loader.getResource("classpath:at/porscheinformatik/common/spring/web/extended/template/chunk/Index.html"),
-            "index.html",
-            ResourceType.HTML,
-            templateContent(loader.getResource(
-                "classpath:at/porscheinformatik/common/spring/web/extended/template/chunk/Index_expected.html"))}};
+        return new Object[][]{
+            {
+                loader.getResource("classpath:io/github/furti/spring/web/extended/template/chunk/Index.html"),
+                "index.html",
+                ResourceType.HTML,
+                templateContent(loader
+                    .getResource("classpath:io/github/furti/spring/web/extended/template/chunk/Index_expected.html"))}};
     }
 
     private String templateContent(Resource resource)

@@ -31,8 +31,9 @@ import io.github.furti.spring.web.extended.expression.ExpressionHandlers;
 
 /**
  * @author Daniel Furtlehner
- *
+ * @deprecated will be removed in a future version
  */
+@Deprecated
 public class ExpressionHandlerMacroResourceLoader extends ResourceLoader
 {
     public static final String MACRO_LIBRARY_FILE = "spring-extended-vm-macro.vm";

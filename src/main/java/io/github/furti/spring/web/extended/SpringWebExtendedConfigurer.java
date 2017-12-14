@@ -29,4 +29,13 @@ public interface SpringWebExtendedConfigurer
      * @param scanners the map of scanners. Key is the prefix of the scanner.
      */
     void configureResourceScanners(Map<String, ResourceScanner> scanners);
+
+    /**
+     * Allows you to configure some well knonwn mime types in you application. If a mime type is not found in this list,
+     * the servlet context will be asked for a mime type. So you can use this map to override standard mime types or add
+     * mime types that the servlet context does not know.
+     * 
+     * @param mimeTypes available mime types
+     */
+    void configureMimeTypes(Map<String, String> mimeTypes);
 }

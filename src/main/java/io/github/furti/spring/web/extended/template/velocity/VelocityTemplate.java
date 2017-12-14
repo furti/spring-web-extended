@@ -31,6 +31,11 @@ import io.github.furti.spring.web.extended.expression.ExpressionHandlers;
 import io.github.furti.spring.web.extended.io.ResourceType;
 import io.github.furti.spring.web.extended.template.BaseTemplate;
 
+/**
+ * @author Daniel Furtlehner
+ * @deprecated will be removed in a future version
+ */
+@Deprecated
 public class VelocityTemplate extends BaseTemplate
 {
 

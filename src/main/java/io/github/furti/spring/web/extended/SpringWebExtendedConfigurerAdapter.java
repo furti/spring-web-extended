@@ -24,4 +24,10 @@ public abstract class SpringWebExtendedConfigurerAdapter implements SpringWebExt
     {
         // Sublcasses override this for custom configuration
     }
+
+    @Override
+    public void configureMimeTypes(Map<String, String> mimeTypes)
+    {
+        // Sublcasses override this for custom configuration
+    }
 }

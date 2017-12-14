@@ -31,8 +31,9 @@ import io.github.furti.spring.web.extended.template.TemplateFactory;
 
 /**
  * @author Daniel Furtlehner
- *
+ * @deprecated will be removed in a future version
  */
+@Deprecated
 public class VelocityTemplateFactory implements TemplateFactory
 {
     private VelocityEngine engine;

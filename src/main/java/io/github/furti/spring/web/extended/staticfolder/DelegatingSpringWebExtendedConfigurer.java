@@ -42,4 +42,13 @@ public class DelegatingSpringWebExtendedConfigurer implements SpringWebExtendedC
         }
     }
 
+    @Override
+    public void configureMimeTypes(Map<String, String> mimeTypes)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureMimeTypes(mimeTypes);
+        }
+    }
+
 }

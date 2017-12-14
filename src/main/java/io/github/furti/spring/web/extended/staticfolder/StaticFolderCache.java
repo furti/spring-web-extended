@@ -3,7 +3,6 @@
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import io.github.furti.spring.web.extended.StaticFolder;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
+import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
 
 /**
@@ -51,7 +51,8 @@ public class StaticFolderCache
 
         for (StaticFolder staticFolder : registry.getFolders())
         {
-            StaticFolderCacheEntry entry = new StaticFolderCacheEntry(scanners, staticFolder.getLocation());
+            StaticFolderCacheEntry entry =
+                new StaticFolderCacheEntry(scanners, staticFolder.getLocation(), staticFolder.getCharset());
 
             entry.refresh();
 
@@ -86,19 +87,19 @@ public class StaticFolderCache
                 entry.basePath, requestURI), e);
         }
 
-        return new ResponseEntity<String>(content, buildHeaders(entry.file), HttpStatus.OK);
+        return new ResponseEntity<String>(content, buildHeaders(entry), HttpStatus.OK);
     }
 
-    private MultiValueMap<String, String> buildHeaders(String file)
+    private MultiValueMap<String, String> buildHeaders(RenderEntry entry)
     {
         //TODO: handle caching of values. We can set the lastmodified header and spring handles caching for us
 
         HttpHeaders headers = new HttpHeaders();
 
-        MimeType mimeType = this.mimeTypeHandler.getMimeType(file);
+        MimeType mimeType = this.mimeTypeHandler.getMimeType(entry.file);
 
         //TODO: use the configured charset
-        headers.setContentType(new MediaType(mimeType.getType(), mimeType.getSubtype(), Charset.forName("UTF-8")));
+        headers.setContentType(new MediaType(mimeType.getType(), mimeType.getSubtype(), entry.entry.getCharset()));
 
         return headers;
     }

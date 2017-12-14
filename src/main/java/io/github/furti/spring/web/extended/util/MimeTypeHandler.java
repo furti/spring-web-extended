@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.github.furti.spring.web.extended.staticfolder;
+package io.github.furti.spring.web.extended.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,37 +9,26 @@ import java.util.Map.Entry;
 
 import javax.servlet.ServletContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
 
 /**
  * @author Daniel Furtlehner
  */
-@Service
 public class MimeTypeHandler
 {
 
     private final Map<String, String> wellKnownMimeTypes = new HashMap<>();
     private final ServletContext servletContext;
 
-    @Autowired
-    public MimeTypeHandler(ServletContext servletContext)
+    public MimeTypeHandler(ServletContext servletContext, Map<String, String> mimeTypes)
     {
         this.servletContext = servletContext;
 
-        //TODO: make them configurable via the configurer
-        wellKnownMimeTypes.put(".js.map", "application/json");
+        wellKnownMimeTypes.putAll(mimeTypes);
     }
 
     public MimeType getMimeType(String file)
     {
-        String mimeType = servletContext.getMimeType(file);
-
-        if (mimeType != null)
-        {
-            return MimeType.valueOf(mimeType);
-        }
 
         for (Entry<String, String> entry : wellKnownMimeTypes.entrySet())
         {
@@ -47,6 +36,13 @@ public class MimeTypeHandler
             {
                 return MimeType.valueOf(entry.getValue());
             }
+        }
+
+        String mimeType = servletContext.getMimeType(file);
+
+        if (mimeType != null)
+        {
+            return MimeType.valueOf(mimeType);
         }
 
         throw new IllegalArgumentException(String.format("No mimetype for %s found", file));

@@ -92,11 +92,11 @@ public class VelocityTemplateTest
     {
         return new Object[][]{{
             loader
-                .getResource("classpath:at/porscheinformatik/common/spring/web/extended/template/velocity/Index.html"),
+                .getResource("classpath:io/github/furti/spring/web/extended/template/velocity/Index.html"),
             "index.html",
             ResourceType.HTML,
             templateContent(loader.getResource(
-                "classpath:at/porscheinformatik/common/spring/web/extended/template/velocity/Index_expected.html"))}};
+                "classpath:io/github/furti/spring/web/extended/template/velocity/Index_expected.html"))}};
     }
 
     private String templateContent(Resource resource)

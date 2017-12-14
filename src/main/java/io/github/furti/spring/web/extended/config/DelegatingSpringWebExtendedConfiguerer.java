@@ -28,6 +28,9 @@ import io.github.furti.spring.web.extended.messagesource.MessageSourceConfig;
 import io.github.furti.spring.web.extended.template.cache.StackConfig;
 import io.github.furti.spring.web.extended.template.optimize.OptimizerConfig;
 
+/**
+ * @author Daniel Furtlehner
+ */
 public class DelegatingSpringWebExtendedConfiguerer implements SpringWebExtendedConfigurer
 {
 

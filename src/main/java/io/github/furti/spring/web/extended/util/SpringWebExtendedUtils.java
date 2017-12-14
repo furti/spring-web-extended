@@ -44,4 +44,9 @@ public final class SpringWebExtendedUtils
 
         return split;
     }
+
+    public static String stripPrefix(String expression)
+    {
+        return parseExpression(expression)[1];
+    }
 }

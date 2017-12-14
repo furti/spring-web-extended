@@ -37,7 +37,6 @@ import io.github.furti.spring.web.extended.template.cache.html.HtmlTemplateContr
 /**
  * Add this annotation to @{@link Configuration} classes to enable extended web support configured in
  * {@link SpringWebExtendedConfig} and {@link SpringWebExtendedRegistrar}.
- *
  * <p>
  * You can customize the configuration by implementing the {@link SpringWebExtendedConfigurer} or extending the
  * {@link SpringWebExtendedConfigurerAdapter}
@@ -58,12 +57,14 @@ import io.github.furti.spring.web.extended.template.cache.html.HtmlTemplateContr
  * </pre>
  *
  * @author Daniel Furtlehner
- *
+ * @deprecated use {@link io.github.furti.spring.web.extended.EnableSpringWebExtended} instead. Static folder style will
+ *             be the only supported method in the future.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import(value = {SpringWebExtendedRegistrar.class, SpringWebExtendedImportSelector.class})
 @EnableWebMvc
+@Deprecated
 public @interface EnableSpringWebExtended
 {
 

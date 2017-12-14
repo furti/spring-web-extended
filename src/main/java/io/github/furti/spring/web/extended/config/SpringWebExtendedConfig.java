@@ -31,6 +31,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import io.github.furti.spring.web.extended.io.LocalizedResourceLoader;
 import io.github.furti.spring.web.extended.io.LocalizedResourceLoaderImpl;
+import io.github.furti.spring.web.extended.io.ResourceScannerConfig;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
 import io.github.furti.spring.web.extended.io.ResourceUtils;
 import io.github.furti.spring.web.extended.locale.LocaleContextHolderBackedLocaleContext;

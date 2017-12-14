@@ -140,7 +140,16 @@ public class ClasspathResourceScanner extends AbstractResourceScanner
 
     private String constructRelativePath(String path, String rootPath)
     {
-        Pattern p = Pattern.compile("^.*" + rootPath + "/(.*)$");
+        String regex = "^.*" + rootPath;
+
+        if (!rootPath.endsWith("/"))
+        {
+            regex += "/";
+        }
+
+        regex += "(.*)$";
+
+        Pattern p = Pattern.compile(regex);
 
         Matcher m = p.matcher(path);
 

@@ -27,6 +27,11 @@ import io.github.furti.spring.web.extended.messagesource.MessageSourceConfig;
 import io.github.furti.spring.web.extended.template.cache.StackConfig;
 import io.github.furti.spring.web.extended.template.optimize.OptimizerConfig;
 
+/**
+ * @author Daniel Furtlehner
+ * @deprecated use the static folder style instead
+ */
+@Deprecated
 public interface SpringWebExtendedConfigurer
 {
     void configureMessageSource(MessageSourceConfig config);

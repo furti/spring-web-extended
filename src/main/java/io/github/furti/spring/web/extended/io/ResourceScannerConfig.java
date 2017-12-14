@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.furti.spring.web.extended.config;
+package io.github.furti.spring.web.extended.io;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,21 +22,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.github.furti.spring.web.extended.io.ClasspathResourceScanner;
-import io.github.furti.spring.web.extended.io.ContextResourceScanner;
-import io.github.furti.spring.web.extended.io.ResourceScanner;
-import io.github.furti.spring.web.extended.io.ResourceScanners;
-import io.github.furti.spring.web.extended.io.WebJarResourceScanner;
+import io.github.furti.spring.web.extended.config.SpringWebExtendedConfigurerConfig;
+import io.github.furti.spring.web.extended.staticfolder.StaticFolderConfigurerConfiguration;
 
 /**
  * @author Daniel Furtlehner
- *
  */
 @Configuration
 public class ResourceScannerConfig
 {
-    @Autowired
+    @Autowired(required = false)
     private SpringWebExtendedConfigurerConfig configurerConfig;
+
+    @Autowired(required = false)
+    private StaticFolderConfigurerConfiguration staticConfigurerConfig;
 
     @Bean
     public ResourceScanners resourceScanners()
@@ -69,7 +68,15 @@ public class ResourceScannerConfig
         scanners.put("classpath", classpathResourceScanner());
         scanners.put("webjar", webJarResourceScanner());
 
-        configurerConfig.configureResourceScanners(scanners);
+        if (configurerConfig != null)
+        {
+            configurerConfig.configureResourceScanners(scanners);
+        }
+
+        if (staticConfigurerConfig != null)
+        {
+            staticConfigurerConfig.configureResourceScanners(scanners);
+        }
 
         return scanners;
     }

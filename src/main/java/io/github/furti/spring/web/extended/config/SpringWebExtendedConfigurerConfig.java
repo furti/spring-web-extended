@@ -44,6 +44,7 @@ import ro.isdc.wro.util.Base64;
  * @author Daniel Furtlehner
  */
 @Configuration
+@Deprecated
 public class SpringWebExtendedConfigurerConfig
 {
     private static final Integer DEFAULT_REFRESH_INTERVALL = Integer.valueOf(5);

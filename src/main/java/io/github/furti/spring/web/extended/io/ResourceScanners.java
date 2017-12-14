@@ -1,6 +1,7 @@
 package io.github.furti.spring.web.extended.io;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.core.io.Resource;
@@ -19,6 +20,12 @@ public class ResourceScanners
         this.scanners = scanners;
     }
 
+    /**
+     * @param resourcePath
+     * @param basePath
+     * @return the found resources or an empty map when no resources where found.
+     * @throws IOException
+     */
     public Map<String, Resource> scanResources(String resourcePath, String basePath) throws IOException
     {
         String[] split = SpringWebExtendedUtils.parseExpression(resourcePath);
@@ -26,9 +33,23 @@ public class ResourceScanners
         Assert.isTrue(split.length == 2, "Invalid expression " + resourcePath);
         Assert.isTrue(scanners.containsKey(split[0]), "Unknown expression prefix " + split[0]);
 
-        return scanners.get(split[0]).scanResources(split[1], basePath);
+        Map<String, Resource> foundResources = scanners.get(split[0]).scanResources(split[1], basePath);
+
+        if (foundResources == null)
+        {
+            foundResources = Collections.emptyMap();
+        }
+
+        return foundResources;
     }
 
+    /**
+     * @param location
+     * @param file
+     * @param scanSubDirectories
+     * @return the found resources or an empty map when no resources where found.
+     * @throws IOException
+     */
     public Map<String, Resource> scanResources(String location, String file, boolean scanSubDirectories)
         throws IOException
     {
@@ -37,6 +58,13 @@ public class ResourceScanners
         Assert.isTrue(split.length == 2, "Invalid expression " + location);
         Assert.isTrue(scanners.containsKey(split[0]), "Unknown expression prefix " + split[0]);
 
-        return scanners.get(split[0]).scanResources(split[1], file, scanSubDirectories);
+        Map<String, Resource> foundResources = scanners.get(split[0]).scanResources(split[1], file, scanSubDirectories);
+
+        if (foundResources == null)
+        {
+            foundResources = Collections.emptyMap();
+        }
+
+        return foundResources;
     }
 }

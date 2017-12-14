@@ -38,4 +38,16 @@ public interface StaticFolderRegistry
      * @return all registered folders
      */
     List<StaticFolder> getFolders();
+
+    /**
+     * @param refresh true if we should refresh folders when a missing resource is requested. Especially useful for
+     *            development. Defaults to false in production mode and true in development mode.
+     * @return the registry for a fluent api
+     */
+    StaticFolderRegistry refreshOnMissingResource(boolean refresh);
+
+    /**
+     * @return true if we should refresh folders when a missing resource is requested.
+     */
+    boolean isRefreshOnMissingResource();
 }

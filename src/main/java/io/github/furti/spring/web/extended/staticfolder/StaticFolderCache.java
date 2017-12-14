@@ -51,8 +51,8 @@ public class StaticFolderCache
 
         for (StaticFolder staticFolder : registry.getFolders())
         {
-            StaticFolderCacheEntry entry =
-                new StaticFolderCacheEntry(scanners, staticFolder.getLocation(), staticFolder.getCharset());
+            StaticFolderCacheEntry entry = new StaticFolderCacheEntry(scanners, staticFolder.getLocation(),
+                staticFolder.getCharset(), registry.isRefreshOnMissingResource());
 
             entry.refresh();
 
@@ -98,7 +98,6 @@ public class StaticFolderCache
 
         MimeType mimeType = this.mimeTypeHandler.getMimeType(entry.file);
 
-        //TODO: use the configured charset
         headers.setContentType(new MediaType(mimeType.getType(), mimeType.getSubtype(), entry.entry.getCharset()));
 
         return headers;

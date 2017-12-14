@@ -15,6 +15,11 @@ public interface SpringWebExtendedConfigurer
 {
 
     /**
+     * @param info the application info
+     */
+    void configureApplication(ApplicationInfo info);
+
+    /**
      * Configure static folders to be served by the {@link StaticFoldersController}.
      * 
      * @param registry the registry that holds all the static folders
@@ -34,6 +39,9 @@ public interface SpringWebExtendedConfigurer
      * Allows you to configure some well knonwn mime types in you application. If a mime type is not found in this list,
      * the servlet context will be asked for a mime type. So you can use this map to override standard mime types or add
      * mime types that the servlet context does not know.
+     * <p>
+     * Key is the file ending with a leading dot. Value is the mime type for this file ending.
+     * </p>
      * 
      * @param mimeTypes available mime types
      */

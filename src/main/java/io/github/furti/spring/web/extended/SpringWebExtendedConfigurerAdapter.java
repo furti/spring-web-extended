@@ -14,6 +14,13 @@ public abstract class SpringWebExtendedConfigurerAdapter implements SpringWebExt
 {
 
     @Override
+    public void configureApplication(ApplicationInfo info)
+    {
+        // Sublcasses override this for custom configuration
+
+    }
+
+    @Override
     public void configureStaticFolders(StaticFolderRegistry registry)
     {
         // Sublcasses override this for custom configuration

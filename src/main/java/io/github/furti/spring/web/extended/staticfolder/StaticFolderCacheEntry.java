@@ -30,12 +30,15 @@ public class StaticFolderCacheEntry
     private final ResourceScanners scanners;
     private final String location;
     private final Charset charset;
+    private final boolean refreshOnMissingResource;
 
-    public StaticFolderCacheEntry(ResourceScanners scanners, String location, Charset charset)
+    public StaticFolderCacheEntry(ResourceScanners scanners, String location, Charset charset,
+        boolean refreshOnMissingResource)
     {
         this.scanners = scanners;
         this.location = location;
         this.charset = charset;
+        this.refreshOnMissingResource = refreshOnMissingResource;
     }
 
     public void refresh()
@@ -58,16 +61,11 @@ public class StaticFolderCacheEntry
     {
         Resource resource = files.get(file);
 
-        if (resource == null)
+        if (resource == null && refreshOnMissingResource)
         {
             synchronized (lock)
             {
                 resource = files.get(file);
-                /*
-                 * TODO: we should make it configurable if we should refresh the entry on missing resources.
-                 * In a production environment this should not happen.
-                 * In a development environment this is a nice feature to refresh on a missing resource.
-                 */
 
                 // If the resource is still null we can assume noone else has loaded the resource yet. So refresh the full folder.
                 if (resource == null)

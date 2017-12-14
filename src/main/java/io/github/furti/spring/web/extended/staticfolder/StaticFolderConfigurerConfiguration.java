@@ -9,7 +9,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
+import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
@@ -20,9 +22,13 @@ import io.github.furti.spring.web.extended.io.ResourceScanner;
 @Configuration
 public class StaticFolderConfigurerConfiguration
 {
+    @Autowired
+    private Environment env;
+
     private final DelegatingSpringWebExtendedConfigurer configurer = new DelegatingSpringWebExtendedConfigurer();
     private DefaultStaticFolderRegistry staticFolderRegistry;
     private Map<String, String> mimeTypes;
+    private DefaultApplicationInfo applicationInfo;
 
     @Autowired(required = false)
     public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
@@ -30,11 +36,27 @@ public class StaticFolderConfigurerConfiguration
         configurer.addConfigurers(configurers);
     }
 
+    public ApplicationInfo getApplicationInfo()
+    {
+        if (applicationInfo == null)
+        {
+            applicationInfo = new DefaultApplicationInfo();
+
+            applicationInfo.productionMode(env.acceptsProfiles("optimizeresources", "prod", "production"));
+
+            configurer.configureApplication(applicationInfo);
+        }
+
+        return applicationInfo;
+    }
+
     public StaticFolderRegistry getStaticFolderRegistry()
     {
         if (staticFolderRegistry == null)
         {
             staticFolderRegistry = new DefaultStaticFolderRegistry();
+
+            staticFolderRegistry.refreshOnMissingResource(!getApplicationInfo().isProductionMode());
 
             configurer.configureStaticFolders(staticFolderRegistry);
         }

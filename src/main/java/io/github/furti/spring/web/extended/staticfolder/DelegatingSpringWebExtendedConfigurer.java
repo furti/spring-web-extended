@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
@@ -51,4 +52,12 @@ public class DelegatingSpringWebExtendedConfigurer implements SpringWebExtendedC
         }
     }
 
+    @Override
+    public void configureApplication(ApplicationInfo info)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureApplication(info);
+        }
+    }
 }

@@ -21,7 +21,7 @@ public class ClasspathResourceScannerTest
         ClasspathResourceScanner scanner = new ClasspathResourceScanner();
 
         Map<String, Resource> actual =
-            scanner.scanResources("at/porscheinformatik/common/spring/web/extended/testtemplates/**/*", null);
+            scanner.scanResources("io/github/furti/spring/web/extended/testtemplates/**/*", null);
         assertThat(actual, notNullValue());
         assertThat(actual.size(), equalTo(5));
         assertThat(actual.containsKey("index.txt"), equalTo(true));
@@ -37,7 +37,7 @@ public class ClasspathResourceScannerTest
         ClasspathResourceScanner scanner = new ClasspathResourceScanner();
 
         Map<String, Resource> actual =
-            scanner.scanResources("at/porscheinformatik/common/spring/web/extended/testtemplates", "index.txt", false);
+            scanner.scanResources("io/github/furti/spring/web/extended/testtemplates", "index.txt", false);
 
         assertThat(actual, notNullValue());
         assertThat(actual.size(), equalTo(2));
@@ -60,35 +60,35 @@ public class ClasspathResourceScannerTest
     {
         return new Object[][]{
             {
-                "/at/porscheinformatik/common/springangular/testtemplates",
+                "/io/github/furti/springangular/testtemplates",
                 "test.html",
                 false,
-                "classpath*:/at/porscheinformatik/common/springangular/testtemplates/test*.html"},
+                "classpath*:/io/github/furti/springangular/testtemplates/test*.html"},
             {
-                "/at/porscheinformatik/common/springangular/testtemplates",
+                "/io/github/furti/springangular/testtemplates",
                 null,
                 false,
-                "classpath*:/at/porscheinformatik/common/springangular/testtemplates/*.*"},
+                "classpath*:/io/github/furti/springangular/testtemplates/*.*"},
             {
-                "/at/porscheinformatik/common/springangular/testtemplates",
+                "/io/github/furti/springangular/testtemplates",
                 "test",
                 false,
-                "classpath*:/at/porscheinformatik/common/springangular/testtemplates/test*.*"},
+                "classpath*:/io/github/furti/springangular/testtemplates/test*.*"},
             {
-                "/at/porscheinformatik/common/springangular/testtemplates",
+                "/io/github/furti/springangular/testtemplates",
                 "test.html",
                 true,
-                "classpath*:/at/porscheinformatik/common/springangular/testtemplates/**/test*.html"},
+                "classpath*:/io/github/furti/springangular/testtemplates/**/test*.html"},
             {
-                "/at/porscheinformatik/common/springangular/testtemplates",
+                "/io/github/furti/springangular/testtemplates",
                 null,
                 true,
-                "classpath*:/at/porscheinformatik/common/springangular/testtemplates/**/*.*"},
+                "classpath*:/io/github/furti/springangular/testtemplates/**/*.*"},
             {
-                "/at/porscheinformatik/common/springangular/testtemplates",
+                "/io/github/furti/springangular/testtemplates",
                 "test",
                 true,
-                "classpath*:/at/porscheinformatik/common/springangular/testtemplates/**/test*.*"}
+                "classpath*:/io/github/furti/springangular/testtemplates/**/test*.*"}
 
         };
     }

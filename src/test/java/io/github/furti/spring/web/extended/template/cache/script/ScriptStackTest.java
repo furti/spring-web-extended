@@ -114,6 +114,6 @@ public class ScriptStackTest
 
     private String buildLocation(String script)
     {
-        return "classpath:at/porscheinformatik/common/spring/web/extended/scripts/" + script;
+        return "classpath:io/github/furti/spring/web/extended/scripts/" + script;
     }
 }

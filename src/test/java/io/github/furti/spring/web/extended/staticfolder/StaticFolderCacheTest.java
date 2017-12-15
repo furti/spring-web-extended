@@ -8,19 +8,29 @@ import static org.junit.Assert.*;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.mockito.Mockito;
+import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
+import io.github.furti.spring.web.extended.expression.DefaultExpressionHandlerRegistry;
+import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
+import io.github.furti.spring.web.extended.expression.handlers.MessageExpressionHandler;
 import io.github.furti.spring.web.extended.io.ClasspathResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
+import io.github.furti.spring.web.extended.template.DefaultTemplateContextFactory;
+import io.github.furti.spring.web.extended.template.TemplateContextFactory;
+import io.github.furti.spring.web.extended.template.TemplateFactory;
+import io.github.furti.spring.web.extended.template.chunk.ChunkTemplateFactory;
 import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
 
@@ -37,12 +47,14 @@ public class StaticFolderCacheTest
         StaticFolderRegistry registry =
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler());
+        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
+            buildTemplateFactory(), buildTemplateContextFactory());
         cache.initialize();
 
         {
             // index.html default
-            ResponseEntity<String> actualResponse = cache.render("/app");
+            HttpServletRequest request = buildRequest("/app");
+            ResponseEntity<String> actualResponse = cache.render(request);
 
             assertThat(actualResponse.getBody(),
                 equalTo("<!doctype html>"
@@ -54,7 +66,7 @@ public class StaticFolderCacheTest
                     + lineSeparator
                     + "<body>"
                     + lineSeparator
-                    + "    <p>{.message.test}</p>"
+                    + "    <p>A very useful message</p>"
                     + lineSeparator
                     + "    <p>Some Text with special chars äöü.</p>"
                     + lineSeparator
@@ -68,7 +80,8 @@ public class StaticFolderCacheTest
 
         {
             // index.html
-            ResponseEntity<String> actualResponse = cache.render("/app/index.html");
+            HttpServletRequest request = buildRequest("/app/index.html");
+            ResponseEntity<String> actualResponse = cache.render(request);
 
             assertThat(actualResponse.getBody(),
                 equalTo("<!doctype html>"
@@ -80,7 +93,7 @@ public class StaticFolderCacheTest
                     + lineSeparator
                     + "<body>"
                     + lineSeparator
-                    + "    <p>{.message.test}</p>"
+                    + "    <p>A very useful message</p>"
                     + lineSeparator
                     + "    <p>Some Text with special chars äöü.</p>"
                     + lineSeparator
@@ -94,9 +107,10 @@ public class StaticFolderCacheTest
 
         {
             // index.html
-            ResponseEntity<String> actualResponse = cache.render("/app/test.js");
+            HttpServletRequest request = buildRequest("/app/test.js");
+            ResponseEntity<String> actualResponse = cache.render(request);
 
-            assertThat(actualResponse.getBody(), equalTo("//{.message.test}"));
+            assertThat(actualResponse.getBody(), equalTo("//{Message \"unknown\" not found}"));
 
             assertThat(actualResponse.getHeaders().getContentType(),
                 equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
@@ -109,10 +123,12 @@ public class StaticFolderCacheTest
         StaticFolderRegistry registry =
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler());
+        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
+            buildTemplateFactory(), buildTemplateContextFactory());
         cache.initialize();
 
-        cache.render("/something");
+        HttpServletRequest request = buildRequest("/something");
+        cache.render(request);
     }
 
     @Test(expectedExceptions = ResourceNotFoundException.class)
@@ -121,10 +137,12 @@ public class StaticFolderCacheTest
         StaticFolderRegistry registry =
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler());
+        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
+            buildTemplateFactory(), buildTemplateContextFactory());
         cache.initialize();
 
-        cache.render("/app/missing.js");
+        HttpServletRequest request = buildRequest("/app/missing.js");
+        cache.render(request);
     }
 
     private MimeTypeHandler buildMimeTypeHandler()
@@ -152,5 +170,30 @@ public class StaticFolderCacheTest
         registry.registerFolder(basePath, location);
 
         return registry;
+    }
+
+    private HttpServletRequest buildRequest(String requestURI)
+    {
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+
+        Mockito.when(request.getRequestURI()).thenReturn(requestURI);
+
+        return request;
+    }
+
+    private TemplateContextFactory buildTemplateContextFactory()
+    {
+        return new DefaultTemplateContextFactory();
+    }
+
+    private TemplateFactory buildTemplateFactory()
+    {
+        StaticMessageSource messageSource = new StaticMessageSource();
+        messageSource.addMessage("test", Locale.getDefault(), "A very useful message");
+
+        ExpressionHandlerRegistry registry = new DefaultExpressionHandlerRegistry();
+        registry.registerExpressionHandler(new MessageExpressionHandler(messageSource));
+
+        return new ChunkTemplateFactory(registry);
     }
 }

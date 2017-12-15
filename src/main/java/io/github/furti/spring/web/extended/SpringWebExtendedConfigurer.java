@@ -5,6 +5,7 @@ package io.github.furti.spring.web.extended;
 
 import java.util.Map;
 
+import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.staticfolder.StaticFoldersController;
 
@@ -46,4 +47,16 @@ public interface SpringWebExtendedConfigurer
      * @param mimeTypes available mime types
      */
     void configureMimeTypes(Map<String, String> mimeTypes);
+
+    /**
+     * Add or remove expression handlers for the application.
+     * 
+     * @param registry the expression handler registry
+     */
+    void configureExpressionHandlers(ExpressionHandlerRegistry registry);
+
+    /**
+     * @param messageRegistry the registry to hold the configured messages
+     */
+    void configureMessages(MessageRegistry messageRegistry);
 }

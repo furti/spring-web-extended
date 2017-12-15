@@ -22,14 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.github.furti.spring.web.extended.expression.AssetExpressionHandler;
-import io.github.furti.spring.web.extended.expression.CdnExpressionHandler;
-import io.github.furti.spring.web.extended.expression.ExpressionHandler;
-import io.github.furti.spring.web.extended.expression.ExpressionHandlers;
-import io.github.furti.spring.web.extended.expression.InlineTemplateExpressionHandler;
-import io.github.furti.spring.web.extended.expression.MessageExpressionHandler;
-import io.github.furti.spring.web.extended.expression.ScriptExpressionHandler;
-import io.github.furti.spring.web.extended.expression.StyleExpressionHandler;
+import io.github.furti.spring.web.extended.expression.legacy.AssetExpressionHandler;
+import io.github.furti.spring.web.extended.expression.legacy.CdnExpressionHandler;
+import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
+import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandlers;
+import io.github.furti.spring.web.extended.expression.legacy.InlineTemplateExpressionHandler;
+import io.github.furti.spring.web.extended.expression.legacy.MessageExpressionHandler;
+import io.github.furti.spring.web.extended.expression.legacy.ScriptExpressionHandler;
+import io.github.furti.spring.web.extended.expression.legacy.StyleExpressionHandler;
 
 /**
  * @author Daniel Furtlehner

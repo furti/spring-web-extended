@@ -1,56 +1,42 @@
+/**
+ * 
+ */
 package io.github.furti.spring.web.extended.expression;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import io.github.furti.spring.web.extended.template.TemplateContext;
 
-import io.github.furti.spring.web.extended.template.TemplateRenderContext;
-import io.github.furti.spring.web.extended.template.TemplateRenderContextHolder;
-
+/**
+ * @author Daniel Furtlehner
+ */
 public abstract class BaseExpressionHandler implements ExpressionHandler
 {
-    private final boolean valueNeeded;
 
-    public BaseExpressionHandler(boolean valueNeeded)
+    private final String prefix;
+
+    public BaseExpressionHandler(String prefix)
     {
         super();
-        this.valueNeeded = valueNeeded;
+        this.prefix = prefix;
     }
 
     @Override
-    public String process(String value)
+    public String getPrefix()
     {
-        return escape(doProcess(value));
-    }
-
-    protected abstract String doProcess(String value);
-
-    protected TemplateRenderContext getTemplateRenderContext()
-    {
-        return TemplateRenderContextHolder.actualContext();
-    }
-
-    private String escape(String value)
-    {
-        TemplateRenderContext context = getTemplateRenderContext();
-
-        if (context == null || context.getResourceType() == null)
-        {
-            return value;
-        }
-
-        switch (context.getResourceType())
-        {
-            case HTML:
-                return StringEscapeUtils.escapeHtml(value);
-            case SCRIPT:
-                return StringEscapeUtils.escapeJavaScript(value);
-            default:
-                return value;
-        }
+        return prefix;
     }
 
     @Override
-    public boolean valueNeeded()
+    public String process(String value, TemplateContext templateContext)
     {
-        return valueNeeded;
+        //TODO: escape result based on mime type
+        return doProcess(value, templateContext);
     }
+
+    /**
+     * @param value the expression value
+     * @param templateContext the context
+     * @return the result of the expression
+     */
+    protected abstract String doProcess(String value, TemplateContext templateContext);
+
 }

@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 
 import org.springframework.context.ApplicationContext;
 
-import io.github.furti.spring.web.extended.template.cache.html.HtmlTemplateController;
+import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTemplateController;
 
 /**
  * Annotation used to configure the default template controller

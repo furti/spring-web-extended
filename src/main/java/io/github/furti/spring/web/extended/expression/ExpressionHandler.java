@@ -1,28 +1,26 @@
 /**
- * Copyright 2014 Daniel Furtlehner
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
  */
 package io.github.furti.spring.web.extended.expression;
 
+import io.github.furti.spring.web.extended.template.TemplateContext;
+
+/**
+ * @author Daniel Furtlehner
+ */
 public interface ExpressionHandler
 {
 
-    String process(String value);
+    /**
+     * @return the prefix of the expression handler. This prefix is used in templates to reference the expression
+     *         handler to use.
+     */
+    String getPrefix();
 
     /**
-     * @return true if the ExpressionHandler generates his content depending on the value. false if the value is not
-     *         needed by the ExpressionHandler and the content generated depends on other data.
+     * @param value the expression value
+     * @param templateContext the template context
+     * @return the result produced by this expression handler for the context and expression value
      */
-    boolean valueNeeded();
+    String process(String value, TemplateContext templateContext);
 }

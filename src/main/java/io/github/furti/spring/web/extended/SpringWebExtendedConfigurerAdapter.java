@@ -5,6 +5,7 @@ package io.github.furti.spring.web.extended;
 
 import java.util.Map;
 
+import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 
 /**
@@ -34,6 +35,18 @@ public abstract class SpringWebExtendedConfigurerAdapter implements SpringWebExt
 
     @Override
     public void configureMimeTypes(Map<String, String> mimeTypes)
+    {
+        // Sublcasses override this for custom configuration
+    }
+
+    @Override
+    public void configureExpressionHandlers(ExpressionHandlerRegistry registry)
+    {
+        // Sublcasses override this for custom configuration
+    }
+
+    @Override
+    public void configureMessages(MessageRegistry messageRegistry)
     {
         // Sublcasses override this for custom configuration
     }

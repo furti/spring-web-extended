@@ -12,8 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
+import io.github.furti.spring.web.extended.MessageRegistry;
 import io.github.furti.spring.web.extended.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
+import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 
 /**
@@ -29,6 +31,7 @@ public class StaticFolderConfigurerConfiguration
     private DefaultStaticFolderRegistry staticFolderRegistry;
     private Map<String, String> mimeTypes;
     private DefaultApplicationInfo applicationInfo;
+    private MessageRegistry messageRegistry;
 
     @Autowired(required = false)
     public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
@@ -79,8 +82,25 @@ public class StaticFolderConfigurerConfiguration
         return mimeTypes;
     }
 
+    public MessageRegistry getMessageRegistry()
+    {
+        if (messageRegistry == null)
+        {
+            messageRegistry = new DefaultMessageRegistry();
+
+            configurer.configureMessages(messageRegistry);
+        }
+
+        return messageRegistry;
+    }
+
     public void configureResourceScanners(Map<String, ResourceScanner> scanners)
     {
         configurer.configureResourceScanners(scanners);
+    }
+
+    public void configureExpressionHandlers(ExpressionHandlerRegistry registry)
+    {
+        configurer.configureExpressionHandlers(registry);
     }
 }

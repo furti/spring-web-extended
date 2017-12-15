@@ -8,10 +8,10 @@ import org.springframework.core.annotation.Order;
 import io.github.furti.spring.web.extended.annotation.DefaultBean;
 import io.github.furti.spring.web.extended.http.DefaultLinkCreator;
 import io.github.furti.spring.web.extended.http.LinkCreator;
-import io.github.furti.spring.web.extended.template.DefaultTemplateRenderContextFactory;
-import io.github.furti.spring.web.extended.template.TemplateFactory;
-import io.github.furti.spring.web.extended.template.TemplateRenderContextFactory;
-import io.github.furti.spring.web.extended.template.chunk.ChunkTemplateFactory;
+import io.github.furti.spring.web.extended.template.legacy.DefaultTemplateRenderContextFactory;
+import io.github.furti.spring.web.extended.template.legacy.TemplateFactory;
+import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContextFactory;
+import io.github.furti.spring.web.extended.template.legacy.chunk.ChunkTemplateFactory;
 
 @Configuration
 @Order(Ordered.LOWEST_PRECEDENCE)

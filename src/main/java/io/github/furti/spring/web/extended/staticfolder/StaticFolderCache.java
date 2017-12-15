@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,6 +23,8 @@ import org.springframework.util.MultiValueMap;
 import io.github.furti.spring.web.extended.StaticFolder;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
+import io.github.furti.spring.web.extended.template.TemplateContextFactory;
+import io.github.furti.spring.web.extended.template.TemplateFactory;
 import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
 
@@ -34,14 +37,19 @@ public class StaticFolderCache
     private final ResourceScanners scanners;
     private final StaticFolderRegistry registry;
     private final Map<String, StaticFolderCacheEntry> entries = new HashMap<>();
+    private final TemplateFactory templateFactory;
+    private final TemplateContextFactory contextFactory;
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    public StaticFolderCache(StaticFolderRegistry registry, ResourceScanners scanners, MimeTypeHandler mimeTypeHandler)
+    public StaticFolderCache(StaticFolderRegistry registry, ResourceScanners scanners, MimeTypeHandler mimeTypeHandler,
+        TemplateFactory templateFactory, TemplateContextFactory contextFactory)
     {
         this.registry = registry;
         this.scanners = scanners;
         this.mimeTypeHandler = mimeTypeHandler;
+        this.templateFactory = templateFactory;
+        this.contextFactory = contextFactory;
     }
 
     @PostConstruct
@@ -52,7 +60,7 @@ public class StaticFolderCache
         for (StaticFolder staticFolder : registry.getFolders())
         {
             StaticFolderCacheEntry entry = new StaticFolderCacheEntry(scanners, staticFolder.getLocation(),
-                staticFolder.getCharset(), registry.isRefreshOnMissingResource());
+                staticFolder.getCharset(), registry.isRefreshOnMissingResource(), templateFactory, contextFactory);
 
             entry.refresh();
 
@@ -60,8 +68,10 @@ public class StaticFolderCache
         }
     }
 
-    public ResponseEntity<String> render(String requestURI)
+    public ResponseEntity<String> render(HttpServletRequest request)
     {
+        String requestURI = request.getRequestURI();
+
         String path = normalizePath(requestURI);
 
         RenderEntry entry = findEntryForPath(path);
@@ -74,7 +84,7 @@ public class StaticFolderCache
         String content;
         try
         {
-            content = entry.render();
+            content = entry.render(request);
         }
         catch (ResourceNotFoundException e)
         {
@@ -155,9 +165,9 @@ public class StaticFolderCache
             this.file = file;
         }
 
-        public String render() throws ResourceNotFoundException, ResourceRenderException
+        public String render(HttpServletRequest request) throws ResourceNotFoundException, ResourceRenderException
         {
-            return entry.renderResource(file);
+            return entry.renderResource(file, request);
         }
     }
 }

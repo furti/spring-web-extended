@@ -30,7 +30,7 @@ import io.github.furti.spring.web.extended.config.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.config.SpringWebExtendedConfigurerAdapter;
 import io.github.furti.spring.web.extended.config.SpringWebExtendedImportSelector;
 import io.github.furti.spring.web.extended.config.SpringWebExtendedRegistrar;
-import io.github.furti.spring.web.extended.template.cache.html.HtmlTemplateController;
+import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTemplateController;
 
 //CHECKSTYLE:ON
 

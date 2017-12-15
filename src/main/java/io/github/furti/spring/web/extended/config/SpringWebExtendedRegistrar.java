@@ -25,9 +25,9 @@ import org.springframework.util.Assert;
 
 import io.github.furti.spring.web.extended.annotation.EnableSpringWebExtended;
 import io.github.furti.spring.web.extended.asset.AssetController;
-import io.github.furti.spring.web.extended.template.cache.html.HtmlTemplateController;
-import io.github.furti.spring.web.extended.template.cache.script.ScriptController;
-import io.github.furti.spring.web.extended.template.cache.style.StyleController;
+import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTemplateController;
+import io.github.furti.spring.web.extended.template.legacy.cache.script.ScriptController;
+import io.github.furti.spring.web.extended.template.legacy.cache.style.StyleController;
 
 public class SpringWebExtendedRegistrar implements ImportBeanDefinitionRegistrar
 {

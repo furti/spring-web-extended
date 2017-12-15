@@ -22,7 +22,6 @@ import org.springframework.core.type.AnnotationMetadata;
 
 /**
  * @author Daniel Furtlehner
- *
  */
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class SpringWebExtendedImportSelector implements DeferredImportSelector

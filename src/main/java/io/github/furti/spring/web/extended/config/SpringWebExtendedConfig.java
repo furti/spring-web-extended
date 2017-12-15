@@ -38,12 +38,12 @@ import io.github.furti.spring.web.extended.locale.LocaleContextHolderBackedLocal
 import io.github.furti.spring.web.extended.locale.LocaleHandlerInterceptor;
 import io.github.furti.spring.web.extended.locale.LocaleSource;
 import io.github.furti.spring.web.extended.servlet.RequestResponseContextHandlerInterceptor;
-import io.github.furti.spring.web.extended.template.cache.DefaultStackConfig;
-import io.github.furti.spring.web.extended.template.cache.StackConfig;
-import io.github.furti.spring.web.extended.template.cache.html.HtmlStacks;
-import io.github.furti.spring.web.extended.template.cache.script.ScriptStacks;
-import io.github.furti.spring.web.extended.template.cache.style.StyleStacks;
-import io.github.furti.spring.web.extended.template.optimize.OptimizerChain;
+import io.github.furti.spring.web.extended.template.legacy.cache.DefaultStackConfig;
+import io.github.furti.spring.web.extended.template.legacy.cache.StackConfig;
+import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlStacks;
+import io.github.furti.spring.web.extended.template.legacy.cache.script.ScriptStacks;
+import io.github.furti.spring.web.extended.template.legacy.cache.style.StyleStacks;
+import io.github.furti.spring.web.extended.template.legacy.optimize.OptimizerChain;
 import io.github.furti.spring.web.extended.util.PathUtils;
 
 @Configuration

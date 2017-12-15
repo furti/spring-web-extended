@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
+import io.github.furti.spring.web.extended.MessageRegistry;
 import io.github.furti.spring.web.extended.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
+import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 
 /**
@@ -58,6 +60,24 @@ public class DelegatingSpringWebExtendedConfigurer implements SpringWebExtendedC
         for (SpringWebExtendedConfigurer configurer : configurers)
         {
             configurer.configureApplication(info);
+        }
+    }
+
+    @Override
+    public void configureExpressionHandlers(ExpressionHandlerRegistry registry)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureExpressionHandlers(registry);
+        }
+    }
+
+    @Override
+    public void configureMessages(MessageRegistry messageRegistry)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureMessages(messageRegistry);
         }
     }
 }

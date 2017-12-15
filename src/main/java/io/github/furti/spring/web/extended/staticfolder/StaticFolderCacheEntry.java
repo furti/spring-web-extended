@@ -6,15 +6,19 @@ package io.github.furti.spring.web.extended.staticfolder;
 import static io.github.furti.spring.web.extended.util.SpringWebExtendedUtils.*;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.io.IOUtils;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.io.Resource;
 
 import io.github.furti.spring.web.extended.io.ResourceScanners;
+import io.github.furti.spring.web.extended.template.Template;
+import io.github.furti.spring.web.extended.template.TemplateContext;
+import io.github.furti.spring.web.extended.template.TemplateContextFactory;
+import io.github.furti.spring.web.extended.template.TemplateFactory;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
 
 /**
@@ -27,18 +31,23 @@ public class StaticFolderCacheEntry
     private final Object lock = new Object();
     private final ConcurrentHashMap<String, Resource> files = new ConcurrentHashMap<>(30);
 
+    private final TemplateFactory templateFactory;
+    private final TemplateContextFactory contextFactory;
     private final ResourceScanners scanners;
     private final String location;
     private final Charset charset;
     private final boolean refreshOnMissingResource;
 
     public StaticFolderCacheEntry(ResourceScanners scanners, String location, Charset charset,
-        boolean refreshOnMissingResource)
+        boolean refreshOnMissingResource, TemplateFactory templateFactory, TemplateContextFactory contextFactory)
     {
+        super();
         this.scanners = scanners;
         this.location = location;
         this.charset = charset;
         this.refreshOnMissingResource = refreshOnMissingResource;
+        this.templateFactory = templateFactory;
+        this.contextFactory = contextFactory;
     }
 
     public void refresh()
@@ -57,7 +66,8 @@ public class StaticFolderCacheEntry
         }
     }
 
-    public String renderResource(String file) throws ResourceNotFoundException, ResourceRenderException
+    public String renderResource(String file, HttpServletRequest request)
+        throws ResourceNotFoundException, ResourceRenderException
     {
         Resource resource = files.get(file);
 
@@ -82,8 +92,7 @@ public class StaticFolderCacheEntry
             throw new ResourceNotFoundException(file);
         }
 
-        //TODO: add template engine
-        return doRender(resource);
+        return doRender(resource, request);
     }
 
     public Charset getCharset()
@@ -91,17 +100,19 @@ public class StaticFolderCacheEntry
         return charset;
     }
 
-    private String doRender(Resource resource) throws ResourceRenderException
+    private String doRender(Resource resource, HttpServletRequest request) throws ResourceRenderException
     {
         try
         {
-            InputStream input = resource.getInputStream();
+            //TODO: add caching and refresh of templates
+            TemplateContext context = contextFactory.createContext(request);
+            Template template = templateFactory.createTemplate(resource, context, charset);
 
-            return IOUtils.toString(input, charset);
+            return template.render();
         }
         catch (IOException e)
         {
-            throw new ResourceRenderException(e);
+            throw new ResourceRenderException(String.format("Error rendering resource %s", resource), e);
         }
     }
 }

@@ -1,17 +1,5 @@
 /**
- * Copyright 2014 Daniel Furtlehner
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
  */
 package io.github.furti.spring.web.extended.template.chunk;
 
@@ -19,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
@@ -26,50 +17,66 @@ import org.springframework.core.io.Resource;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
-import io.github.furti.spring.web.extended.io.ResourceType;
-import io.github.furti.spring.web.extended.template.BaseTemplate;
+import io.github.furti.spring.web.extended.template.Template;
 
-public class ChunkTemplate extends BaseTemplate
+/**
+ * @author Daniel Furtlehner
+ */
+public class ChunkTemplate implements Template
 {
+    private final Map<String, String> stringsToReplace = new HashMap<>();
+
     private final Resource resource;
     private final Theme theme;
-    private String templateContent;
+    private final Charset charset;
 
-    public ChunkTemplate(ResourceType type, String templateName, String location, boolean alreadyOptimized,
-        Resource resource, Theme theme)
+    public ChunkTemplate(Resource resource, Theme theme, Charset charset)
     {
-        super(type, templateName, alreadyOptimized, location);
         this.resource = resource;
         this.theme = theme;
+        this.charset = charset;
+
+        //TODO: maybe we should use our own template stuff? Lot of stuff to replace. Maybe this breaks something.
+        stringsToReplace.put("{/", "{ /");
+        stringsToReplace.put("{!", "{ !");
+        stringsToReplace.put("{_", "{ _");
+        stringsToReplace.put("{$", "{ $");
+        stringsToReplace.put("_[", "_ [");
     }
 
     @Override
-    protected String getContent() throws IOException
+    public String render() throws IOException
     {
         Chunk chunk = buildChunk();
+
         return chunk.toString();
     }
 
-    @Override
-    protected void doRefresh() throws IOException
-    {
-        try (Reader reader = new InputStreamReader(resource.getInputStream(), Charset.forName("UTF-8")))
-        {
-            templateContent = IOUtils.toString(reader);
-        }
-    }
-
-    @Override
-    protected long getLastModified() throws IOException
-    {
-        return resource.lastModified();
-    }
-
-    private Chunk buildChunk()
+    private Chunk buildChunk() throws IOException
     {
         Chunk chunk = theme.makeChunk();
+
+        // TODO: add caching of template content.
+        String templateContent = prepareTemplate();
+
         chunk.append(templateContent);
 
         return chunk;
+    }
+
+    private String prepareTemplate() throws IOException
+    {
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), charset))
+        {
+            String templateContent = IOUtils.toString(reader);
+
+            for (Entry<String, String> entry : stringsToReplace.entrySet())
+            {
+                //We have to replace some character combinations in the template. Otherwise chunk assumes some magic that should not happen.
+                templateContent = templateContent.replace(entry.getKey(), entry.getValue());
+            }
+
+            return templateContent;
+        }
     }
 }

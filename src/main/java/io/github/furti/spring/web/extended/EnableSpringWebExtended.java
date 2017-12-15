@@ -15,6 +15,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import io.github.furti.spring.web.extended.staticfolder.StaticFolderConfiguration;
 import io.github.furti.spring.web.extended.staticfolder.StaticFolderSpringWebExtendedImportSelector;
+import io.github.furti.spring.web.extended.template.legacy.TemplateFactory;
+import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContext;
+import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContextFactory;
 
 /**
  * Add this annotation to @{@link Configuration} classes to enable extended web support configured in
@@ -37,6 +40,16 @@ import io.github.furti.spring.web.extended.staticfolder.StaticFolderSpringWebExt
  *     }
  * }
  * </pre>
+ * <p>
+ * The Chunk Template engine is used per default. If you want to override this you can register a bean of type
+ * {@link TemplateFactory}.
+ * </p>
+ * <p>
+ * A {@link TemplateRenderContext} is created for each rendered template. The data of the context is available to all
+ * expression handlers. The context is also used as key when caching templates, because a template can result in
+ * different content for different contexts. To customize the context simply register a bean of
+ * {@link TemplateRenderContextFactory} inside the application context.
+ * </p>
  * 
  * @author Daniel Furtlehner
  */

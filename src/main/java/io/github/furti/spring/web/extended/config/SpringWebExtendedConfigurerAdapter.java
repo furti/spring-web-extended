@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.furti.spring.web.extended.asset.CdnConfig;
-import io.github.furti.spring.web.extended.expression.ExpressionHandler;
+import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.locale.LocaleSource;
 import io.github.furti.spring.web.extended.messagesource.MessageSourceConfig;
-import io.github.furti.spring.web.extended.template.cache.StackConfig;
-import io.github.furti.spring.web.extended.template.optimize.OptimizerConfig;
+import io.github.furti.spring.web.extended.template.legacy.cache.StackConfig;
+import io.github.furti.spring.web.extended.template.legacy.optimize.OptimizerConfig;
 
 /**
  * @author Daniel Furtlehner

@@ -17,7 +17,8 @@ import io.github.furti.spring.web.extended.StaticFolderRegistry;
 public class DefaultStaticFolderRegistry implements StaticFolderRegistry
 {
     private final List<StaticFolder> folders = new ArrayList<>();
-    private boolean refreshOnMissingResource;
+    private boolean reloadOnMissingResource;
+    private long templateRefreshInterval;
 
     @Override
     public StaticFolderRegistry registerFolder(String basePath, String location, Charset charset)
@@ -40,17 +41,31 @@ public class DefaultStaticFolderRegistry implements StaticFolderRegistry
     }
 
     @Override
-    public StaticFolderRegistry refreshOnMissingResource(boolean refresh)
+    public StaticFolderRegistry reloadOnMissingResource(boolean refresh)
     {
-        this.refreshOnMissingResource = refresh;
+        this.reloadOnMissingResource = refresh;
 
         return this;
     }
 
     @Override
-    public boolean isRefreshOnMissingResource()
+    public boolean isReloadOnMissingResource()
     {
-        return refreshOnMissingResource;
+        return reloadOnMissingResource;
+    }
+
+    @Override
+    public StaticFolderRegistry templateRefreshInterval(long intervalInSeconds)
+    {
+        this.templateRefreshInterval = intervalInSeconds;
+
+        return this;
+    }
+
+    @Override
+    public long getTemplateRefreshInterval()
+    {
+        return templateRefreshInterval;
     }
 
 }

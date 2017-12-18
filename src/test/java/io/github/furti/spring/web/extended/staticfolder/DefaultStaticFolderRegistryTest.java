@@ -24,11 +24,11 @@ public class DefaultStaticFolderRegistryTest
     {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
-        registry.refreshOnMissingResource(false);
-        assertThat(registry.isRefreshOnMissingResource(), equalTo(false));
+        registry.reloadOnMissingResource(false);
+        assertThat(registry.isReloadOnMissingResource(), equalTo(false));
 
-        registry.refreshOnMissingResource(true);
-        assertThat(registry.isRefreshOnMissingResource(), equalTo(true));
+        registry.reloadOnMissingResource(true);
+        assertThat(registry.isReloadOnMissingResource(), equalTo(true));
     }
 
     @Test

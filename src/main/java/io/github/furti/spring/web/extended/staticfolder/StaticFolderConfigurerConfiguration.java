@@ -59,7 +59,10 @@ public class StaticFolderConfigurerConfiguration
         {
             staticFolderRegistry = new DefaultStaticFolderRegistry();
 
-            staticFolderRegistry.refreshOnMissingResource(!getApplicationInfo().isProductionMode());
+            boolean productionMode = getApplicationInfo().isProductionMode();
+
+            staticFolderRegistry.reloadOnMissingResource(!productionMode);
+            staticFolderRegistry.templateRefreshInterval(productionMode ? 60 * 10 : 0);
 
             configurer.configureStaticFolders(staticFolderRegistry);
         }

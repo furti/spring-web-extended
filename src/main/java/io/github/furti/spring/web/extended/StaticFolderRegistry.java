@@ -15,6 +15,20 @@ public interface StaticFolderRegistry
 {
 
     /**
+     * 0 means no caching at all. A negative number means infinite caching.
+     * 
+     * @param intervalInSeconds the time between two template refresh cycles. Defaults to no caching in development mode
+     *            and a interval of 10 minutes in production mode.
+     * @return the registry for a fluent api.
+     */
+    StaticFolderRegistry templateRefreshInterval(long intervalInSeconds);
+
+    /**
+     * @return the time between two template refresh cycles.
+     */
+    long getTemplateRefreshInterval();
+
+    /**
      * Calls {@link #registerFolder(String, String, Charset)} with UTF-8 as charset.
      * 
      * @param basePath the request must start with this path for the resources from this location to be served.
@@ -40,14 +54,14 @@ public interface StaticFolderRegistry
     List<StaticFolder> getFolders();
 
     /**
-     * @param refresh true if we should refresh folders when a missing resource is requested. Especially useful for
+     * @param refresh true if we should reload folders when a missing resource is requested. Especially useful for
      *            development. Defaults to false in production mode and true in development mode.
      * @return the registry for a fluent api
      */
-    StaticFolderRegistry refreshOnMissingResource(boolean refresh);
+    StaticFolderRegistry reloadOnMissingResource(boolean refresh);
 
     /**
-     * @return true if we should refresh folders when a missing resource is requested.
+     * @return true if we should reload folders when a missing resource is requested.
      */
-    boolean isRefreshOnMissingResource();
+    boolean isReloadOnMissingResource();
 }

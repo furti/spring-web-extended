@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -17,35 +16,28 @@ import org.springframework.core.io.Resource;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 
-import io.github.furti.spring.web.extended.template.Template;
+import io.github.furti.spring.web.extended.template.CacheableTemplate;
 
 /**
  * @author Daniel Furtlehner
  */
-public class ChunkTemplate implements Template
+public class ChunkTemplate extends CacheableTemplate
 {
-    private final Map<String, String> stringsToReplace = new HashMap<>();
-
-    private final Resource resource;
+    private final Map<String, String> stringsToReplace;
     private final Theme theme;
     private final Charset charset;
 
-    public ChunkTemplate(Resource resource, Theme theme, Charset charset)
+    public ChunkTemplate(Resource resource, Theme theme, Charset charset, Map<String, String> stringsToReplace)
     {
-        this.resource = resource;
+        super(resource);
+
         this.theme = theme;
         this.charset = charset;
-
-        //TODO: maybe we should use our own template stuff? Lot of stuff to replace. Maybe this breaks something.
-        stringsToReplace.put("{/", "{ /");
-        stringsToReplace.put("{!", "{ !");
-        stringsToReplace.put("{_", "{ _");
-        stringsToReplace.put("{$", "{ $");
-        stringsToReplace.put("_[", "_ [");
+        this.stringsToReplace = stringsToReplace;
     }
 
     @Override
-    public String render() throws IOException
+    public String doRender() throws IOException
     {
         Chunk chunk = buildChunk();
 
@@ -56,7 +48,6 @@ public class ChunkTemplate implements Template
     {
         Chunk chunk = theme.makeChunk();
 
-        // TODO: add caching of template content.
         String templateContent = prepareTemplate();
 
         chunk.append(templateContent);
@@ -78,5 +69,11 @@ public class ChunkTemplate implements Template
 
             return templateContent;
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ChunkTemplate [resource=" + resource + "]";
     }
 }

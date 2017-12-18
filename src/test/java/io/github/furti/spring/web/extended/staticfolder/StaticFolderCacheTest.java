@@ -162,11 +162,11 @@ public class StaticFolderCacheTest
         return new ResourceScanners(scanners);
     }
 
-    private StaticFolderRegistry buildRegistry(boolean refreshMissingResources, String basePath, String location)
+    private StaticFolderRegistry buildRegistry(boolean reloadMissingResources, String basePath, String location)
     {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
-        registry.refreshOnMissingResource(refreshMissingResources);
+        registry.reloadOnMissingResource(reloadMissingResources);
         registry.registerFolder(basePath, location);
 
         return registry;

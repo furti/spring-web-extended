@@ -3,6 +3,7 @@
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,10 +34,10 @@ import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
  */
 public class StaticFolderCache
 {
+    private final Map<String, StaticFolderCacheEntry> entries = new HashMap<>();
     private final MimeTypeHandler mimeTypeHandler;
     private final ResourceScanners scanners;
     private final StaticFolderRegistry registry;
-    private final Map<String, StaticFolderCacheEntry> entries = new HashMap<>();
     private final TemplateFactory templateFactory;
     private final TemplateContextFactory contextFactory;
 
@@ -60,11 +61,27 @@ public class StaticFolderCache
         for (StaticFolder staticFolder : registry.getFolders())
         {
             StaticFolderCacheEntry entry = new StaticFolderCacheEntry(scanners, staticFolder.getLocation(),
-                staticFolder.getCharset(), registry.isRefreshOnMissingResource(), templateFactory, contextFactory);
+                staticFolder.getCharset(), registry.isReloadOnMissingResource(),
+                registry.getTemplateRefreshInterval() != 0, templateFactory, contextFactory);
 
-            entry.refresh();
+            entry.reload();
 
             entries.put(staticFolder.getBasePath(), entry);
+        }
+    }
+
+    public void refreshFolders()
+    {
+        for (StaticFolderCacheEntry entry : entries.values())
+        {
+            try
+            {
+                entry.refresh();
+            }
+            catch (IOException e)
+            {
+                logger.error(String.format("Error refreshing template for folder%s", entry), e);
+            }
         }
     }
 

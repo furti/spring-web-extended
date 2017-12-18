@@ -6,7 +6,7 @@ package io.github.furti.spring.web.extended.template;
 /**
  * @author Daniel Furtlehner
  */
-public interface TemplateContext
+public enum TemplateContextParameter
 {
-    Object getParameter(Object key);
+    LOCALE
 }

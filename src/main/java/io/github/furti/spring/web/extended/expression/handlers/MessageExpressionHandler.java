@@ -10,6 +10,7 @@ import org.springframework.context.NoSuchMessageException;
 
 import io.github.furti.spring.web.extended.expression.BaseExpressionHandler;
 import io.github.furti.spring.web.extended.template.TemplateContext;
+import io.github.furti.spring.web.extended.template.TemplateContextParameter;
 
 /**
  * @author Daniel Furtlehner
@@ -30,8 +31,9 @@ public class MessageExpressionHandler extends BaseExpressionHandler
     {
         try
         {
-            //TODO: use locale from templatecontext
-            return messageSource.getMessage(value, null, Locale.getDefault());
+            Locale locale = (Locale) templateContext.getParameter(TemplateContextParameter.LOCALE);
+
+            return messageSource.getMessage(value, null, locale != null ? locale : Locale.getDefault());
         }
         catch (NoSuchMessageException ex)
         {

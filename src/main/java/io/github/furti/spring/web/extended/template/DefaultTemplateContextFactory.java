@@ -14,7 +14,12 @@ public class DefaultTemplateContextFactory implements TemplateContextFactory
     @Override
     public TemplateContext createContext(HttpServletRequest request)
     {
-        return new DefaultTemplateContext();
+        //TODO: should we get the locale from the url as well?
+        DefaultTemplateContext templateContext = new DefaultTemplateContext();
+
+        templateContext.addParameter(TemplateContextParameter.LOCALE, request.getLocale());
+
+        return templateContext;
     }
 
 }

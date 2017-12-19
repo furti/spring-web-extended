@@ -8,6 +8,7 @@ import java.util.Map;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.staticfolder.StaticFoldersController;
+import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 
 /**
  * @author Daniel Furtlehner
@@ -59,4 +60,12 @@ public interface SpringWebExtendedConfigurer
      * @param messageRegistry the registry to hold the configured messages
      */
     void configureMessages(MessageRegistry messageRegistry);
+
+    /**
+     * Configures content escape handlers that are used by the template engine to escape expressions for the given mime
+     * type of the template.
+     * 
+     * @param registry the registry to register escape handlers.
+     */
+    void configureContentEscapeHandlers(DefaultContentEscapeHandlerRegistry registry);
 }

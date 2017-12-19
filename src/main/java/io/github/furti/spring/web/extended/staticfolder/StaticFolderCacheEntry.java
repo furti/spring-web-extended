@@ -132,7 +132,7 @@ public class StaticFolderCacheEntry
     {
         try
         {
-            TemplateContext context = contextFactory.createContext(request);
+            TemplateContext context = contextFactory.createContext(request, resource);
             Template template;
 
             if (cacheTemplates)

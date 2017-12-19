@@ -22,17 +22,19 @@ public class SimpleTemplate extends CacheableTemplate
 {
     private final TemplateContext context;
     private final ExpressionHandlerRegistry expressionHandlers;
+    private final ContentEscapeHandlerRegistry escapeHandlers;
     private final char expressionStart;
     private final char expressionEnd;
     private final char expressionDelimiter;
 
     public SimpleTemplate(Resource resource, TemplateContext context, Charset charset,
-        ExpressionHandlerRegistry expressionHandlers)
+        ExpressionHandlerRegistry expressionHandlers, ContentEscapeHandlerRegistry escapeHandlers)
     {
         super(resource, charset);
 
         this.context = context;
         this.expressionHandlers = expressionHandlers;
+        this.escapeHandlers = escapeHandlers;
 
         //TODO: make this configurable
         this.expressionStart = '§';
@@ -126,7 +128,8 @@ public class SimpleTemplate extends CacheableTemplate
                 }
                 else
                 {
-                    parts.add(new ExpressionPart(expressionAsString, handlerAndValue.handler, handlerAndValue.value));
+                    parts.add(new ExpressionPart(expressionAsString, handlerAndValue.handler, handlerAndValue.value,
+                        escapeHandlers.getEscapeHandlerForMimeType(context.getMimeType())));
 
                     expression = new StringBuilder();
                     insideExpression = false;

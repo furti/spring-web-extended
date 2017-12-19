@@ -19,16 +19,19 @@ public class SimpleTemplateFactory implements TemplateFactory
 {
 
     private final ExpressionHandlerRegistry expressionHandlers;
+    private final ContentEscapeHandlerRegistry escapeHandlers;
 
-    public SimpleTemplateFactory(ExpressionHandlerRegistry expressionHandlers)
+    public SimpleTemplateFactory(ExpressionHandlerRegistry expressionHandlers,
+        ContentEscapeHandlerRegistry escapeHandlers)
     {
         this.expressionHandlers = expressionHandlers;
+        this.escapeHandlers = escapeHandlers;
     }
 
     @Override
     public Template createTemplate(Resource resource, TemplateContext context, Charset charset)
     {
-        return new SimpleTemplate(resource, context, charset, this.expressionHandlers);
+        return new SimpleTemplate(resource, context, charset, this.expressionHandlers, escapeHandlers);
     }
 
 }

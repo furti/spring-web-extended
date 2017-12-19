@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.util.MimeType;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.MessageRegistry;
@@ -17,6 +18,10 @@ import io.github.furti.spring.web.extended.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
+import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
+import io.github.furti.spring.web.extended.template.escape.HtmlEscapeHandler;
+import io.github.furti.spring.web.extended.template.escape.JavascriptEscapeHandler;
+import io.github.furti.spring.web.extended.template.simple.ContentEscapeHandlerRegistry;
 
 /**
  * @author Daniel Furtlehner
@@ -32,6 +37,7 @@ public class StaticFolderConfigurerConfiguration
     private Map<String, String> mimeTypes;
     private DefaultApplicationInfo applicationInfo;
     private MessageRegistry messageRegistry;
+    private DefaultContentEscapeHandlerRegistry contentEscapeHandlerRegistry;
 
     @Autowired(required = false)
     public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
@@ -68,6 +74,22 @@ public class StaticFolderConfigurerConfiguration
         }
 
         return staticFolderRegistry;
+    }
+
+    public ContentEscapeHandlerRegistry getContentExceptHandlerRegistry()
+    {
+        if (contentEscapeHandlerRegistry == null)
+        {
+            contentEscapeHandlerRegistry = new DefaultContentEscapeHandlerRegistry();
+
+            contentEscapeHandlerRegistry.registerHandler(MimeType.valueOf("text/html"), new HtmlEscapeHandler());
+            contentEscapeHandlerRegistry.registerHandler(MimeType.valueOf("text/javascript"),
+                new JavascriptEscapeHandler());
+
+            configurer.configureContentEscapeHandlers(contentEscapeHandlerRegistry);
+        }
+
+        return contentEscapeHandlerRegistry;
     }
 
     public Map<String, String> getMimeTypes()

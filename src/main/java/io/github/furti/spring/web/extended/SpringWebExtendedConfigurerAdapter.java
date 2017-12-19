@@ -7,6 +7,7 @@ import java.util.Map;
 
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
+import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 
 /**
  * @author Daniel Furtlehner
@@ -47,6 +48,12 @@ public abstract class SpringWebExtendedConfigurerAdapter implements SpringWebExt
 
     @Override
     public void configureMessages(MessageRegistry messageRegistry)
+    {
+        // Sublcasses override this for custom configuration
+    }
+
+    @Override
+    public void configureContentEscapeHandlers(DefaultContentEscapeHandlerRegistry registry)
     {
         // Sublcasses override this for custom configuration
     }

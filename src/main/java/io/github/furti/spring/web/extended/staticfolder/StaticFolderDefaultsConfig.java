@@ -13,7 +13,9 @@ import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.template.DefaultTemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
+import io.github.furti.spring.web.extended.template.simple.ContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.template.simple.SimpleTemplateFactory;
+import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 
 /**
  * @author Daniel Furtlehner
@@ -25,15 +27,16 @@ public class StaticFolderDefaultsConfig
 
     @Bean
     @DefaultBean(TemplateFactory.class)
-    public TemplateFactory defaultTemplateFactory(ExpressionHandlerRegistry expressionHandlers)
+    public TemplateFactory defaultTemplateFactory(ExpressionHandlerRegistry expressionHandlers,
+        ContentEscapeHandlerRegistry escapeHandlers)
     {
-        return new SimpleTemplateFactory(expressionHandlers);
+        return new SimpleTemplateFactory(expressionHandlers, escapeHandlers);
     }
 
     @Bean
     @DefaultBean(TemplateContextFactory.class)
-    public TemplateContextFactory defaultTemplateContextFactory()
+    public TemplateContextFactory defaultTemplateContextFactory(MimeTypeHandler mimeTypeHandler)
     {
-        return new DefaultTemplateContextFactory();
+        return new DefaultTemplateContextFactory(mimeTypeHandler);
     }
 }

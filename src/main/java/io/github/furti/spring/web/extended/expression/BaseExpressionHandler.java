@@ -31,7 +31,6 @@ public abstract class BaseExpressionHandler implements ExpressionHandler
     @Override
     public String process(String value, TemplateContext templateContext)
     {
-        //TODO: escape result based on mime type
         return doProcess(value, templateContext);
     }
 

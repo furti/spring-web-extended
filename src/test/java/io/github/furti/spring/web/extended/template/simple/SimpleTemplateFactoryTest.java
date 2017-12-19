@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.junit.Assert;
+import org.springframework.util.MimeType;
 import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.expression.DefaultExpressionHandlerRegistry;
+import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.template.DefaultTemplateContext;
 import io.github.furti.spring.web.extended.template.StringResource;
 import io.github.furti.spring.web.extended.template.Template;
@@ -23,7 +25,7 @@ import io.github.furti.spring.web.extended.template.TemplateFactory;
 public class SimpleTemplateFactoryTest
 {
     private static final Charset CHARSET = Charset.forName("UTF-8");
-    private static final DefaultTemplateContext CONTEXT = new DefaultTemplateContext();
+    private static final DefaultTemplateContext CONTEXT = new DefaultTemplateContext(MimeType.valueOf("text/plain"));
 
     @Test
     public void emptyTemplateShouldBuildEmptyString() throws IOException
@@ -132,7 +134,6 @@ public class SimpleTemplateFactoryTest
         expressionHandlers.registerExpressionHandler(new NoValueExpressionHandler());
         expressionHandlers.registerExpressionHandler(new ValueReturningExpressionHandler());
 
-        return new SimpleTemplateFactory(expressionHandlers);
+        return new SimpleTemplateFactory(expressionHandlers, new DefaultContentEscapeHandlerRegistry());
     }
-
 }

@@ -24,6 +24,7 @@ import io.github.furti.spring.web.extended.io.ResourceScannerConfig;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
+import io.github.furti.spring.web.extended.template.simple.ContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 
 /**
@@ -56,6 +57,12 @@ public class StaticFolderConfiguration extends WebMvcConfigurerAdapter
     public MimeTypeHandler mimeTypeHandler(ServletContext servletContext)
     {
         return new MimeTypeHandler(servletContext, configurerConfiguration.getMimeTypes());
+    }
+
+    @Bean
+    public ContentEscapeHandlerRegistry contentEscapeHandlers()
+    {
+        return configurerConfiguration.getContentExceptHandlerRegistry();
     }
 
     @Bean

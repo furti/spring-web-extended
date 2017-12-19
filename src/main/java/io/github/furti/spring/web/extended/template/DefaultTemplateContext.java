@@ -6,12 +6,21 @@ package io.github.furti.spring.web.extended.template;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.util.MimeType;
+
 /**
  * @author Daniel Furtlehner
  */
 public class DefaultTemplateContext implements TemplateContext
 {
+    private final MimeType mimeType;
     private final Map<Object, Object> parameters = new HashMap<>();
+
+    public DefaultTemplateContext(MimeType mimeType)
+    {
+        super();
+        this.mimeType = mimeType;
+    }
 
     public DefaultTemplateContext addParameter(Object key, Object value)
     {
@@ -24,6 +33,12 @@ public class DefaultTemplateContext implements TemplateContext
     public Object getParameter(Object key)
     {
         return parameters.get(key);
+    }
+
+    @Override
+    public MimeType getMimeType()
+    {
+        return mimeType;
     }
 
     @Override

@@ -27,10 +27,11 @@ import io.github.furti.spring.web.extended.expression.handlers.MessageExpression
 import io.github.furti.spring.web.extended.io.ClasspathResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
+import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.template.DefaultTemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
-import io.github.furti.spring.web.extended.template.chunk.ChunkTemplateFactory;
+import io.github.furti.spring.web.extended.template.simple.SimpleTemplateFactory;
 import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
 
@@ -106,11 +107,11 @@ public class StaticFolderCacheTest
         }
 
         {
-            // index.html
+            // test.js
             HttpServletRequest request = buildRequest("/app/test.js");
             ResponseEntity<String> actualResponse = cache.render(request);
 
-            assertThat(actualResponse.getBody(), equalTo("//{.message.unknown}"));
+            assertThat(actualResponse.getBody(), equalTo("//§message.unknown§"));
 
             assertThat(actualResponse.getHeaders().getContentType(),
                 equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
@@ -194,6 +195,6 @@ public class StaticFolderCacheTest
         ExpressionHandlerRegistry registry = new DefaultExpressionHandlerRegistry();
         registry.registerExpressionHandler(new MessageExpressionHandler(messageSource));
 
-        return new ChunkTemplateFactory(registry);
+        return new SimpleTemplateFactory(registry, new DefaultContentEscapeHandlerRegistry());
     }
 }

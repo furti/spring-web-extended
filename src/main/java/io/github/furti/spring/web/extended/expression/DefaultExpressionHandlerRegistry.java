@@ -53,6 +53,20 @@ public class DefaultExpressionHandlerRegistry implements ExpressionHandlerRegist
         return Collections.unmodifiableList(expressionHandlers);
     }
 
+    @Override
+    public ExpressionHandler getExpressionHandler(String prefix)
+    {
+        for (ExpressionHandler expressionHandler : expressionHandlers)
+        {
+            if (Objects.equals(prefix, expressionHandler.getPrefix()))
+            {
+                return expressionHandler;
+            }
+        }
+
+        return null;
+    }
+
     private void assertUnique(ExpressionHandler expressionHandler)
     {
         for (ExpressionHandler registeredHandler : expressionHandlers)

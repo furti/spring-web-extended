@@ -1,4 +1,4 @@
-package io.github.furti.spring.web.extended.template.legacy;
+package io.github.furti.spring.web.extended.template;
 
 import java.io.File;
 import java.io.IOException;

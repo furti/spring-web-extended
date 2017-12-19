@@ -12,11 +12,14 @@ public abstract class BaseExpressionHandler implements ExpressionHandler
 {
 
     private final String prefix;
+    private final boolean valueRequired;
 
-    public BaseExpressionHandler(String prefix)
+    public BaseExpressionHandler(String prefix, boolean valueRequired)
     {
         super();
+
         this.prefix = prefix;
+        this.valueRequired = valueRequired;
     }
 
     @Override
@@ -30,6 +33,12 @@ public abstract class BaseExpressionHandler implements ExpressionHandler
     {
         //TODO: escape result based on mime type
         return doProcess(value, templateContext);
+    }
+
+    @Override
+    public boolean isValueRequired()
+    {
+        return valueRequired;
     }
 
     /**

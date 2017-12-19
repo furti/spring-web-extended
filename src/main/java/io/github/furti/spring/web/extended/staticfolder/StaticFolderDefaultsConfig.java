@@ -13,7 +13,7 @@ import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.template.DefaultTemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
-import io.github.furti.spring.web.extended.template.chunk.ChunkTemplateFactory;
+import io.github.furti.spring.web.extended.template.simple.SimpleTemplateFactory;
 
 /**
  * @author Daniel Furtlehner
@@ -27,7 +27,7 @@ public class StaticFolderDefaultsConfig
     @DefaultBean(TemplateFactory.class)
     public TemplateFactory defaultTemplateFactory(ExpressionHandlerRegistry expressionHandlers)
     {
-        return new ChunkTemplateFactory(expressionHandlers);
+        return new SimpleTemplateFactory(expressionHandlers);
     }
 
     @Bean

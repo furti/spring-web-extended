@@ -4,13 +4,10 @@
 package io.github.furti.spring.web.extended.template.chunk;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 
 import com.x5.template.Chunk;
@@ -25,14 +22,12 @@ public class ChunkTemplate extends CacheableTemplate
 {
     private final Map<String, String> stringsToReplace;
     private final Theme theme;
-    private final Charset charset;
 
     public ChunkTemplate(Resource resource, Theme theme, Charset charset, Map<String, String> stringsToReplace)
     {
-        super(resource);
+        super(resource, charset);
 
         this.theme = theme;
-        this.charset = charset;
         this.stringsToReplace = stringsToReplace;
     }
 
@@ -57,18 +52,15 @@ public class ChunkTemplate extends CacheableTemplate
 
     private String prepareTemplate() throws IOException
     {
-        try (Reader reader = new InputStreamReader(resource.getInputStream(), charset))
+        String templateContent = loadTemplate();
+
+        for (Entry<String, String> entry : stringsToReplace.entrySet())
         {
-            String templateContent = IOUtils.toString(reader);
-
-            for (Entry<String, String> entry : stringsToReplace.entrySet())
-            {
-                //We have to replace some character combinations in the template. Otherwise chunk assumes some magic that should not happen.
-                templateContent = templateContent.replace(entry.getKey(), entry.getValue());
-            }
-
-            return templateContent;
+            //We have to replace some character combinations in the template. Otherwise chunk assumes some magic that should not happen.
+            templateContent = templateContent.replace(entry.getKey(), entry.getValue());
         }
+
+        return templateContent;
     }
 
     @Override

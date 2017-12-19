@@ -32,4 +32,10 @@ public interface ExpressionHandlerRegistry
      */
     List<ExpressionHandler> getExpressionHandlers();
 
+    /**
+     * @param prefix the prefix of the handler to return
+     * @return the expression handler for the prefix or null if no expression handler is registered for this prefix.
+     */
+    ExpressionHandler getExpressionHandler(String prefix);
+
 }

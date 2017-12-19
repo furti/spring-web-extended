@@ -21,7 +21,7 @@ public class MessageExpressionHandler extends BaseExpressionHandler
 
     public MessageExpressionHandler(MessageSource messageSource)
     {
-        super("message");
+        super("message", true);
 
         this.messageSource = messageSource;
     }
@@ -37,7 +37,7 @@ public class MessageExpressionHandler extends BaseExpressionHandler
         }
         catch (NoSuchMessageException ex)
         {
-            return "{Message \"" + value + "\" not found}";
+            return null;
         }
     }
 }

@@ -28,7 +28,8 @@ public class SimpleTemplate extends CacheableTemplate
     private final char expressionDelimiter;
 
     public SimpleTemplate(Resource resource, TemplateContext context, Charset charset,
-        ExpressionHandlerRegistry expressionHandlers, ContentEscapeHandlerRegistry escapeHandlers)
+        ExpressionHandlerRegistry expressionHandlers, ContentEscapeHandlerRegistry escapeHandlers, char expressionStart,
+        char expressionDelimiter, char expressionEnd)
     {
         super(resource, charset);
 
@@ -36,10 +37,9 @@ public class SimpleTemplate extends CacheableTemplate
         this.expressionHandlers = expressionHandlers;
         this.escapeHandlers = escapeHandlers;
 
-        //TODO: make this configurable
-        this.expressionStart = '§';
-        this.expressionDelimiter = '.';
-        this.expressionEnd = '§';
+        this.expressionStart = expressionStart;
+        this.expressionDelimiter = expressionDelimiter;
+        this.expressionEnd = expressionEnd;
     }
 
     @Override

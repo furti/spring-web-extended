@@ -111,7 +111,7 @@ public class StaticFolderCacheTest
             HttpServletRequest request = buildRequest("/app/test.js");
             ResponseEntity<String> actualResponse = cache.render(request);
 
-            assertThat(actualResponse.getBody(), equalTo("//§message.unknown§"));
+            assertThat(actualResponse.getBody(), equalTo("//#message.unknown#"));
 
             assertThat(actualResponse.getHeaders().getContentType(),
                 equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
@@ -195,6 +195,6 @@ public class StaticFolderCacheTest
         ExpressionHandlerRegistry registry = new DefaultExpressionHandlerRegistry();
         registry.registerExpressionHandler(new MessageExpressionHandler(messageSource));
 
-        return new SimpleTemplateFactory(registry, new DefaultContentEscapeHandlerRegistry());
+        return new SimpleTemplateFactory(registry, new DefaultContentEscapeHandlerRegistry(), '#', '.', '#');
     }
 }

@@ -82,9 +82,11 @@ public class StaticFolderConfigurerConfiguration
         {
             contentEscapeHandlerRegistry = new DefaultContentEscapeHandlerRegistry();
 
+            JavascriptEscapeHandler javascriptHandler = new JavascriptEscapeHandler();
+
             contentEscapeHandlerRegistry.registerHandler(MimeType.valueOf("text/html"), new HtmlEscapeHandler());
-            contentEscapeHandlerRegistry.registerHandler(MimeType.valueOf("text/javascript"),
-                new JavascriptEscapeHandler());
+            contentEscapeHandlerRegistry.registerHandler(MimeType.valueOf("text/javascript"), javascriptHandler);
+            contentEscapeHandlerRegistry.registerHandler(MimeType.valueOf("application/javascript"), javascriptHandler);
 
             configurer.configureContentEscapeHandlers(contentEscapeHandlerRegistry);
         }

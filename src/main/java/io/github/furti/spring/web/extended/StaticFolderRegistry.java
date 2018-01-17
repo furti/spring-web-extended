@@ -17,16 +17,16 @@ public interface StaticFolderRegistry
     /**
      * 0 means no caching at all. A negative number means infinite caching.
      * 
-     * @param intervalInSeconds the time between two template refresh cycles. Defaults to no caching in development mode
+     * @param intervalInSeconds the time between two resource refresh cycles. Defaults to no caching in development mode
      *            and a interval of 10 minutes in production mode.
      * @return the registry for a fluent api.
      */
-    StaticFolderRegistry templateRefreshInterval(long intervalInSeconds);
+    StaticFolderRegistry resourceRefreshInterval(long intervalInSeconds);
 
     /**
-     * @return the time between two template refresh cycles.
+     * @return the time between two resource refresh cycles.
      */
-    long getTemplateRefreshInterval();
+    long getResourceRefreshInterval();
 
     /**
      * Calls {@link #registerFolder(String, String, Charset)} with UTF-8 as charset.

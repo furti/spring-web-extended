@@ -90,4 +90,14 @@ public class DelegatingSpringWebExtendedConfigurer implements SpringWebExtendedC
             configurer.configureContentEscapeHandlers(registry);
         }
     }
+
+    @Override
+    public void configureResourceTypes(ResourceTypeRegistry registry)
+    {
+
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureResourceTypes(registry);
+        }
+    }
 }

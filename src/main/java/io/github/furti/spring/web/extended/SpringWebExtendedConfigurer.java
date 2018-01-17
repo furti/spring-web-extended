@@ -7,6 +7,8 @@ import java.util.Map;
 
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
+import io.github.furti.spring.web.extended.staticfolder.ResourceTypeRegistry;
+import io.github.furti.spring.web.extended.staticfolder.StaticFolderCache;
 import io.github.furti.spring.web.extended.staticfolder.StaticFoldersController;
 import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 
@@ -68,4 +70,11 @@ public interface SpringWebExtendedConfigurer
      * @param registry the registry to register escape handlers.
      */
     void configureContentEscapeHandlers(DefaultContentEscapeHandlerRegistry registry);
+
+    /**
+     * Configures resource types used by the {@link StaticFolderCache} to handle resources.
+     * 
+     * @param registry the registry
+     */
+    void configureResourceTypes(ResourceTypeRegistry registry);
 }

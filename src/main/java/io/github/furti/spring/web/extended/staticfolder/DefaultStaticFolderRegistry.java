@@ -18,7 +18,7 @@ public class DefaultStaticFolderRegistry implements StaticFolderRegistry
 {
     private final List<StaticFolder> folders = new ArrayList<>();
     private boolean reloadOnMissingResource;
-    private long templateRefreshInterval;
+    private long resourceRefreshInterval;
 
     @Override
     public StaticFolderRegistry registerFolder(String basePath, String location, Charset charset)
@@ -55,17 +55,17 @@ public class DefaultStaticFolderRegistry implements StaticFolderRegistry
     }
 
     @Override
-    public StaticFolderRegistry templateRefreshInterval(long intervalInSeconds)
+    public StaticFolderRegistry resourceRefreshInterval(long intervalInSeconds)
     {
-        this.templateRefreshInterval = intervalInSeconds;
+        this.resourceRefreshInterval = intervalInSeconds;
 
         return this;
     }
 
     @Override
-    public long getTemplateRefreshInterval()
+    public long getResourceRefreshInterval()
     {
-        return templateRefreshInterval;
+        return resourceRefreshInterval;
     }
 
 }

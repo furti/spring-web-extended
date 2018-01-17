@@ -12,7 +12,7 @@ public interface Template
 {
 
     /**
-     * @return the rendered template with all expressions replaced.
+     * @return the rendered template with all expressions replaced. Never null.
      * @throws IOException when an exception occurs rendering the template.
      */
     String render() throws IOException;

@@ -31,7 +31,7 @@ public class StaticFoldersController
     }
 
     @RequestMapping(value = "**", method = RequestMethod.GET)
-    public ResponseEntity<String> handleRequest(HttpServletRequest request)
+    public ResponseEntity<byte[]> handleRequest(HttpServletRequest request)
     {
         return cache.render(request);
     }

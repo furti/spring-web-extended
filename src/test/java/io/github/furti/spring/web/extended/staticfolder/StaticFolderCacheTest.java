@@ -49,15 +49,15 @@ public class StaticFolderCacheTest
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory());
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
         cache.initialize();
 
         {
             // index.html default
             HttpServletRequest request = buildRequest("/app");
-            ResponseEntity<String> actualResponse = cache.render(request);
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-            assertThat(actualResponse.getBody(),
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
                 equalTo("<!doctype html>"
                     + lineSeparator
                     + lineSeparator
@@ -82,9 +82,9 @@ public class StaticFolderCacheTest
         {
             // index.html
             HttpServletRequest request = buildRequest("/app/index.html");
-            ResponseEntity<String> actualResponse = cache.render(request);
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-            assertThat(actualResponse.getBody(),
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
                 equalTo("<!doctype html>"
                     + lineSeparator
                     + lineSeparator
@@ -109,13 +109,23 @@ public class StaticFolderCacheTest
         {
             // test.js
             HttpServletRequest request = buildRequest("/app/test.js");
-            ResponseEntity<String> actualResponse = cache.render(request);
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-            assertThat(actualResponse.getBody(), equalTo("//#message.unknown#"));
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")), equalTo("//#message.unknown#"));
 
             assertThat(actualResponse.getHeaders().getContentType(),
                 equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
         }
+    }
+
+    private ResourceTypeRegistry buildResourceTypeRegistry()
+    {
+        DefaultResourceTypeRegistry registry = new DefaultResourceTypeRegistry();
+
+        registry.resourceTypeByMimeType("application/javascript", ResourceType.TEMPLATE);
+        registry.resourceTypeByMimeType("text/html", ResourceType.TEMPLATE);
+
+        return registry;
     }
 
     @Test(expectedExceptions = ResourceNotFoundException.class)
@@ -125,7 +135,7 @@ public class StaticFolderCacheTest
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory());
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/something");
@@ -139,7 +149,7 @@ public class StaticFolderCacheTest
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory());
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/app/missing.js");

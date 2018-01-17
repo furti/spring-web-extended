@@ -6,6 +6,7 @@ package io.github.furti.spring.web.extended.staticfolder;
 import static io.github.furti.spring.web.extended.util.SpringWebExtendedUtils.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 
 import io.github.furti.spring.web.extended.io.ResourceScanners;
@@ -21,6 +23,7 @@ import io.github.furti.spring.web.extended.template.Template;
 import io.github.furti.spring.web.extended.template.TemplateContext;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
+import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
 
 /**
@@ -34,27 +37,33 @@ public class StaticFolderCacheEntry
     private final ConcurrentHashMap<String, Resource> files = new ConcurrentHashMap<>(30);
     private final ConcurrentHashMap<TemplateCacheKey, Template> templateCache =
         new ConcurrentHashMap<TemplateCacheKey, Template>(30);
+    private final ConcurrentHashMap<Resource, byte[]> resourceCache = new ConcurrentHashMap<Resource, byte[]>(30);
 
-    private final TemplateFactory templateFactory;
-    private final TemplateContextFactory contextFactory;
     private final ResourceScanners scanners;
     private final String location;
     private final Charset charset;
     private final boolean reloadOnMissingResource;
-    private final boolean cacheTemplates;
+    private final boolean cacheResources;
+    private final TemplateFactory templateFactory;
+    private final TemplateContextFactory contextFactory;
+    private final ResourceTypeRegistry resourceTypeRegistry;
+    private final MimeTypeHandler mimeTypeHandler;
 
     public StaticFolderCacheEntry(ResourceScanners scanners, String location, Charset charset,
-        boolean reloadOnMissingResource, boolean cacheTemplates, TemplateFactory templateFactory,
-        TemplateContextFactory contextFactory)
+        boolean reloadOnMissingResource, boolean cacheResources, TemplateFactory templateFactory,
+        TemplateContextFactory contextFactory, ResourceTypeRegistry resourceTypeRegistry,
+        MimeTypeHandler mimeTypeHandler)
     {
         super();
         this.scanners = scanners;
         this.location = location;
         this.charset = charset;
         this.reloadOnMissingResource = reloadOnMissingResource;
+        this.cacheResources = cacheResources;
         this.templateFactory = templateFactory;
         this.contextFactory = contextFactory;
-        this.cacheTemplates = cacheTemplates;
+        this.resourceTypeRegistry = resourceTypeRegistry;
+        this.mimeTypeHandler = mimeTypeHandler;
     }
 
     public void reload()
@@ -86,9 +95,14 @@ public class StaticFolderCacheEntry
                 throw new IOException(String.format("Error refreshing template %s", template), e);
             }
         }
+
+        for (Entry<Resource, byte[]> entry : resourceCache.entrySet())
+        {
+            entry.setValue(getContentFromInputStream(entry.getKey()));
+        }
     }
 
-    public String renderResource(String file, HttpServletRequest request)
+    public byte[] renderResource(String file, HttpServletRequest request)
         throws ResourceNotFoundException, ResourceRenderException
     {
         Resource resource = files.get(file);
@@ -114,7 +128,18 @@ public class StaticFolderCacheEntry
             throw new ResourceNotFoundException(file);
         }
 
-        return doRender(resource, request);
+        ResourceType resourceType =
+            resourceTypeRegistry.getResourceType(resource, mimeTypeHandler.getMimeType(resource.getFilename()));
+
+        switch (resourceType)
+        {
+            case TEMPLATE:
+                return doRenderTemplate(resource, request);
+            case BINARY:
+                return doRenderBinary(resource, request);
+            default:
+                throw new ResourceRenderException("ResourceType " + resourceType + " is not implemented yet.");
+        }
     }
 
     public Charset getCharset()
@@ -128,14 +153,14 @@ public class StaticFolderCacheEntry
         return "StaticFolderCacheEntry [location=" + location + "]";
     }
 
-    private String doRender(Resource resource, HttpServletRequest request) throws ResourceRenderException
+    private byte[] doRenderTemplate(Resource resource, HttpServletRequest request) throws ResourceRenderException
     {
         try
         {
             TemplateContext context = contextFactory.createContext(request, resource);
             Template template;
 
-            if (cacheTemplates)
+            if (cacheResources)
             {
                 template = getTemplateFromCache(resource, context);
 
@@ -153,11 +178,47 @@ public class StaticFolderCacheEntry
                 template.refreshIfNeeded();
             }
 
-            return template.render();
+            String content = template.render();
+
+            return content.getBytes(charset);
         }
         catch (IOException e)
         {
             throw new ResourceRenderException(String.format("Error rendering resource %s", resource), e);
+        }
+    }
+
+    private byte[] doRenderBinary(Resource resource, HttpServletRequest request) throws ResourceRenderException
+    {
+        try
+        {
+            if (cacheResources)
+            {
+                byte[] content = resourceCache.get(resource);
+
+                if (content == null)
+                {
+                    content = getContentFromInputStream(resource);
+                }
+
+                return content;
+            }
+            else
+            {
+                return getContentFromInputStream(resource);
+            }
+        }
+        catch (IOException e)
+        {
+            throw new ResourceRenderException(String.format("Error streaming resource %s", resource), e);
+        }
+    }
+
+    private byte[] getContentFromInputStream(Resource resource) throws IOException
+    {
+        try (InputStream input = resource.getInputStream())
+        {
+            return IOUtils.toByteArray(input);
         }
     }
 

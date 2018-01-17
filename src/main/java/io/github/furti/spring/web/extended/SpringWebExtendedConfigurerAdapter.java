@@ -7,6 +7,7 @@ import java.util.Map;
 
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
+import io.github.furti.spring.web.extended.staticfolder.ResourceTypeRegistry;
 import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 
 /**
@@ -56,5 +57,11 @@ public abstract class SpringWebExtendedConfigurerAdapter implements SpringWebExt
     public void configureContentEscapeHandlers(DefaultContentEscapeHandlerRegistry registry)
     {
         // Sublcasses override this for custom configuration
+    }
+
+    @Override
+    public void configureResourceTypes(ResourceTypeRegistry registry)
+    {
+        // Sublcasses override this for custom configuration        
     }
 }

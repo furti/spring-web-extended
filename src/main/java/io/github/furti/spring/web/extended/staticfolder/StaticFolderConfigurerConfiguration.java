@@ -38,6 +38,7 @@ public class StaticFolderConfigurerConfiguration
     private DefaultApplicationInfo applicationInfo;
     private MessageRegistry messageRegistry;
     private DefaultContentEscapeHandlerRegistry contentEscapeHandlerRegistry;
+    private ResourceTypeRegistry resourceTypeRegistry;
 
     @Autowired(required = false)
     public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
@@ -68,7 +69,7 @@ public class StaticFolderConfigurerConfiguration
             boolean productionMode = getApplicationInfo().isProductionMode();
 
             staticFolderRegistry.reloadOnMissingResource(!productionMode);
-            staticFolderRegistry.templateRefreshInterval(productionMode ? 60 * 10 : 0);
+            staticFolderRegistry.resourceRefreshInterval(productionMode ? 60 * 10 : 0);
 
             configurer.configureStaticFolders(staticFolderRegistry);
         }
@@ -102,6 +103,7 @@ public class StaticFolderConfigurerConfiguration
 
             // Add some basic mime types
             mimeTypes.put(".js.map", "application/json");
+            mimeTypes.put(".ico", "image/x-icon");
 
             configurer.configureMimeTypes(mimeTypes);
         }
@@ -119,6 +121,21 @@ public class StaticFolderConfigurerConfiguration
         }
 
         return messageRegistry;
+    }
+
+    public ResourceTypeRegistry getResourceTypeRegistry()
+    {
+        if (resourceTypeRegistry == null)
+        {
+            resourceTypeRegistry = new DefaultResourceTypeRegistry();
+
+            resourceTypeRegistry.resourceTypeByMimeType("text/.*", ResourceType.TEMPLATE);
+            resourceTypeRegistry.resourceTypeByMimeType("application/javascript", ResourceType.TEMPLATE);
+
+            configurer.configureResourceTypes(resourceTypeRegistry);
+        }
+
+        return resourceTypeRegistry;
     }
 
     public void configureResourceScanners(Map<String, ResourceScanner> scanners)

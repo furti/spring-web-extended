@@ -13,32 +13,38 @@ import org.springframework.core.io.Resource;
 
 public class StringResource implements Resource
 {
-    private final String string;
+    private final String filename;
+    private final String content;
     private InputStream stream;
 
     public StringResource(String string)
     {
-        super();
-        this.string = string;
+        this(null, string);
+    }
+
+    public StringResource(String filename, String content)
+    {
+        this.filename = filename;
+        this.content = content;
     }
 
     @Override
     public InputStream getInputStream() throws IOException
     {
-        stream = new ReaderInputStream(new StringReader(string), Charset.forName("UTF-8"));
+        stream = new ReaderInputStream(new StringReader(content), Charset.forName("UTF-8"));
         return stream;
     }
 
     @Override
     public boolean exists()
     {
-        return string != null;
+        return content != null;
     }
 
     @Override
     public boolean isReadable()
     {
-        return string != null;
+        return content != null;
     }
 
     @Override
@@ -68,7 +74,7 @@ public class StringResource implements Resource
     @Override
     public long contentLength() throws IOException
     {
-        return string.length();
+        return content.length();
     }
 
     @Override
@@ -86,13 +92,13 @@ public class StringResource implements Resource
     @Override
     public String getFilename()
     {
-        return null;
+        return filename;
     }
 
     @Override
     public String getDescription()
     {
-        return string;
+        return content;
     }
 
 }

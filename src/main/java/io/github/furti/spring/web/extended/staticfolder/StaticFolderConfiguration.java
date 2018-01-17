@@ -46,11 +46,13 @@ public class StaticFolderConfiguration extends WebMvcConfigurerAdapter
 
     @Bean
     public StaticFolderCache staticFolderCache(ResourceScanners scanners, MimeTypeHandler mimeTypeHandler,
-        TemplateFactory templateFactory, TemplateContextFactory contextFactory)
+        TemplateFactory templateFactory, TemplateContextFactory contextFactory,
+        ResourceTypeRegistry resourceTypeRegistry)
     {
         StaticFolderRegistry staticFolderRegistry = configurerConfiguration.getStaticFolderRegistry();
 
-        return new StaticFolderCache(staticFolderRegistry, scanners, mimeTypeHandler, templateFactory, contextFactory);
+        return new StaticFolderCache(staticFolderRegistry, scanners, mimeTypeHandler, templateFactory, contextFactory,
+            resourceTypeRegistry);
     }
 
     @Bean
@@ -63,6 +65,12 @@ public class StaticFolderConfiguration extends WebMvcConfigurerAdapter
     public ContentEscapeHandlerRegistry contentEscapeHandlers()
     {
         return configurerConfiguration.getContentExceptHandlerRegistry();
+    }
+
+    @Bean
+    public ResourceTypeRegistry resourceTypeRegistry()
+    {
+        return configurerConfiguration.getResourceTypeRegistry();
     }
 
     @Bean

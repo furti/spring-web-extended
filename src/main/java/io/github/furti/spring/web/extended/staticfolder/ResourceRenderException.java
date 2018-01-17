@@ -20,4 +20,9 @@ public class ResourceRenderException extends Exception
         super(cause);
     }
 
+    public ResourceRenderException(String message)
+    {
+        super(message);
+    }
+
 }

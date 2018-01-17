@@ -25,7 +25,7 @@ public class SchedulingConfiguration implements SchedulingConfigurer
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar)
     {
-        long interval = configurerConfiguration.getStaticFolderRegistry().getTemplateRefreshInterval();
+        long interval = configurerConfiguration.getStaticFolderRegistry().getResourceRefreshInterval();
 
         if (interval > 0)
         {

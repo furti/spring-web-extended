@@ -144,7 +144,7 @@ public class StaticFolderCache
                 String file = path.substring(entry.getKey().length());
 
                 //Fallback to index if the folder was requested
-                if (StringUtils.isEmpty(file) || entry.getValue().isIndexFallback(file))
+                if (StringUtils.isEmpty(file) || "/".equals(file) || entry.getValue().isIndexFallback(file))
                 {
                     file = "index.html";
                 }

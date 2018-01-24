@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
+import org.springframework.util.AntPathMatcher;
 
 import io.github.furti.spring.web.extended.io.ResourceScanners;
 import io.github.furti.spring.web.extended.template.Template;
@@ -50,6 +51,7 @@ public class StaticFolderCacheEntry
     private final TemplateContextFactory contextFactory;
     private final ResourceTypeRegistry resourceTypeRegistry;
     private final MimeTypeHandler mimeTypeHandler;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     public StaticFolderCacheEntry(ResourceScanners scanners, String location, Set<String> indexFallbacks,
         Charset charset, boolean reloadOnMissingResource, boolean cacheResources, TemplateFactory templateFactory,
@@ -152,7 +154,15 @@ public class StaticFolderCacheEntry
 
     public boolean isIndexFallback(String file)
     {
-        return indexFallbacks.contains(file);
+        for (String fallback : indexFallbacks)
+        {
+            if (pathMatcher.match(fallback, file))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

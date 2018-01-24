@@ -45,8 +45,9 @@ public class StaticFolderCacheTest
     @Test
     public void testRendering()
     {
-        StaticFolderRegistry registry = buildRegistry(false, "/app",
-            "classpath:io/github/furti/spring/web/extended/staticfolder/app/", "/indexfallback");
+        StaticFolderRegistry registry =
+            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+                "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
             buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
@@ -55,6 +56,33 @@ public class StaticFolderCacheTest
         {
             // index.html default
             HttpServletRequest request = buildRequest("/app");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
+            // index.html with trailing /
+            HttpServletRequest request = buildRequest("/app/");
             ResponseEntity<byte[]> actualResponse = cache.render(request);
 
             assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
@@ -134,6 +162,195 @@ public class StaticFolderCacheTest
         }
 
         {
+            // index.html for supath /indexfallback/
+            HttpServletRequest request = buildRequest("/app/indexfallback/");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
+            // index.html with fallback
+            HttpServletRequest request = buildRequest("/app/nextfallback/");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
+            // index.html with fallback
+            HttpServletRequest request = buildRequest("/app/nextfallback/test");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
+            // index.html with fallback
+            HttpServletRequest request = buildRequest("/app/nextfallback/blub");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
+            // index.html with fallback
+            HttpServletRequest request = buildRequest("/app/lastfallback/blub");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
+            // index.html with fallback
+            HttpServletRequest request = buildRequest("/app/lastfallback/blub/");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
+            // index.html with fallback
+            HttpServletRequest request = buildRequest("/app/lastfallback/blub/test");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
             // test.js
             HttpServletRequest request = buildRequest("/app/test.js");
             ResponseEntity<byte[]> actualResponse = cache.render(request);
@@ -166,6 +383,20 @@ public class StaticFolderCacheTest
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/something");
+        cache.render(request);
+    }
+
+    @Test(expectedExceptions = ResourceNotFoundException.class)
+    public void testMissingFallback()
+    {
+        StaticFolderRegistry registry = buildRegistry(false, "/app",
+            "classpath:io/github/furti/spring/web/extended/staticfolder/app/", "/fallback/*");
+
+        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
+        cache.initialize();
+
+        HttpServletRequest request = buildRequest("/fallback/test/all");
         cache.render(request);
     }
 

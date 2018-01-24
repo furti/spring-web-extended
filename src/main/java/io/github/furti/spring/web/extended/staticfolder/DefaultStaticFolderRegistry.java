@@ -21,9 +21,10 @@ public class DefaultStaticFolderRegistry implements StaticFolderRegistry
     private long resourceRefreshInterval;
 
     @Override
-    public StaticFolderRegistry registerFolder(String basePath, String location, Charset charset)
+    public StaticFolderRegistry registerFolder(String basePath, String location, Charset charset,
+        String... indexFallbacks)
     {
-        folders.add(new StaticFolder(basePath, location, charset));
+        folders.add(new StaticFolder(basePath, location, charset, indexFallbacks));
 
         return this;
     }
@@ -67,5 +68,4 @@ public class DefaultStaticFolderRegistry implements StaticFolderRegistry
     {
         return resourceRefreshInterval;
     }
-
 }

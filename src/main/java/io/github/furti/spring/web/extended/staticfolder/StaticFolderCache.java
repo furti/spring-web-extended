@@ -64,10 +64,10 @@ public class StaticFolderCache
 
         for (StaticFolder staticFolder : registry.getFolders())
         {
-            StaticFolderCacheEntry entry =
-                new StaticFolderCacheEntry(scanners, staticFolder.getLocation(), staticFolder.getCharset(),
-                    registry.isReloadOnMissingResource(), registry.getResourceRefreshInterval() != 0, templateFactory,
-                    contextFactory, resourceTypeRegistry, mimeTypeHandler);
+            StaticFolderCacheEntry entry = new StaticFolderCacheEntry(scanners, staticFolder.getLocation(),
+                staticFolder.getIndexFallbacks(), staticFolder.getCharset(), registry.isReloadOnMissingResource(),
+                registry.getResourceRefreshInterval() != 0, templateFactory, contextFactory, resourceTypeRegistry,
+                mimeTypeHandler);
 
             entry.reload();
 
@@ -144,7 +144,7 @@ public class StaticFolderCache
                 String file = path.substring(entry.getKey().length());
 
                 //Fallback to index if the folder was requested
-                if (StringUtils.isEmpty(file))
+                if (StringUtils.isEmpty(file) || entry.getValue().isIndexFallback(file))
                 {
                     file = "index.html";
                 }

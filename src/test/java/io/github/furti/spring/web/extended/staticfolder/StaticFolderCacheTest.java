@@ -45,8 +45,8 @@ public class StaticFolderCacheTest
     @Test
     public void testRendering()
     {
-        StaticFolderRegistry registry =
-            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
+        StaticFolderRegistry registry = buildRegistry(false, "/app",
+            "classpath:io/github/furti/spring/web/extended/staticfolder/app/", "/indexfallback");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
             buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
@@ -82,6 +82,33 @@ public class StaticFolderCacheTest
         {
             // index.html
             HttpServletRequest request = buildRequest("/app/index.html");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                equalTo("<!doctype html>"
+                    + lineSeparator
+                    + lineSeparator
+                    + "<html>"
+                    + lineSeparator
+                    + "<head></head>"
+                    + lineSeparator
+                    + "<body>"
+                    + lineSeparator
+                    + "    <p>A very useful message</p>"
+                    + lineSeparator
+                    + "    <p>Some Text with special chars äöü.</p>"
+                    + lineSeparator
+                    + "</body>"
+                    + lineSeparator
+                    + "</html>"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+        }
+
+        {
+            // index.html for supath /indexfallback
+            HttpServletRequest request = buildRequest("/app/indexfallback");
             ResponseEntity<byte[]> actualResponse = cache.render(request);
 
             assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
@@ -173,12 +200,13 @@ public class StaticFolderCacheTest
         return new ResourceScanners(scanners);
     }
 
-    private StaticFolderRegistry buildRegistry(boolean reloadMissingResources, String basePath, String location)
+    private StaticFolderRegistry buildRegistry(boolean reloadMissingResources, String basePath, String location,
+        String... indexFallbacks)
     {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
         registry.reloadOnMissingResource(reloadMissingResources);
-        registry.registerFolder(basePath, location);
+        registry.registerFolder(basePath, location, indexFallbacks);
 
         return registry;
     }

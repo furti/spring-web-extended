@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ public class StaticFolderCacheEntry
 
     private final ResourceScanners scanners;
     private final String location;
+    private final Set<String> indexFallbacks;
     private final Charset charset;
     private final boolean reloadOnMissingResource;
     private final boolean cacheResources;
@@ -49,14 +51,15 @@ public class StaticFolderCacheEntry
     private final ResourceTypeRegistry resourceTypeRegistry;
     private final MimeTypeHandler mimeTypeHandler;
 
-    public StaticFolderCacheEntry(ResourceScanners scanners, String location, Charset charset,
-        boolean reloadOnMissingResource, boolean cacheResources, TemplateFactory templateFactory,
+    public StaticFolderCacheEntry(ResourceScanners scanners, String location, Set<String> indexFallbacks,
+        Charset charset, boolean reloadOnMissingResource, boolean cacheResources, TemplateFactory templateFactory,
         TemplateContextFactory contextFactory, ResourceTypeRegistry resourceTypeRegistry,
         MimeTypeHandler mimeTypeHandler)
     {
         super();
         this.scanners = scanners;
         this.location = location;
+        this.indexFallbacks = indexFallbacks;
         this.charset = charset;
         this.reloadOnMissingResource = reloadOnMissingResource;
         this.cacheResources = cacheResources;
@@ -145,6 +148,11 @@ public class StaticFolderCacheEntry
     public Charset getCharset()
     {
         return charset;
+    }
+
+    public boolean isIndexFallback(String file)
+    {
+        return indexFallbacks.contains(file);
     }
 
     @Override

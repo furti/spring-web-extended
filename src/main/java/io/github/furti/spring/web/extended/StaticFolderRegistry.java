@@ -33,20 +33,28 @@ public interface StaticFolderRegistry
      * 
      * @param basePath the request must start with this path for the resources from this location to be served.
      * @param location the folder to serve resources from. Can be anything a {@link ResourceScanner} can handle.
+     * @param indexFallbacks Somethimes it is necessary that for some urls the index.html file should be served. E.g.
+     *            Angulars router handles the browsers location and shows the page for the url. But the index.html file
+     *            is the entry point for all subpaths. So we can register some subpaths here to perform a index.html
+     *            fallback and support the frameworks routing mechanism.
      * @return the registry for a fluent api
      */
-    default StaticFolderRegistry registerFolder(String basePath, String location)
+    default StaticFolderRegistry registerFolder(String basePath, String location, String... indexFallbacks)
     {
-        return registerFolder(basePath, location, Charset.forName("UTF-8"));
+        return registerFolder(basePath, location, Charset.forName("UTF-8"), indexFallbacks);
     }
 
     /**
      * @param basePath the request must start with this path for the resources from this location to be served.
      * @param location the folder to serve resources from. Can be anything a {@link ResourceScanner} can handle.
      * @param charset the charset to use for files in this folder
+     * @param indexFallbacks Somethimes it is necessary that for some urls the index.html file should be served. E.g.
+     *            Angulars router handles the browsers location and shows the page for the url. But the index.html file
+     *            is the entry point for all subpaths. So we can register some subpaths here to perform a index.html
+     *            fallback and support the frameworks routing mechanism.
      * @return the registry for a fluent api
      */
-    StaticFolderRegistry registerFolder(String basePath, String location, Charset charset);
+    StaticFolderRegistry registerFolder(String basePath, String location, Charset charset, String... indexFallbacks);
 
     /**
      * @return all registered folders

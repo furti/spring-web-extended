@@ -94,7 +94,7 @@ public class StaticFolderCache
     {
         String requestURI = request.getRequestURI();
 
-        String path = normalizePath(requestURI);
+        String path = normalizePath(request.getContextPath(), requestURI);
 
         RenderEntry entry = findEntryForPath(path);
 
@@ -161,9 +161,13 @@ public class StaticFolderCache
         return null;
     }
 
-    private String normalizePath(String requestURI)
+    private String normalizePath(String contextPath, String requestURI)
     {
-        //TODO: we have to remove common things like the locale and application version when present.
+        //Remove the context path from the uri. All uris are relative to the context path.
+        if (contextPath.length() > 0)
+        {
+            requestURI = requestURI.substring(contextPath.length());
+        }
 
         if (!requestURI.startsWith("/"))
         {

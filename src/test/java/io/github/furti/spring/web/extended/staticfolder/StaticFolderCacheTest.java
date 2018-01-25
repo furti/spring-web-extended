@@ -360,6 +360,17 @@ public class StaticFolderCacheTest
             assertThat(actualResponse.getHeaders().getContentType(),
                 equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
         }
+
+        {
+            // test.js with context path
+            HttpServletRequest request = buildRequest("/context/app/test.js", "/context");
+            ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")), equalTo("//#message.unknown#"));
+
+            assertThat(actualResponse.getHeaders().getContentType(),
+                equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+        }
     }
 
     private ResourceTypeRegistry buildResourceTypeRegistry()
@@ -444,9 +455,15 @@ public class StaticFolderCacheTest
 
     private HttpServletRequest buildRequest(String requestURI)
     {
+        return buildRequest(requestURI, "");
+    }
+
+    private HttpServletRequest buildRequest(String requestURI, String contextPath)
+    {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 
         Mockito.when(request.getRequestURI()).thenReturn(requestURI);
+        Mockito.when(request.getContextPath()).thenReturn(contextPath);
 
         return request;
     }

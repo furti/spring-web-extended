@@ -40,11 +40,11 @@ public class SimpleTemplateFactoryTest
     @Test
     public void nullValueShouldPreserveExpressionString() throws IOException
     {
-        Template template = buildTemplate("#null.test#");
+        Template template = buildTemplate("#null:test#");
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("#null.test#"));
+        Assert.assertThat(actualContent, equalTo("#null:test#"));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class SimpleTemplateFactoryTest
     @Test
     public void valueShouldbeReplaced() throws IOException
     {
-        Template template = buildTemplate("#value.avalue#");
+        Template template = buildTemplate("#value:avalue#");
 
         String actualContent = template.render();
 
@@ -70,7 +70,7 @@ public class SimpleTemplateFactoryTest
     @Test
     public void whitespacesInValueShouldWork() throws IOException
     {
-        Template template = buildTemplate("#value.another value#");
+        Template template = buildTemplate("#value:another value#");
 
         String actualContent = template.render();
 
@@ -90,7 +90,7 @@ public class SimpleTemplateFactoryTest
     @Test
     public void expressionStartWithoutValidExpressionShouldBePreserved() throws IOException
     {
-        Template template = buildTemplate("Some Paragraph # and a #value.expression#");
+        Template template = buildTemplate("Some Paragraph # and a #value:expression#");
 
         String actualContent = template.render();
 
@@ -101,7 +101,7 @@ public class SimpleTemplateFactoryTest
     public void complexTemplateStartingAndEndingWithExpression() throws IOException
     {
         Template template =
-            buildTemplate("#value.Some# Template starting\nand #value.ending# with an #value.expression#");
+            buildTemplate("#value:Some# Template starting\nand #value:ending# with an #value:expression#");
 
         String actualContent = template.render();
 
@@ -111,7 +111,7 @@ public class SimpleTemplateFactoryTest
     @Test
     public void complexTemplateNotStartingAndEndingWithExpression() throws IOException
     {
-        Template template = buildTemplate("Some Template #value.not# starting\nand #value.ending# with an expression");
+        Template template = buildTemplate("Some Template #value:not# starting\nand #value:ending# with an expression");
 
         String actualContent = template.render();
 
@@ -134,6 +134,6 @@ public class SimpleTemplateFactoryTest
         expressionHandlers.registerExpressionHandler(new NoValueExpressionHandler());
         expressionHandlers.registerExpressionHandler(new ValueReturningExpressionHandler());
 
-        return new SimpleTemplateFactory(expressionHandlers, new DefaultContentEscapeHandlerRegistry(), '#', '.', '#');
+        return new SimpleTemplateFactory(expressionHandlers, new DefaultContentEscapeHandlerRegistry(), '#', ':', '#');
     }
 }

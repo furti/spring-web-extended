@@ -30,7 +30,7 @@ public class StaticFolderDefaultsConfig
     public TemplateFactory defaultTemplateFactory(ExpressionHandlerRegistry expressionHandlers,
         ContentEscapeHandlerRegistry escapeHandlers)
     {
-        return new SimpleTemplateFactory(expressionHandlers, escapeHandlers, '#', '.', '#');
+        return new SimpleTemplateFactory(expressionHandlers, escapeHandlers, '#', ':', '#');
     }
 
     @Bean

@@ -15,9 +15,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import io.github.furti.spring.web.extended.staticfolder.StaticFolderConfiguration;
 import io.github.furti.spring.web.extended.staticfolder.StaticFolderSpringWebExtendedImportSelector;
-import io.github.furti.spring.web.extended.template.legacy.TemplateFactory;
-import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContext;
-import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContextFactory;
 
 /**
  * Add this annotation to @{@link Configuration} classes to enable extended web support configured in

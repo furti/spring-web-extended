@@ -1,6 +1,7 @@
 package io.github.furti.spring.web.extended.asset;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -25,7 +27,6 @@ import io.github.furti.spring.web.extended.util.RequestUtils;
  * Controller that sends static resources to the client.
  *
  * @author Daniel Furtlehner
- *
  */
 @Controller
 public class AssetController extends ResourceHttpRequestHandler
@@ -108,5 +109,15 @@ public class AssetController extends ResourceHttpRequestHandler
         {
             setCacheSeconds(0);
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception
+    {
+        // Initialize the handler with a dummy resource
+        this.setLocations(Arrays.asList(new ByteArrayResource(
+            "Should never be served. Otherwise something is wrong with the Asset Controller.".getBytes())));
+
+        super.afterPropertiesSet();
     }
 }

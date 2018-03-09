@@ -27,7 +27,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.github.furti.spring.web.extended.io.LocalizedResourceLoader;
 import io.github.furti.spring.web.extended.io.LocalizedResourceLoaderImpl;
@@ -53,7 +53,7 @@ import io.github.furti.spring.web.extended.util.PathUtils;
 // TODO: maybe we should add a handlerinterceptor that adds no-cache headers
 // for json responses. Spring security adds this headers by default. So we can
 // skip this i think
-public class SpringWebExtendedConfig extends WebMvcConfigurerAdapter implements SchedulingConfigurer
+public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConfigurer
 {
     @Autowired
     private SpringWebExtendedConfigurerConfig configurerConfig;

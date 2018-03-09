@@ -17,12 +17,10 @@ package io.github.furti.spring.web.extended.util;
 
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.lang.ObjectUtils;
+import java.util.Objects;
 
 /**
  * @author Daniel Furtlehner
- *
  */
 public final class LocaleUtils
 {
@@ -54,16 +52,16 @@ public final class LocaleUtils
             int matches = 0;
 
             // If the language does not match no more processing is needed
-            if (ObjectUtils.equals(l.getLanguage(), locale.getLanguage()))
+            if (Objects.equals(l.getLanguage(), locale.getLanguage()))
             {
                 matches++;
 
                 // if the country does not match no more processing is needed
-                if (ObjectUtils.equals(l.getCountry(), locale.getCountry()))
+                if (Objects.equals(l.getCountry(), locale.getCountry()))
                 {
                     matches++;
 
-                    if (ObjectUtils.equals(l.getVariant(), locale.getVariant()))
+                    if (Objects.equals(l.getVariant(), locale.getVariant()))
                     {
                         matches++;
                     }

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.github.furti.spring.web.extended.MessageRegistry;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
@@ -38,7 +38,7 @@ import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 @Configuration
 @Import({ResourceScannerConfig.class, ExpressionHandlerConfig.class})
 @ComponentScan(basePackageClasses = StaticFolderConfiguration.class)
-public class StaticFolderConfiguration extends WebMvcConfigurerAdapter
+public class StaticFolderConfiguration implements WebMvcConfigurer
 {
 
     @Autowired

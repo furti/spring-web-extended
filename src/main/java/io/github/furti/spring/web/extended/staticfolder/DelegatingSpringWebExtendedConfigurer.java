@@ -13,6 +13,7 @@ import io.github.furti.spring.web.extended.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
+import io.github.furti.spring.web.extended.locale.LocaleSource;
 import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 
 /**
@@ -94,10 +95,18 @@ public class DelegatingSpringWebExtendedConfigurer implements SpringWebExtendedC
     @Override
     public void configureResourceTypes(ResourceTypeRegistry registry)
     {
-
         for (SpringWebExtendedConfigurer configurer : configurers)
         {
             configurer.configureResourceTypes(registry);
+        }
+    }
+
+    @Override
+    public void configureLocaleSources(List<LocaleSource> localeSources)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureLocaleSources(localeSources);
         }
     }
 }

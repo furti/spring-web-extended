@@ -5,6 +5,7 @@ package io.github.furti.spring.web.extended.staticfolder;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.i18n.LocaleContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
@@ -35,8 +36,9 @@ public class StaticFolderDefaultsConfig
 
     @Bean
     @DefaultBean(TemplateContextFactory.class)
-    public TemplateContextFactory defaultTemplateContextFactory(MimeTypeHandler mimeTypeHandler)
+    public TemplateContextFactory defaultTemplateContextFactory(MimeTypeHandler mimeTypeHandler,
+        LocaleContext localeContext)
     {
-        return new DefaultTemplateContextFactory(mimeTypeHandler);
+        return new DefaultTemplateContextFactory(mimeTypeHandler, localeContext);
     }
 }

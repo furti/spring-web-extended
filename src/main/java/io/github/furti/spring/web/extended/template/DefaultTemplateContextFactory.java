@@ -5,6 +5,7 @@ package io.github.furti.spring.web.extended.template;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.context.i18n.LocaleContext;
 import org.springframework.core.io.Resource;
 import org.springframework.util.MimeType;
 
@@ -17,11 +18,13 @@ public class DefaultTemplateContextFactory implements TemplateContextFactory
 {
 
     private final MimeTypeHandler mimeTypeHandler;
+    private final LocaleContext localeContext;
 
-    public DefaultTemplateContextFactory(MimeTypeHandler mimeTypeHandler)
+    public DefaultTemplateContextFactory(MimeTypeHandler mimeTypeHandler, LocaleContext localeContext)
     {
         super();
         this.mimeTypeHandler = mimeTypeHandler;
+        this.localeContext = localeContext;
     }
 
     @Override
@@ -31,8 +34,7 @@ public class DefaultTemplateContextFactory implements TemplateContextFactory
 
         DefaultTemplateContext templateContext = new DefaultTemplateContext(mimeType);
 
-        //TODO: should we get the locale from the url as well?
-        templateContext.addParameter(TemplateContextParameter.LOCALE, request.getLocale());
+        templateContext.addParameter(TemplateContextParameter.LOCALE, localeContext.getLocale());
 
         return templateContext;
     }

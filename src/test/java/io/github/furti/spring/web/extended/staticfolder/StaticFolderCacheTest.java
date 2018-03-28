@@ -15,6 +15,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mockito.Mockito;
+import org.springframework.context.i18n.SimpleLocaleContext;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -470,7 +471,7 @@ public class StaticFolderCacheTest
 
     private TemplateContextFactory buildTemplateContextFactory()
     {
-        return new DefaultTemplateContextFactory(buildMimeTypeHandler());
+        return new DefaultTemplateContextFactory(buildMimeTypeHandler(), new SimpleLocaleContext(Locale.getDefault()));
     }
 
     private TemplateFactory buildTemplateFactory()

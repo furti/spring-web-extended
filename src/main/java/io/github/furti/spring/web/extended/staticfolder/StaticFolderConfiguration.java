@@ -4,6 +4,7 @@
 package io.github.furti.spring.web.extended.staticfolder;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
@@ -13,8 +14,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import io.github.furti.spring.web.extended.MessageRegistry;
@@ -22,6 +26,10 @@ import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerConfig;
 import io.github.furti.spring.web.extended.io.ResourceScannerConfig;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
+import io.github.furti.spring.web.extended.locale.LocaleContextHolderBackedLocaleContext;
+import io.github.furti.spring.web.extended.locale.LocaleHandlerInterceptor;
+import io.github.furti.spring.web.extended.locale.LocaleSource;
+import io.github.furti.spring.web.extended.servlet.RequestResponseContextHandlerInterceptor;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
 import io.github.furti.spring.web.extended.template.simple.ContentEscapeHandlerRegistry;
@@ -74,6 +82,12 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
     }
 
     @Bean
+    public LocaleContext localeContext()
+    {
+        return new LocaleContextHolderBackedLocaleContext();
+    }
+
+    @Bean
     public MessageSource messageSource()
     {
         DelegatingMessageSource messageSource = new DelegatingMessageSource();
@@ -101,5 +115,20 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
         }
 
         return messageSource;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry)
+    {
+        registry.addInterceptor(new RequestResponseContextHandlerInterceptor());
+
+        List<LocaleSource> sources = configurerConfiguration.getLocaleSources();
+
+        if (!CollectionUtils.isEmpty(sources))
+        {
+            LocaleHandlerInterceptor interceptor = new LocaleHandlerInterceptor(sources);
+
+            registry.addInterceptor(interceptor);
+        }
     }
 }

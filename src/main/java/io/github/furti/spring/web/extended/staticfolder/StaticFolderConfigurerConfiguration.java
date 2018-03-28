@@ -3,6 +3,7 @@
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import io.github.furti.spring.web.extended.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
+import io.github.furti.spring.web.extended.locale.LocaleSource;
 import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.template.escape.HtmlEscapeHandler;
 import io.github.furti.spring.web.extended.template.escape.JavascriptEscapeHandler;
@@ -39,6 +41,7 @@ public class StaticFolderConfigurerConfiguration
     private MessageRegistry messageRegistry;
     private DefaultContentEscapeHandlerRegistry contentEscapeHandlerRegistry;
     private ResourceTypeRegistry resourceTypeRegistry;
+    private List<LocaleSource> localeSources;
 
     @Autowired(required = false)
     public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
@@ -136,6 +139,19 @@ public class StaticFolderConfigurerConfiguration
         }
 
         return resourceTypeRegistry;
+    }
+
+    public List<LocaleSource> getLocaleSources()
+    {
+        if (localeSources == null)
+        {
+            localeSources = new ArrayList<>();
+            // No default locale sources for now. Simply use the request locale.
+
+            configurer.configureLocaleSources(localeSources);
+        }
+
+        return localeSources;
     }
 
     public void configureResourceScanners(Map<String, ResourceScanner> scanners)

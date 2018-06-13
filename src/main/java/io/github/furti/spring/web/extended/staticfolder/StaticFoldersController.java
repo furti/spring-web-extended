@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * 
  * @author Daniel Furtlehner
  */
-@Controller
+// This is not a controller on purpose. Should be picked up by our own HandlerMapping and not by Springs own handler mapping.
+@Component
 public class StaticFoldersController
 {
 

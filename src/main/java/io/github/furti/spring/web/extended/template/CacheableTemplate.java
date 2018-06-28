@@ -11,6 +11,8 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 
+import io.github.furti.spring.web.extended.staticfolder.CommonContentCache;
+
 /**
  * @author Daniel Furtlehner
  */
@@ -43,7 +45,9 @@ public abstract class CacheableTemplate implements Template
         {
             if (lastModified == 0 || lastModified != resource.lastModified())
             {
-                content = doRender();
+                String newContent = doRender();
+
+                content = CommonContentCache.getCommonContent(newContent);
 
                 lastModified = resource.lastModified();
             }

@@ -92,15 +92,12 @@ public class StaticFolderCache
 
     public ResponseEntity<byte[]> render(HttpServletRequest request)
     {
-        String requestURI = request.getRequestURI();
-
-        String path = normalizePath(request.getContextPath(), requestURI);
-
-        RenderEntry entry = findEntryForPath(path);
+        RenderEntry entry = findEntryForRequest(request);
 
         if (entry == null)
         {
-            throw new ResourceNotFoundException(String.format("%s could not be found in any folder", requestURI));
+            throw new ResourceNotFoundException(
+                String.format("%s could not be found in any folder", request.getRequestURI()));
         }
 
         byte[] content;
@@ -116,7 +113,7 @@ public class StaticFolderCache
         catch (ResourceRenderException e)
         {
             throw new RuntimeException(String.format("Error rendering file %s in folder %s for url %s", entry.file,
-                entry.basePath, requestURI), e);
+                entry.basePath, request.getRequestURI()), e);
         }
 
         return new ResponseEntity<byte[]>(content, buildHeaders(entry), HttpStatus.OK);
@@ -135,8 +132,12 @@ public class StaticFolderCache
         return headers;
     }
 
-    private RenderEntry findEntryForPath(String path)
+    RenderEntry findEntryForRequest(HttpServletRequest request)
     {
+        String requestURI = request.getRequestURI();
+
+        String path = normalizePath(request.getContextPath(), requestURI);
+
         for (Entry<String, StaticFolderCacheEntry> entry : entries.entrySet())
         {
             if (path.startsWith(entry.getKey()))
@@ -177,11 +178,11 @@ public class StaticFolderCache
         return requestURI;
     }
 
-    private static class RenderEntry
+    static class RenderEntry
     {
-        private StaticFolderCacheEntry entry;
-        private String basePath;
-        private String file;
+        StaticFolderCacheEntry entry;
+        String basePath;
+        String file;
 
         RenderEntry(StaticFolderCacheEntry entry, String basePath, String file)
         {

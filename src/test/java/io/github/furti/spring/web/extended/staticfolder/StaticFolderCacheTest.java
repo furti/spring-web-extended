@@ -15,7 +15,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.mockito.Mockito;
-import org.springframework.context.i18n.SimpleLocaleContext;
+import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +28,7 @@ import io.github.furti.spring.web.extended.expression.handlers.MessageExpression
 import io.github.furti.spring.web.extended.io.ClasspathResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
+import io.github.furti.spring.web.extended.staticfolder.StaticFolderCache.RenderEntry;
 import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.template.DefaultTemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
@@ -41,6 +42,7 @@ import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
  */
 public class StaticFolderCacheTest
 {
+    private static final ThreadLocal<Locale> TEST_LOCALE = new ThreadLocal<>();
     private final String lineSeparator = System.lineSeparator();
 
     @Test
@@ -54,323 +56,442 @@ public class StaticFolderCacheTest
             buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
         cache.initialize();
 
+        try
         {
-            // index.html default
-            HttpServletRequest request = buildRequest("/app");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html default
+                HttpServletRequest request = buildRequest("/app");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
 
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.GERMAN);
+                // index.html default
+                HttpServletRequest request = buildRequest("/app");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>Eine sehr nützliche Nachricht</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html with trailing /
+                HttpServletRequest request = buildRequest("/app/");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.GERMAN);
+                // index.html with trailing /
+                HttpServletRequest request = buildRequest("/app/");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>Eine sehr nützliche Nachricht</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html
+                HttpServletRequest request = buildRequest("/app/index.html");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html for supath /indexfallback
+                HttpServletRequest request = buildRequest("/app/indexfallback");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html for supath /indexfallback/
+                HttpServletRequest request = buildRequest("/app/indexfallback/");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html with fallback
+                HttpServletRequest request = buildRequest("/app/nextfallback/");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html with fallback
+                HttpServletRequest request = buildRequest("/app/nextfallback/test");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html with fallback
+                HttpServletRequest request = buildRequest("/app/nextfallback/blub");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html with fallback
+                HttpServletRequest request = buildRequest("/app/lastfallback/blub");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html with fallback
+                HttpServletRequest request = buildRequest("/app/lastfallback/blub/");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html with fallback
+                HttpServletRequest request = buildRequest("/app/lastfallback/blub/test");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // test.js
+                HttpServletRequest request = buildRequest("/app/test.js");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("//#message:unknown#"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // test.js with context path
+                HttpServletRequest request = buildRequest("/context/app/test.js", "/context");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("//#message:unknown#"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+            }
         }
-
+        finally
         {
-            // index.html with trailing /
-            HttpServletRequest request = buildRequest("/app/");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            TEST_LOCALE.remove();
         }
+    }
 
+    @Test
+    public void testThatStaticTemplatesAreOnlyCachedOnce() throws ResourceRenderException
+    {
+
+        StaticFolderRegistry registry =
+            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+                "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
+
+        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
+        cache.initialize();
+
+        try
         {
-            // index.html
-            HttpServletRequest request = buildRequest("/app/index.html");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
+            TEST_LOCALE.set(Locale.ENGLISH);
 
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
+            // Test English
+            HttpServletRequest request = buildRequest("/app/sameinalllanguages.js");
+            RenderEntry entry = cache.findEntryForRequest(request);
+            String englishContent = entry.entry.doRenderTemplate(entry.entry.findResource(entry.file), request);
 
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+            assertThat(englishContent, equalTo(
+                "var text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet';"));
+
+            TEST_LOCALE.set(Locale.GERMAN);
+
+            // Test English
+            entry = cache.findEntryForRequest(request);
+            String germanContent = entry.entry.doRenderTemplate(entry.entry.findResource(entry.file), request);
+
+            assertThat(germanContent, equalTo(
+                "var text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet';"));
+
+            assertThat(germanContent, sameInstance(englishContent));
         }
-
+        finally
         {
-            // index.html for supath /indexfallback
-            HttpServletRequest request = buildRequest("/app/indexfallback");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // index.html for supath /indexfallback/
-            HttpServletRequest request = buildRequest("/app/indexfallback/");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // index.html with fallback
-            HttpServletRequest request = buildRequest("/app/nextfallback/");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // index.html with fallback
-            HttpServletRequest request = buildRequest("/app/nextfallback/test");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // index.html with fallback
-            HttpServletRequest request = buildRequest("/app/nextfallback/blub");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // index.html with fallback
-            HttpServletRequest request = buildRequest("/app/lastfallback/blub");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // index.html with fallback
-            HttpServletRequest request = buildRequest("/app/lastfallback/blub/");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // index.html with fallback
-            HttpServletRequest request = buildRequest("/app/lastfallback/blub/test");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                equalTo("<!doctype html>"
-                    + lineSeparator
-                    + lineSeparator
-                    + "<html>"
-                    + lineSeparator
-                    + "<head></head>"
-                    + lineSeparator
-                    + "<body>"
-                    + lineSeparator
-                    + "    <p>A very useful message</p>"
-                    + lineSeparator
-                    + "    <p>Some Text with special chars äöü.</p>"
-                    + lineSeparator
-                    + "</body>"
-                    + lineSeparator
-                    + "</html>"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // test.js
-            HttpServletRequest request = buildRequest("/app/test.js");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")), equalTo("//#message:unknown#"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
-        }
-
-        {
-            // test.js with context path
-            HttpServletRequest request = buildRequest("/context/app/test.js", "/context");
-            ResponseEntity<byte[]> actualResponse = cache.render(request);
-
-            assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")), equalTo("//#message:unknown#"));
-
-            assertThat(actualResponse.getHeaders().getContentType(),
-                equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+            TEST_LOCALE.remove();
         }
     }
 
@@ -471,17 +592,31 @@ public class StaticFolderCacheTest
 
     private TemplateContextFactory buildTemplateContextFactory()
     {
-        return new DefaultTemplateContextFactory(buildMimeTypeHandler(), new SimpleLocaleContext(Locale.getDefault()));
+        return new DefaultTemplateContextFactory(buildMimeTypeHandler(), new ThreadLocalLocaleContext());
     }
 
     private TemplateFactory buildTemplateFactory()
     {
         StaticMessageSource messageSource = new StaticMessageSource();
-        messageSource.addMessage("test", Locale.getDefault(), "A very useful message");
+        messageSource.addMessage("test", Locale.ENGLISH, "A very useful message");
+        messageSource.addMessage("test", Locale.GERMAN, "Eine sehr nützliche Nachricht");
 
         ExpressionHandlerRegistry registry = new DefaultExpressionHandlerRegistry();
         registry.registerExpressionHandler(new MessageExpressionHandler(messageSource));
 
         return new SimpleTemplateFactory(registry, new DefaultContentEscapeHandlerRegistry(), '#', ':', '#');
+    }
+
+    /**
+     * @author Daniel Furtlehner
+     */
+    private class ThreadLocalLocaleContext implements LocaleContext
+    {
+
+        @Override
+        public Locale getLocale()
+        {
+            return TEST_LOCALE.get();
+        }
     }
 }

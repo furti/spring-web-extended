@@ -110,6 +110,26 @@ public class StaticFolderCacheEntry
     public byte[] renderResource(String file, HttpServletRequest request)
         throws ResourceNotFoundException, ResourceRenderException
     {
+        Resource resource = findResource(file);
+
+        ResourceType resourceType =
+            resourceTypeRegistry.getResourceType(resource, mimeTypeHandler.getMimeType(resource.getFilename()));
+
+        switch (resourceType)
+        {
+            case TEMPLATE:
+                String content = doRenderTemplate(resource, request);
+
+                return content.getBytes(charset);
+            case BINARY:
+                return doRenderBinary(resource, request);
+            default:
+                throw new ResourceRenderException("ResourceType " + resourceType + " is not implemented yet.");
+        }
+    }
+
+    Resource findResource(String file)
+    {
         Resource resource = files.get(file);
 
         if (resource == null && reloadOnMissingResource)
@@ -132,19 +152,7 @@ public class StaticFolderCacheEntry
         {
             throw new ResourceNotFoundException(file);
         }
-
-        ResourceType resourceType =
-            resourceTypeRegistry.getResourceType(resource, mimeTypeHandler.getMimeType(resource.getFilename()));
-
-        switch (resourceType)
-        {
-            case TEMPLATE:
-                return doRenderTemplate(resource, request);
-            case BINARY:
-                return doRenderBinary(resource, request);
-            default:
-                throw new ResourceRenderException("ResourceType " + resourceType + " is not implemented yet.");
-        }
+        return resource;
     }
 
     public Charset getCharset()
@@ -171,7 +179,7 @@ public class StaticFolderCacheEntry
         return "StaticFolderCacheEntry [location=" + location + "]";
     }
 
-    private byte[] doRenderTemplate(Resource resource, HttpServletRequest request) throws ResourceRenderException
+    String doRenderTemplate(Resource resource, HttpServletRequest request) throws ResourceRenderException
     {
         try
         {
@@ -196,9 +204,7 @@ public class StaticFolderCacheEntry
                 template.refreshIfNeeded();
             }
 
-            String content = template.render();
-
-            return content.getBytes(charset);
+            return template.render();
         }
         catch (IOException e)
         {

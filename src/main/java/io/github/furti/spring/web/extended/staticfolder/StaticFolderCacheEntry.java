@@ -173,6 +173,22 @@ public class StaticFolderCacheEntry
         return false;
     }
 
+    /**
+     * @param file the file to geht the lastmodified for
+     * @return time when the resource was last modiefied in epoch millis
+     */
+    public long getLastModified(String file)
+    {
+        try
+        {
+            return findResource(file).lastModified();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Error getting lastmodified for file " + file, e);
+        }
+    }
+
     @Override
     public String toString()
     {

@@ -60,13 +60,14 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
         StaticFolderRegistry staticFolderRegistry = configurerConfiguration.getStaticFolderRegistry();
 
         return new StaticFolderCache(staticFolderRegistry, scanners, mimeTypeHandler, templateFactory, contextFactory,
-            resourceTypeRegistry);
+            resourceTypeRegistry, configurerConfiguration.getApplicationInfo());
     }
 
     @Bean
     public MimeTypeHandler mimeTypeHandler(ServletContext servletContext)
     {
-        return new MimeTypeHandler(servletContext, configurerConfiguration.getMimeTypes());
+        return new MimeTypeHandler(servletContext, configurerConfiguration.getMimeTypes(),
+            configurerConfiguration.getCachableMimeTypes());
     }
 
     @Bean

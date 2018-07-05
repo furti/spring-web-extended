@@ -6,6 +6,9 @@ package io.github.furti.spring.web.extended.staticfolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.springframework.util.MimeType;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.MessageRegistry;
@@ -53,6 +56,15 @@ public class DelegatingSpringWebExtendedConfigurer implements SpringWebExtendedC
         for (SpringWebExtendedConfigurer configurer : configurers)
         {
             configurer.configureMimeTypes(mimeTypes);
+        }
+    }
+
+    @Override
+    public void configureCacheableMimeTypes(Set<MimeType> cacheableMimeTypes)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureCacheableMimeTypes(cacheableMimeTypes);
         }
     }
 

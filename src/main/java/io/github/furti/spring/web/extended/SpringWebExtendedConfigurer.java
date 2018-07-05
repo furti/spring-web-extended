@@ -5,8 +5,10 @@ package io.github.furti.spring.web.extended;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.context.i18n.LocaleContext;
+import org.springframework.util.MimeType;
 
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
@@ -68,6 +70,17 @@ public interface SpringWebExtendedConfigurer
     };
 
     /**
+     * Allm mime types in this list will have caching headers added to the response when the application runs in
+     * production mode.
+     * 
+     * @param cacheableMimeTypes list of mime types that should be cached
+     */
+    default void configureCacheableMimeTypes(Set<MimeType> cacheableMimeTypes)
+    {
+        // Sublcasses override this for custom configuration
+    }
+
+    /**
      * Add or remove expression handlers for the application.
      * 
      * @param registry the expression handler registry
@@ -117,5 +130,6 @@ public interface SpringWebExtendedConfigurer
     default void configureLocaleSources(List<LocaleSource> localeSources)
     {
         // Sublcasses override this for custom configuration
-    };
+    }
+
 }

@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeType;
 import org.springframework.util.MultiValueMap;
 
+import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.StaticFolder;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
@@ -34,6 +35,9 @@ import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
  */
 public class StaticFolderCache
 {
+    // Cache for a day. Then the client must revalidate
+    private static final long CACHE_TIME_IN_SECONDS = 24 * 60 * 60;
+
     private final Map<String, StaticFolderCacheEntry> entries = new HashMap<>();
     private final StaticFolderRegistry registry;
     private final ResourceScanners scanners;
@@ -41,12 +45,13 @@ public class StaticFolderCache
     private final TemplateFactory templateFactory;
     private final TemplateContextFactory contextFactory;
     private final ResourceTypeRegistry resourceTypeRegistry;
+    private final ApplicationInfo appInfo;
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     public StaticFolderCache(StaticFolderRegistry registry, ResourceScanners scanners, MimeTypeHandler mimeTypeHandler,
         TemplateFactory templateFactory, TemplateContextFactory contextFactory,
-        ResourceTypeRegistry resourceTypeRegistry)
+        ResourceTypeRegistry resourceTypeRegistry, ApplicationInfo appInfo)
     {
         super();
         this.registry = registry;
@@ -55,6 +60,7 @@ public class StaticFolderCache
         this.templateFactory = templateFactory;
         this.contextFactory = contextFactory;
         this.resourceTypeRegistry = resourceTypeRegistry;
+        this.appInfo = appInfo;
     }
 
     @PostConstruct
@@ -121,13 +127,24 @@ public class StaticFolderCache
 
     private MultiValueMap<String, String> buildHeaders(RenderEntry entry)
     {
-        //TODO: handle caching of values. We can set the lastmodified header and spring handles caching for us
-
         HttpHeaders headers = new HttpHeaders();
 
         MimeType mimeType = this.mimeTypeHandler.getMimeType(entry.file);
 
         headers.setContentType(new MediaType(mimeType.getType(), mimeType.getSubtype(), entry.entry.getCharset()));
+
+        headers.setLastModified(entry.entry.getLastModified(entry.file));
+
+        if (appInfo.isProductionMode() && this.mimeTypeHandler.shouldBeCached(entry.file))
+        {
+            headers.setCacheControl("public, max-age=" + CACHE_TIME_IN_SECONDS + ", must-revalidate");
+            headers.setPragma("cache");
+        }
+        else
+        {
+            headers.setCacheControl("no-store, max-age=0, must-revalidate");
+            headers.setPragma("no-cache");
+        }
 
         return headers;
     }

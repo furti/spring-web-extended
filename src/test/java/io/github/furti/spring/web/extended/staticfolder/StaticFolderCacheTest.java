@@ -8,8 +8,10 @@ import static org.junit.Assert.*;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +21,10 @@ import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeType;
 import org.testng.annotations.Test;
 
+import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.expression.DefaultExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
@@ -46,14 +50,14 @@ public class StaticFolderCacheTest
     private final String lineSeparator = System.lineSeparator();
 
     @Test
-    public void testRendering()
+    public void testRenderingInProductionMode()
     {
         StaticFolderRegistry registry =
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
                 "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
         cache.initialize();
 
         try
@@ -84,6 +88,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -112,6 +117,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -140,6 +146,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -168,6 +175,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -196,6 +204,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -224,6 +233,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -252,6 +262,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -280,6 +291,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -308,6 +320,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -336,6 +349,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -364,6 +378,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -392,6 +407,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -420,6 +436,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
             }
 
             {
@@ -433,6 +450,7 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+                assertCacheable(actualResponse);
             }
 
             {
@@ -446,12 +464,87 @@ public class StaticFolderCacheTest
 
                 assertThat(actualResponse.getHeaders().getContentType(),
                     equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+                assertCacheable(actualResponse);
             }
         }
         finally
         {
             TEST_LOCALE.remove();
         }
+    }
+
+    @Test
+    public void testRenderingInDevMode()
+    {
+        StaticFolderRegistry registry =
+            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+                "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
+
+        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(false));
+        cache.initialize();
+
+        try
+        {
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html default
+                HttpServletRequest request = buildRequest("/app");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // test.js with context path
+                HttpServletRequest request = buildRequest("/context/app/test.js", "/context");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                    equalTo("//#message:unknown#"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+                assertNotCacheable(actualResponse);
+            }
+        }
+        finally
+        {
+            TEST_LOCALE.remove();
+        }
+    }
+
+    private void assertCacheable(ResponseEntity<byte[]> actualResponse)
+    {
+        assertThat(actualResponse.getHeaders().getCacheControl(), equalTo("public, max-age=86400, must-revalidate"));
+        assertThat(actualResponse.getHeaders().getPragma(), equalTo("cache"));
+    }
+
+    private void assertNotCacheable(ResponseEntity<byte[]> actualResponse)
+    {
+        assertThat(actualResponse.getHeaders().getCacheControl(), equalTo("no-store, max-age=0, must-revalidate"));
+        assertThat(actualResponse.getHeaders().getPragma(), equalTo("no-cache"));
     }
 
     @Test
@@ -463,7 +556,7 @@ public class StaticFolderCacheTest
                 "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
         cache.initialize();
 
         try
@@ -495,16 +588,6 @@ public class StaticFolderCacheTest
         }
     }
 
-    private ResourceTypeRegistry buildResourceTypeRegistry()
-    {
-        DefaultResourceTypeRegistry registry = new DefaultResourceTypeRegistry();
-
-        registry.resourceTypeByMimeType("application/javascript", ResourceType.TEMPLATE);
-        registry.resourceTypeByMimeType("text/html", ResourceType.TEMPLATE);
-
-        return registry;
-    }
-
     @Test(expectedExceptions = ResourceNotFoundException.class)
     public void testMissingFolder()
     {
@@ -512,7 +595,7 @@ public class StaticFolderCacheTest
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/something");
@@ -526,7 +609,7 @@ public class StaticFolderCacheTest
             "classpath:io/github/furti/spring/web/extended/staticfolder/app/", "/fallback/*");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/fallback/test/all");
@@ -540,11 +623,26 @@ public class StaticFolderCacheTest
             buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry());
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/app/missing.js");
         cache.render(request);
+    }
+
+    private ApplicationInfo buildAppInfo(boolean productionMode)
+    {
+        return new DefaultApplicationInfo().productionMode(productionMode);
+    }
+
+    private ResourceTypeRegistry buildResourceTypeRegistry()
+    {
+        DefaultResourceTypeRegistry registry = new DefaultResourceTypeRegistry();
+
+        registry.resourceTypeByMimeType("application/javascript", ResourceType.TEMPLATE);
+        registry.resourceTypeByMimeType("text/html", ResourceType.TEMPLATE);
+
+        return registry;
     }
 
     private MimeTypeHandler buildMimeTypeHandler()
@@ -553,7 +651,10 @@ public class StaticFolderCacheTest
         mimeTypes.put(".js", "application/javascript");
         mimeTypes.put(".html", "text/html");
 
-        return new MimeTypeHandler(Mockito.mock(ServletContext.class), mimeTypes);
+        Set<MimeType> cacheable = new HashSet<>();
+        cacheable.add(MimeType.valueOf("application/javascript"));
+
+        return new MimeTypeHandler(Mockito.mock(ServletContext.class), mimeTypes, cacheable);
     }
 
     private ResourceScanners buildScanners()

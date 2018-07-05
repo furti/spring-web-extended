@@ -5,8 +5,10 @@ package io.github.furti.spring.web.extended.staticfolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +39,7 @@ public class StaticFolderConfigurerConfiguration
     private final DelegatingSpringWebExtendedConfigurer configurer = new DelegatingSpringWebExtendedConfigurer();
     private DefaultStaticFolderRegistry staticFolderRegistry;
     private Map<String, String> mimeTypes;
+    private Set<MimeType> cacheableMimeTypes;
     private DefaultApplicationInfo applicationInfo;
     private MessageRegistry messageRegistry;
     private DefaultContentEscapeHandlerRegistry contentEscapeHandlerRegistry;
@@ -112,6 +115,22 @@ public class StaticFolderConfigurerConfiguration
         }
 
         return mimeTypes;
+    }
+
+    public Set<MimeType> getCachableMimeTypes()
+    {
+        if (cacheableMimeTypes == null)
+        {
+            cacheableMimeTypes = new HashSet<>();
+
+            // Cache some resources by default
+            cacheableMimeTypes.add(MimeType.valueOf("application/javascript"));
+            cacheableMimeTypes.add(MimeType.valueOf("text/css"));
+
+            configurer.configureCacheableMimeTypes(cacheableMimeTypes);
+        }
+
+        return cacheableMimeTypes;
     }
 
     public MessageRegistry getMessageRegistry()

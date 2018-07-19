@@ -29,7 +29,7 @@ public class SchedulingConfiguration implements SchedulingConfigurer
 
         if (interval > 0)
         {
-            taskRegistrar.addFixedDelayTask(() -> staticFolderCache.refreshFolders(), interval * 1000);
+            taskRegistrar.addFixedDelayTask(() -> staticFolderCache.refreshFolders(false), interval * 1000);
         }
     }
 }

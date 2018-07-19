@@ -18,10 +18,22 @@ public interface Template
     String render() throws IOException;
 
     /**
+     * @return the refresh time in milliseconds
+     */
+    long getLastRefreshed();
+
+    /**
      * This method is called whenever the content of the template needs to be refreshed. The template may decide not to
      * refresh because it is up to date.
      * 
      * @throws IOException when an expection occurs refreshing the template
      */
     void refreshIfNeeded() throws IOException;
+
+    /**
+     * Forces a refresh of the template regardless of a change of the template itself.
+     * 
+     * @throws IOException when an expection occurs refreshing the template
+     */
+    void forceRefresh() throws IOException;
 }

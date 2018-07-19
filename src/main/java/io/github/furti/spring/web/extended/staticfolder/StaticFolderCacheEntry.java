@@ -87,13 +87,20 @@ public class StaticFolderCacheEntry
         }
     }
 
-    public void refresh() throws IOException
+    public void refresh(boolean force) throws IOException
     {
         for (Template template : templateCache.values())
         {
             try
             {
-                template.refreshIfNeeded();
+                if (force)
+                {
+                    template.forceRefresh();
+                }
+                else
+                {
+                    template.refreshIfNeeded();
+                }
             }
             catch (IOException e)
             {
@@ -175,13 +182,30 @@ public class StaticFolderCacheEntry
 
     /**
      * @param file the file to geht the lastmodified for
+     * @param request the request
      * @return time when the resource was last modiefied in epoch millis
      */
-    public long getLastModified(String file)
+    public long getLastModified(String file, HttpServletRequest request)
     {
         try
         {
-            return findResource(file).lastModified();
+            Resource resource = findResource(file);
+
+            ResourceType resourceType =
+                resourceTypeRegistry.getResourceType(resource, mimeTypeHandler.getMimeType(resource.getFilename()));
+
+            switch (resourceType)
+            {
+                case TEMPLATE:
+                    Template template = buildTemplate(resource, request);
+                    return template.getLastRefreshed();
+
+                case BINARY:
+                    return resource.lastModified();
+
+                default:
+                    throw new IllegalArgumentException("Unknown resource type " + resourceType);
+            }
         }
         catch (IOException e)
         {
@@ -199,26 +223,7 @@ public class StaticFolderCacheEntry
     {
         try
         {
-            TemplateContext context = contextFactory.createContext(request, resource);
-            Template template;
-
-            if (cacheResources)
-            {
-                template = getTemplateFromCache(resource, context);
-
-                if (template == null)
-                {
-                    template = templateFactory.createTemplate(resource, context, charset);
-                    template.refreshIfNeeded();
-
-                    templateCache.put(new TemplateCacheKey(resource, context), template);
-                }
-            }
-            else
-            {
-                template = templateFactory.createTemplate(resource, context, charset);
-                template.refreshIfNeeded();
-            }
+            Template template = buildTemplate(resource, request);
 
             return template.render();
         }
@@ -226,6 +231,31 @@ public class StaticFolderCacheEntry
         {
             throw new ResourceRenderException(String.format("Error rendering resource %s", resource), e);
         }
+    }
+
+    protected Template buildTemplate(Resource resource, HttpServletRequest request) throws IOException
+    {
+        TemplateContext context = contextFactory.createContext(request, resource);
+        Template template;
+
+        if (cacheResources)
+        {
+            template = getTemplateFromCache(resource, context);
+
+            if (template == null)
+            {
+                template = templateFactory.createTemplate(resource, context, charset);
+                template.refreshIfNeeded();
+
+                templateCache.put(new TemplateCacheKey(resource, context), template);
+            }
+        }
+        else
+        {
+            template = templateFactory.createTemplate(resource, context, charset);
+            template.refreshIfNeeded();
+        }
+        return template;
     }
 
     private byte[] doRenderBinary(Resource resource, HttpServletRequest request) throws ResourceRenderException

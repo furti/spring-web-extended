@@ -225,5 +225,4 @@ public class SimpleTemplate extends CacheableTemplate
             this.value = value;
         }
     }
-
 }

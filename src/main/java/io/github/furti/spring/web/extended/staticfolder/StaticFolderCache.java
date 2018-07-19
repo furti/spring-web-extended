@@ -81,13 +81,13 @@ public class StaticFolderCache
         }
     }
 
-    public void refreshFolders()
+    public void refreshFolders(boolean force)
     {
         for (StaticFolderCacheEntry entry : entries.values())
         {
             try
             {
-                entry.refresh();
+                entry.refresh(force);
             }
             catch (IOException e)
             {
@@ -122,10 +122,10 @@ public class StaticFolderCache
                 entry.basePath, request.getRequestURI()), e);
         }
 
-        return new ResponseEntity<byte[]>(content, buildHeaders(entry), HttpStatus.OK);
+        return new ResponseEntity<byte[]>(content, buildHeaders(entry, request), HttpStatus.OK);
     }
 
-    private MultiValueMap<String, String> buildHeaders(RenderEntry entry)
+    private MultiValueMap<String, String> buildHeaders(RenderEntry entry, HttpServletRequest request)
     {
         HttpHeaders headers = new HttpHeaders();
 
@@ -133,7 +133,7 @@ public class StaticFolderCache
 
         headers.setContentType(new MediaType(mimeType.getType(), mimeType.getSubtype(), entry.entry.getCharset()));
 
-        headers.setLastModified(entry.entry.getLastModified(entry.file));
+        headers.setLastModified(entry.entry.getLastModified(entry.file, request));
 
         if (appInfo.isProductionMode() && this.mimeTypeHandler.shouldBeCached(entry.file))
         {

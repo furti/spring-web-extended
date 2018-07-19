@@ -24,6 +24,7 @@ public abstract class CacheableTemplate implements Template
     protected final Charset charset;
     private String content = "";
     private long lastModified;
+    private long lastRefreshed;
 
     public CacheableTemplate(Resource resource, Charset charset)
     {
@@ -50,8 +51,29 @@ public abstract class CacheableTemplate implements Template
                 content = CommonContentCache.getCommonContent(newContent);
 
                 lastModified = resource.lastModified();
+                lastRefreshed = System.currentTimeMillis();
             }
         }
+    }
+
+    @Override
+    public void forceRefresh() throws IOException
+    {
+        synchronized (lock)
+        {
+            String newContent = doRender();
+
+            content = CommonContentCache.getCommonContent(newContent);
+
+            lastModified = resource.lastModified();
+            lastRefreshed = System.currentTimeMillis();
+        }
+    }
+
+    @Override
+    public long getLastRefreshed()
+    {
+        return lastRefreshed;
     }
 
     protected abstract String doRender() throws IOException;

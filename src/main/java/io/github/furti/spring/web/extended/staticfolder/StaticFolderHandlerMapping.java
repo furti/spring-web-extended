@@ -4,7 +4,6 @@
 package io.github.furti.spring.web.extended.staticfolder;
 
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 /**
@@ -13,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * 
  * @author Daniel Furtlehner
  */
-@Component
 public class StaticFolderHandlerMapping extends RequestMappingHandlerMapping
 {
 

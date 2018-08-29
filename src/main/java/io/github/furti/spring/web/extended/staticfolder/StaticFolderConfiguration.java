@@ -52,6 +52,8 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
     @Autowired
     private StaticFolderConfigurerConfiguration configurerConfiguration;
 
+    private LocaleHandlerInterceptor localeHandlerInterceptor;
+
     @Bean
     public StaticFolderCache staticFolderCache(ResourceScanners scanners, MimeTypeHandler mimeTypeHandler,
         TemplateFactory templateFactory, TemplateContextFactory contextFactory,
@@ -89,6 +91,16 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
     }
 
     @Bean
+    public StaticFolderHandlerMapping staticFolderHandlerMapping()
+    {
+        StaticFolderHandlerMapping hm = new StaticFolderHandlerMapping();
+
+        hm.setInterceptors(localeHandlerInterceptor());
+
+        return hm;
+    }
+
+    @Bean
     public MessageSource messageSource()
     {
         DelegatingMessageSource messageSource = new DelegatingMessageSource();
@@ -123,13 +135,26 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
     {
         registry.addInterceptor(new RequestResponseContextHandlerInterceptor());
 
-        List<LocaleSource> sources = configurerConfiguration.getLocaleSources();
+        LocaleHandlerInterceptor localeInterceptor = localeHandlerInterceptor();
 
-        if (!CollectionUtils.isEmpty(sources))
+        if (localeInterceptor != null)
         {
-            LocaleHandlerInterceptor interceptor = new LocaleHandlerInterceptor(sources);
-
-            registry.addInterceptor(interceptor);
+            registry.addInterceptor(localeInterceptor);
         }
+    }
+
+    private LocaleHandlerInterceptor localeHandlerInterceptor()
+    {
+        if (localeHandlerInterceptor == null)
+        {
+            List<LocaleSource> sources = configurerConfiguration.getLocaleSources();
+
+            if (!CollectionUtils.isEmpty(sources))
+            {
+                localeHandlerInterceptor = new LocaleHandlerInterceptor(sources);
+            }
+        }
+
+        return localeHandlerInterceptor;
     }
 }

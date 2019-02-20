@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -101,7 +102,8 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
     }
 
     @Bean
-    public MessageSource messageSource()
+    @Primary
+    public MessageSource delegateMessageSource()
     {
         DelegatingMessageSource messageSource = new DelegatingMessageSource();
 

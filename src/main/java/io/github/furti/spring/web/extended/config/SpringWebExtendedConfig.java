@@ -62,7 +62,7 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     private ResourceScannerConfig scannerConfig;
 
     @Bean
-    public MessageSource messageSource()
+    public MessageSource delegateMessageSource()
     {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setFallbackToSystemLocale(false);

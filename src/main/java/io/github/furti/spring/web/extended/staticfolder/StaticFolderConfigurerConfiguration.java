@@ -13,12 +13,15 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.util.MimeType;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.MessageRegistry;
 import io.github.furti.spring.web.extended.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
+import io.github.furti.spring.web.extended.compression.CompressionManager;
+import io.github.furti.spring.web.extended.compression.DefaultCompressionManager;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.locale.LocaleSource;
@@ -45,6 +48,7 @@ public class StaticFolderConfigurerConfiguration
     private DefaultContentEscapeHandlerRegistry contentEscapeHandlerRegistry;
     private ResourceTypeRegistry resourceTypeRegistry;
     private List<LocaleSource> localeSources;
+    private CompressionManager compressionManager;
 
     @Autowired(required = false)
     public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
@@ -99,6 +103,25 @@ public class StaticFolderConfigurerConfiguration
         }
 
         return contentEscapeHandlerRegistry;
+    }
+
+    public CompressionManager getCompressionManager()
+    {
+        if (compressionManager == null)
+        {
+            List<MimeType> supportedMimeTypes = new ArrayList<>();
+
+            supportedMimeTypes.add(MediaType.parseMediaType("text/*"));
+            supportedMimeTypes.add(MediaType.APPLICATION_JSON);
+            supportedMimeTypes.add(MediaType.APPLICATION_JSON_UTF8);
+            supportedMimeTypes.add(MediaType.parseMediaType("application/javascript"));
+
+            configurer.configureCompressableMimeTypes(supportedMimeTypes);
+
+            compressionManager = new DefaultCompressionManager(supportedMimeTypes);
+        }
+
+        return compressionManager;
     }
 
     public Map<String, String> getMimeTypes()

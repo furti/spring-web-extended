@@ -21,6 +21,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.MimeType;
 
+import io.github.furti.spring.web.extended.compression.CompressionManager;
 import io.github.furti.spring.web.extended.compression.CompressionType;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
 import io.github.furti.spring.web.extended.template.Template;
@@ -53,12 +54,13 @@ public class StaticFolderCacheEntry
     private final TemplateContextFactory contextFactory;
     private final ResourceTypeRegistry resourceTypeRegistry;
     private final MimeTypeHandler mimeTypeHandler;
+    private final CompressionManager compressionManager;
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     public StaticFolderCacheEntry(ResourceScanners scanners, String location, Set<String> indexFallbacks,
         Charset charset, boolean reloadOnMissingResource, boolean cacheResources, TemplateFactory templateFactory,
         TemplateContextFactory contextFactory, ResourceTypeRegistry resourceTypeRegistry,
-        MimeTypeHandler mimeTypeHandler)
+        MimeTypeHandler mimeTypeHandler, CompressionManager compressionManager)
     {
         super();
         this.scanners = scanners;
@@ -71,6 +73,7 @@ public class StaticFolderCacheEntry
         this.contextFactory = contextFactory;
         this.resourceTypeRegistry = resourceTypeRegistry;
         this.mimeTypeHandler = mimeTypeHandler;
+        this.compressionManager = compressionManager;
     }
 
     public void reload()
@@ -120,8 +123,10 @@ public class StaticFolderCacheEntry
         switch (resourceType)
         {
             case TEMPLATE:
-                // TODO: use the compression manager to find the compression type
-                return doRenderTemplate(resource, request, CompressionType.NO_COMPRESSION);
+                CompressionType requestedCompressionType =
+                    compressionManager.getRequestedCompressionType(request, mimeType);
+
+                return doRenderTemplate(resource, request, requestedCompressionType);
             case BINARY:
                 return doRenderBinary(resource, request);
             default:
@@ -243,7 +248,7 @@ public class StaticFolderCacheEntry
                 Template template = templateFactory.createTemplate(resource, context, charset);
                 template.refreshIfNeeded();
 
-                entry = new StaticFolderTemplateEntry(template);
+                entry = new StaticFolderTemplateEntry(template, compressionManager);
 
                 templateCache.put(new TemplateCacheKey(resource, context), entry);
             }
@@ -253,7 +258,7 @@ public class StaticFolderCacheEntry
             Template template = templateFactory.createTemplate(resource, context, charset);
             template.refreshIfNeeded();
 
-            entry = new StaticFolderTemplateEntry(template);
+            entry = new StaticFolderTemplateEntry(template, compressionManager);
         }
 
         return entry;

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.github.furti.spring.web.extended.compression.CompressionManager;
+import io.github.furti.spring.web.extended.compression.CompressionResponse;
 import io.github.furti.spring.web.extended.compression.CompressionType;
 import io.github.furti.spring.web.extended.template.Template;
 
@@ -17,12 +19,14 @@ public class StaticFolderTemplateEntry
 {
     private final ConcurrentHashMap<CompressionType, byte[]> compressionCache = new ConcurrentHashMap<>(1);
     private final Template template;
+    private final CompressionManager compressionMananger;
 
-    public StaticFolderTemplateEntry(Template template)
+    public StaticFolderTemplateEntry(Template template, CompressionManager compressionMananger)
     {
         super();
 
         this.template = template;
+        this.compressionMananger = compressionMananger;
     }
 
     /**
@@ -50,33 +54,33 @@ public class StaticFolderTemplateEntry
         return template.getLastRefreshed();
     }
 
-    public StaticFolderRenderResponse render(CompressionType compressionType, Charset charset) throws IOException
-    {
-        switch (compressionType)
-        {
-            case NO_COMPRESSION:
-                return new StaticFolderRenderResponse(template.render().getBytes(charset));
-            default:
-                return renderCompressed(compressionType, charset);
-        }
-    }
-
-    private StaticFolderRenderResponse renderCompressed(CompressionType compressionType, Charset charset)
+    public StaticFolderRenderResponse render(CompressionType requestedCompressionType, Charset charset)
         throws IOException
     {
-        byte[] compressed = compressionCache.get(compressionType);
+        byte[] compressed = compressionCache.get(requestedCompressionType);
+        CompressionType actualCompressionType = requestedCompressionType;
 
         if (compressed == null)
         {
-            String content = template.render();
+            CompressionResponse compressionResponse =
+                compressionMananger.compressData(template.render().getBytes(charset), requestedCompressionType);
 
-            // TODO: compress the content with the compression manager
+            compressed = compressionResponse.getData();
+            actualCompressionType = compressionResponse.getActualCompressionType();
 
-            throw new UnsupportedOperationException("Implement");
+            // No need to cache uncompressed data again
+            if (actualCompressionType != CompressionType.NO_COMPRESSION)
+            {
+                compressionCache.put(actualCompressionType, CommonContentCache.getCommonContent(compressed));
+            }
         }
 
         StaticFolderRenderResponse response = new StaticFolderRenderResponse(compressed);
-        response.setContentEncoding(compressionType.getValue());
+
+        if (actualCompressionType != CompressionType.NO_COMPRESSION)
+        {
+            response.setContentEncoding(actualCompressionType.getValue());
+        }
 
         return response;
     }

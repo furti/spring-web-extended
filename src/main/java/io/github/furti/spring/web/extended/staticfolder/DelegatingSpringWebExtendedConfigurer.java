@@ -121,4 +121,12 @@ public class DelegatingSpringWebExtendedConfigurer implements SpringWebExtendedC
             configurer.configureLocaleSources(localeSources);
         }
     }
+
+    public void configureCompressableMimeTypes(List<MimeType> compressableMimeTypes)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureCompressableMimeTypes(compressableMimeTypes);
+        }
+    }
 }

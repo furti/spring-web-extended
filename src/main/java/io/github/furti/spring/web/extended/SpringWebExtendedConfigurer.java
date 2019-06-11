@@ -132,4 +132,16 @@ public interface SpringWebExtendedConfigurer
         // Sublcasses override this for custom configuration
     }
 
+    /**
+     * Define the mime types, that are subject to compression. Responses matching one of the mime type in this list will
+     * be compressed using a algorithm the client requested when applicable. Clearing the list measn no compression will
+     * be performed regardless if the client supports it or not.
+     * 
+     * @param compressableMimeTypes list of mime types that are subject to compression
+     */
+    default void configureCompressableMimeTypes(List<MimeType> compressableMimeTypes)
+    {
+        // Sublcasses override this for custom configuration
+    }
+
 }

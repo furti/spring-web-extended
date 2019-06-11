@@ -6,9 +6,12 @@ package io.github.furti.spring.web.extended.staticfolder;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -16,24 +19,27 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.StaticMessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeType;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
-import io.github.furti.spring.web.extended.compression.CompressionType;
+import io.github.furti.spring.web.extended.compression.CompressionManager;
+import io.github.furti.spring.web.extended.compression.DefaultCompressionManager;
 import io.github.furti.spring.web.extended.expression.DefaultExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.expression.handlers.MessageExpressionHandler;
 import io.github.furti.spring.web.extended.io.ClasspathResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
-import io.github.furti.spring.web.extended.staticfolder.StaticFolderCache.RenderEntry;
 import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.template.DefaultTemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
@@ -58,11 +64,12 @@ public class StaticFolderCacheTest
     public void testRenderingInProductionMode()
     {
         StaticFolderRegistry registry =
-            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+            buildRegistry(false, true, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
                 "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
+            buildCompressionManager());
         cache.initialize();
 
         try
@@ -467,11 +474,12 @@ public class StaticFolderCacheTest
     public void testRenderingInDevMode()
     {
         StaticFolderRegistry registry =
-            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+            buildRegistry(false, false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
                 "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(false));
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(false),
+            buildCompressionManager());
         cache.initialize();
 
         try
@@ -523,6 +531,241 @@ public class StaticFolderCacheTest
         }
     }
 
+    @Test
+    public void testRenderingWithDifferentCompressionTypesInProdMode()
+    {
+        StaticFolderRegistry registry =
+            buildRegistry(false, true, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+                "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
+
+        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
+            buildCompressionManager());
+        cache.initialize();
+
+        try
+        {
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html default no compression
+                HttpServletRequest request = buildRequest("/app");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), UTF_8),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
+                assertThat(actualResponse.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING), nullValue());
+                assertNotCacheable(actualResponse);
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // index.html gzip compression but content to small to compress
+                HttpServletRequest request = buildRequestWithCompression("/app", "gzip");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), UTF_8),
+                    equalTo("<!doctype html>"
+                        + lineSeparator
+                        + lineSeparator
+                        + "<html>"
+                        + lineSeparator
+                        + "<head></head>"
+                        + lineSeparator
+                        + "<body>"
+                        + lineSeparator
+                        + "    <p>A very useful message</p>"
+                        + lineSeparator
+                        + "    <p>Some Text with special chars äöü.</p>"
+                        + lineSeparator
+                        + "</body>"
+                        + lineSeparator
+                        + "</html>"));
+
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
+                assertThat(actualResponse.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING), nullValue());
+                assertNotCacheable(actualResponse);
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // big.js with supported compression. File is big enough to be compressed
+                HttpServletRequest request = buildRequestWithCompression("/app/big.js", "gzip");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                byte[] unzipped = gunzip(actualResponse.getBody());
+
+                assertThat(new String(unzipped, UTF_8),
+                    equalTo("function doSomething() {"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "}"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("application", "javascript", UTF_8)));
+                assertThat(actualResponse.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING), equalTo("gzip"));
+                assertCacheable(actualResponse);
+            }
+
+            {
+                TEST_LOCALE.set(Locale.ENGLISH);
+                // big.nocompress with supported compression. File is big enough but the mimetype is not compressable
+                // So no compression should be performed
+                HttpServletRequest request = buildRequestWithCompression("/app/big.nocompress", "gzip");
+                ResponseEntity<byte[]> actualResponse = cache.render(request);
+
+                assertThat(new String(actualResponse.getBody(), UTF_8),
+                    equalTo("function doSomething() {"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "console.log('Data: abcdefghijklmnopqrst');"
+                        + lineSeparator
+                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
+                        + lineSeparator
+                        + "}"));
+
+                assertThat(actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("test", "nocompress", UTF_8)));
+                assertThat(actualResponse.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING), nullValue());
+                assertNotCacheable(actualResponse);
+            }
+        }
+        finally
+        {
+            TEST_LOCALE.remove();
+        }
+    }
+
+    private byte[] gunzip(byte[] zippedBytes)
+    {
+        try (GzipCompressorInputStream input = new GzipCompressorInputStream(new ByteArrayInputStream(zippedBytes)))
+        {
+            return IOUtils.toByteArray(input);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error unzipping bytes " + zippedBytes, e);
+        }
+    }
+
     private void assertCacheable(ResponseEntity<byte[]> actualResponse)
     {
         assertThat(actualResponse.getHeaders().getCacheControl(), equalTo("public, max-age=86400, must-revalidate"));
@@ -535,61 +778,15 @@ public class StaticFolderCacheTest
         assertThat(actualResponse.getHeaders().getPragma(), equalTo("no-cache"));
     }
 
-    @Test
-    public void testThatStaticTemplatesAreOnlyCachedOnceUncompressed() throws ResourceRenderException
-    {
-
-        StaticFolderRegistry registry =
-            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
-                "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
-
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
-        cache.initialize();
-
-        try
-        {
-            TEST_LOCALE.set(Locale.ENGLISH);
-
-            // Test English
-            HttpServletRequest request = buildRequest("/app/sameinalllanguages.js");
-            RenderEntry entry = cache.findEntryForRequest(request);
-            StaticFolderRenderResponse englishContent = entry.entry
-                .doRenderTemplate(entry.entry.findResource(entry.file), request, CompressionType.NO_COMPRESSION);
-
-            assertThat(englishContent.getContent(), equalTo(
-                "var text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet';"
-                    .getBytes(UTF_8)));
-            assertThat(englishContent.getHeaders().entrySet(), emptyIterable());
-
-            TEST_LOCALE.set(Locale.GERMAN);
-
-            // Test German
-            entry = cache.findEntryForRequest(request);
-            StaticFolderRenderResponse germanContent = entry.entry
-                .doRenderTemplate(entry.entry.findResource(entry.file), request, CompressionType.NO_COMPRESSION);
-
-            assertThat(germanContent.getContent(), equalTo(
-                "var text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet';"
-                    .getBytes(UTF_8)));
-            assertThat(englishContent.getHeaders().entrySet(), emptyIterable());
-
-            assertThat(germanContent.getContent(), sameInstance(englishContent.getContent()));
-        }
-        finally
-        {
-            TEST_LOCALE.remove();
-        }
-    }
-
     @Test(expected = ResourceNotFoundException.class)
     public void testMissingFolder()
     {
         StaticFolderRegistry registry =
-            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
+            buildRegistry(false, true, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
+            buildCompressionManager());
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/something");
@@ -599,11 +796,12 @@ public class StaticFolderCacheTest
     @Test(expected = ResourceNotFoundException.class)
     public void testMissingFallback()
     {
-        StaticFolderRegistry registry = buildRegistry(false, "/app",
+        StaticFolderRegistry registry = buildRegistry(false, true, "/app",
             "classpath:io/github/furti/spring/web/extended/staticfolder/app/", "/fallback/*");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
+            buildCompressionManager());
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/fallback/test/all");
@@ -614,10 +812,11 @@ public class StaticFolderCacheTest
     public void testMissingResource()
     {
         StaticFolderRegistry registry =
-            buildRegistry(false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
+            buildRegistry(false, true, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
 
         StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true));
+            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
+            buildCompressionManager());
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/app/missing.js");
@@ -635,6 +834,7 @@ public class StaticFolderCacheTest
 
         registry.resourceTypeByMimeType("application/javascript", ResourceType.TEMPLATE);
         registry.resourceTypeByMimeType("text/html", ResourceType.TEMPLATE);
+        registry.resourceTypeByMimeType("test/nocompress", ResourceType.TEMPLATE);
 
         return registry;
     }
@@ -644,6 +844,7 @@ public class StaticFolderCacheTest
         Map<String, String> mimeTypes = new HashMap<>();
         mimeTypes.put(".js", "application/javascript");
         mimeTypes.put(".html", "text/html");
+        mimeTypes.put(".nocompress", "test/nocompress");
 
         Set<MimeType> cacheable = new HashSet<>();
         cacheable.add(MimeType.valueOf("application/javascript"));
@@ -659,13 +860,14 @@ public class StaticFolderCacheTest
         return new ResourceScanners(scanners);
     }
 
-    private StaticFolderRegistry buildRegistry(boolean reloadMissingResources, String basePath, String location,
-        String... indexFallbacks)
+    private StaticFolderRegistry buildRegistry(boolean reloadMissingResources, boolean productionMode, String basePath,
+        String location, String... indexFallbacks)
     {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
         registry.reloadOnMissingResource(reloadMissingResources);
         registry.registerFolder(basePath, location, indexFallbacks);
+        registry.resourceRefreshInterval(productionMode ? 60 * 10 : 0);
 
         return registry;
     }
@@ -685,6 +887,15 @@ public class StaticFolderCacheTest
         return request;
     }
 
+    private HttpServletRequest buildRequestWithCompression(String requestURI, String encodingType)
+    {
+        HttpServletRequest request = buildRequest(requestURI);
+
+        Mockito.when(request.getHeader("Accept-Encoding")).thenReturn(encodingType);
+
+        return request;
+    }
+
     private TemplateContextFactory buildTemplateContextFactory()
     {
         return new DefaultTemplateContextFactory(buildMimeTypeHandler(), new ThreadLocalLocaleContext());
@@ -700,6 +911,17 @@ public class StaticFolderCacheTest
         registry.registerExpressionHandler(new MessageExpressionHandler(messageSource));
 
         return new SimpleTemplateFactory(registry, new DefaultContentEscapeHandlerRegistry(), '#', ':', '#');
+    }
+
+    private CompressionManager buildCompressionManager()
+    {
+        List<MimeType> supportedMimeTypes = new ArrayList<>();
+        supportedMimeTypes.add(MediaType.parseMediaType("text/*"));
+        supportedMimeTypes.add(MediaType.APPLICATION_JSON);
+        supportedMimeTypes.add(MediaType.APPLICATION_JSON_UTF8);
+        supportedMimeTypes.add(MediaType.parseMediaType("application/javascript"));
+
+        return new DefaultCompressionManager(supportedMimeTypes);
     }
 
     /**

@@ -63,7 +63,8 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
         StaticFolderRegistry staticFolderRegistry = configurerConfiguration.getStaticFolderRegistry();
 
         return new StaticFolderCache(staticFolderRegistry, scanners, mimeTypeHandler, templateFactory, contextFactory,
-            resourceTypeRegistry, configurerConfiguration.getApplicationInfo());
+            resourceTypeRegistry, configurerConfiguration.getApplicationInfo(),
+            configurerConfiguration.getCompressionManager());
     }
 
     @Bean

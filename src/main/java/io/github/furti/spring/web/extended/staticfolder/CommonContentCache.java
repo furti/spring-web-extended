@@ -13,6 +13,7 @@ import java.util.WeakHashMap;
 public final class CommonContentCache
 {
     private static final Map<String, WeakReference<String>> CACHE = new WeakHashMap<>();
+    private static final Map<byte[], WeakReference<byte[]>> BYTE_CACHE = new WeakHashMap<>();
 
     private CommonContentCache()
     {
@@ -27,5 +28,15 @@ public final class CommonContentCache
         }
 
         return CACHE.get(content).get();
+    }
+
+    public static synchronized byte[] getCommonContent(byte[] content)
+    {
+        if (!BYTE_CACHE.containsKey(content))
+        {
+            BYTE_CACHE.put(content, new WeakReference<>(content));
+        }
+
+        return BYTE_CACHE.get(content).get();
     }
 }

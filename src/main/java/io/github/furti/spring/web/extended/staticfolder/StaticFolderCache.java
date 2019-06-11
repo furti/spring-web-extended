@@ -24,6 +24,7 @@ import org.springframework.util.MultiValueMap;
 import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.StaticFolder;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
+import io.github.furti.spring.web.extended.compression.CompressionManager;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
@@ -46,12 +47,13 @@ public class StaticFolderCache
     private final TemplateContextFactory contextFactory;
     private final ResourceTypeRegistry resourceTypeRegistry;
     private final ApplicationInfo appInfo;
+    private final CompressionManager compressionManager;
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     public StaticFolderCache(StaticFolderRegistry registry, ResourceScanners scanners, MimeTypeHandler mimeTypeHandler,
         TemplateFactory templateFactory, TemplateContextFactory contextFactory,
-        ResourceTypeRegistry resourceTypeRegistry, ApplicationInfo appInfo)
+        ResourceTypeRegistry resourceTypeRegistry, ApplicationInfo appInfo, CompressionManager compressionManager)
     {
         super();
         this.registry = registry;
@@ -61,6 +63,7 @@ public class StaticFolderCache
         this.contextFactory = contextFactory;
         this.resourceTypeRegistry = resourceTypeRegistry;
         this.appInfo = appInfo;
+        this.compressionManager = compressionManager;
     }
 
     @PostConstruct
@@ -73,7 +76,7 @@ public class StaticFolderCache
             StaticFolderCacheEntry entry = new StaticFolderCacheEntry(scanners, staticFolder.getLocation(),
                 staticFolder.getIndexFallbacks(), staticFolder.getCharset(), registry.isReloadOnMissingResource(),
                 registry.getResourceRefreshInterval() != 0, templateFactory, contextFactory, resourceTypeRegistry,
-                mimeTypeHandler);
+                mimeTypeHandler, compressionManager);
 
             entry.reload();
 

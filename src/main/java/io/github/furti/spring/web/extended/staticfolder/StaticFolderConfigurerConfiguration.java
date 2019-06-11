@@ -13,6 +13,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.MediaType;
 import org.springframework.util.MimeType;
 
@@ -62,7 +63,7 @@ public class StaticFolderConfigurerConfiguration
         {
             applicationInfo = new DefaultApplicationInfo();
 
-            applicationInfo.productionMode(env.acceptsProfiles("optimizeresources", "prod", "production"));
+            applicationInfo.productionMode(env.acceptsProfiles(Profiles.of("optimizeresources", "prod", "production")));
 
             configurer.configureApplication(applicationInfo);
         }

@@ -3,7 +3,7 @@
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import java.nio.charset.Charset;
@@ -16,16 +16,17 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeType;
-import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
+import io.github.furti.spring.web.extended.compression.CompressionType;
 import io.github.furti.spring.web.extended.expression.DefaultExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.expression.handlers.MessageExpressionHandler;
@@ -46,6 +47,10 @@ import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
  */
 public class StaticFolderCacheTest
 {
+    /**
+     * 
+     */
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
     private static final ThreadLocal<Locale> TEST_LOCALE = new ThreadLocal<>();
     private final String lineSeparator = System.lineSeparator();
 
@@ -68,7 +73,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -86,8 +91,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -97,7 +101,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -115,8 +119,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -126,7 +129,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -144,8 +147,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -155,7 +157,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -173,8 +175,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -184,7 +185,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/index.html");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -202,8 +203,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -213,7 +213,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/indexfallback");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -231,8 +231,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -242,7 +241,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/indexfallback/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -260,8 +259,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -271,7 +269,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/nextfallback/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -289,8 +287,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -300,7 +297,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/nextfallback/test");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -318,8 +315,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -329,7 +325,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/nextfallback/blub");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -347,8 +343,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -358,7 +353,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/lastfallback/blub");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -376,8 +371,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -387,7 +381,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/lastfallback/blub/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -405,8 +399,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -416,7 +409,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/lastfallback/blub/test");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -434,8 +427,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -445,11 +437,10 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/test.js");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                    equalTo("//#message:unknown#"));
+                assertThat(new String(actualResponse.getBody(), UTF_8), equalTo("//#message:unknown#"));
 
                 assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+                    equalTo(new MediaType("application", "javascript", UTF_8)));
                 assertCacheable(actualResponse);
             }
 
@@ -459,11 +450,10 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/context/app/test.js", "/context");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                    equalTo("//#message:unknown#"));
+                assertThat(new String(actualResponse.getBody(), UTF_8), equalTo("//#message:unknown#"));
 
                 assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+                    equalTo(new MediaType("application", "javascript", UTF_8)));
                 assertCacheable(actualResponse);
             }
         }
@@ -492,7 +482,7 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
+                assertThat(new String(actualResponse.getBody(), UTF_8),
                     equalTo("<!doctype html>"
                         + lineSeparator
                         + lineSeparator
@@ -510,8 +500,7 @@ public class StaticFolderCacheTest
                         + lineSeparator
                         + "</html>"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("text", "html", Charset.forName("UTF-8"))));
+                assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
 
@@ -521,11 +510,10 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/context/app/test.js", "/context");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), Charset.forName("UTF-8")),
-                    equalTo("//#message:unknown#"));
+                assertThat(new String(actualResponse.getBody(), UTF_8), equalTo("//#message:unknown#"));
 
                 assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("application", "javascript", Charset.forName("UTF-8"))));
+                    equalTo(new MediaType("application", "javascript", UTF_8)));
                 assertNotCacheable(actualResponse);
             }
         }
@@ -548,7 +536,7 @@ public class StaticFolderCacheTest
     }
 
     @Test
-    public void testThatStaticTemplatesAreOnlyCachedOnce() throws ResourceRenderException
+    public void testThatStaticTemplatesAreOnlyCachedOnceUncompressed() throws ResourceRenderException
     {
 
         StaticFolderRegistry registry =
@@ -566,21 +554,27 @@ public class StaticFolderCacheTest
             // Test English
             HttpServletRequest request = buildRequest("/app/sameinalllanguages.js");
             RenderEntry entry = cache.findEntryForRequest(request);
-            String englishContent = entry.entry.doRenderTemplate(entry.entry.findResource(entry.file), request);
+            StaticFolderRenderResponse englishContent = entry.entry
+                .doRenderTemplate(entry.entry.findResource(entry.file), request, CompressionType.NO_COMPRESSION);
 
-            assertThat(englishContent, equalTo(
-                "var text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet';"));
+            assertThat(englishContent.getContent(), equalTo(
+                "var text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet';"
+                    .getBytes(UTF_8)));
+            assertThat(englishContent.getHeaders().entrySet(), emptyIterable());
 
             TEST_LOCALE.set(Locale.GERMAN);
 
-            // Test English
+            // Test German
             entry = cache.findEntryForRequest(request);
-            String germanContent = entry.entry.doRenderTemplate(entry.entry.findResource(entry.file), request);
+            StaticFolderRenderResponse germanContent = entry.entry
+                .doRenderTemplate(entry.entry.findResource(entry.file), request, CompressionType.NO_COMPRESSION);
 
-            assertThat(germanContent, equalTo(
-                "var text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet';"));
+            assertThat(germanContent.getContent(), equalTo(
+                "var text = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet';"
+                    .getBytes(UTF_8)));
+            assertThat(englishContent.getHeaders().entrySet(), emptyIterable());
 
-            assertThat(germanContent, sameInstance(englishContent));
+            assertThat(germanContent.getContent(), sameInstance(englishContent.getContent()));
         }
         finally
         {
@@ -588,7 +582,7 @@ public class StaticFolderCacheTest
         }
     }
 
-    @Test(expectedExceptions = ResourceNotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void testMissingFolder()
     {
         StaticFolderRegistry registry =
@@ -602,7 +596,7 @@ public class StaticFolderCacheTest
         cache.render(request);
     }
 
-    @Test(expectedExceptions = ResourceNotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void testMissingFallback()
     {
         StaticFolderRegistry registry = buildRegistry(false, "/app",
@@ -616,7 +610,7 @@ public class StaticFolderCacheTest
         cache.render(request);
     }
 
-    @Test(expectedExceptions = ResourceNotFoundException.class)
+    @Test(expected = ResourceNotFoundException.class)
     public void testMissingResource()
     {
         StaticFolderRegistry registry =

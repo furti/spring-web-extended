@@ -106,10 +106,10 @@ public class StaticFolderCache
                 String.format("%s could not be found in any folder", request.getRequestURI()));
         }
 
-        byte[] content;
+        StaticFolderRenderResponse renderResponse;
         try
         {
-            content = entry.render(request);
+            renderResponse = entry.render(request);
         }
         catch (ResourceNotFoundException e)
         {
@@ -118,14 +118,18 @@ public class StaticFolderCache
         }
         catch (ResourceRenderException e)
         {
-            throw new RuntimeException(String.format("Error rendering file %s in folder %s for url %s", entry.file,
-                entry.basePath, request.getRequestURI()), e);
+            throw new RuntimeException(String
+                .format("Error rendering file %s in folder %s for url %s", entry.file, entry.basePath,
+                    request.getRequestURI()),
+                e);
         }
 
-        return new ResponseEntity<byte[]>(content, buildHeaders(entry, request), HttpStatus.OK);
+        return new ResponseEntity<byte[]>(renderResponse.getContent(),
+            buildHeaders(entry, request, renderResponse.getHeaders()), HttpStatus.OK);
     }
 
-    private MultiValueMap<String, String> buildHeaders(RenderEntry entry, HttpServletRequest request)
+    private MultiValueMap<String, String> buildHeaders(RenderEntry entry, HttpServletRequest request,
+        Map<String, String> additionalHeaders)
     {
         HttpHeaders headers = new HttpHeaders();
 
@@ -144,6 +148,13 @@ public class StaticFolderCache
         {
             headers.setCacheControl("no-store, max-age=0, must-revalidate");
             headers.setPragma("no-cache");
+        }
+
+        if (additionalHeaders != null)
+        {
+            additionalHeaders
+                .entrySet()
+                .forEach(additionalHeader -> headers.add(additionalHeader.getKey(), additionalHeader.getValue()));
         }
 
         return headers;
@@ -209,7 +220,8 @@ public class StaticFolderCache
             this.file = file;
         }
 
-        public byte[] render(HttpServletRequest request) throws ResourceNotFoundException, ResourceRenderException
+        public StaticFolderRenderResponse render(HttpServletRequest request)
+            throws ResourceNotFoundException, ResourceRenderException
         {
             return entry.renderResource(file, request);
         }

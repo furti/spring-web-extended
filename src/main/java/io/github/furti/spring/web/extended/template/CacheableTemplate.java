@@ -40,7 +40,7 @@ public abstract class CacheableTemplate implements Template
     }
 
     @Override
-    public void refreshIfNeeded() throws IOException
+    public boolean refreshIfNeeded() throws IOException
     {
         synchronized (lock)
         {
@@ -52,7 +52,11 @@ public abstract class CacheableTemplate implements Template
 
                 lastModified = resource.lastModified();
                 lastRefreshed = System.currentTimeMillis();
+
+                return true;
             }
+
+            return false;
         }
     }
 

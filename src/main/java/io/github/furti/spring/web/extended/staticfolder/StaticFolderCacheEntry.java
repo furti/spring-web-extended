@@ -19,7 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.MimeType;
 
+import io.github.furti.spring.web.extended.compression.CompressionType;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
 import io.github.furti.spring.web.extended.template.Template;
 import io.github.furti.spring.web.extended.template.TemplateContext;
@@ -37,8 +39,8 @@ public class StaticFolderCacheEntry
 
     private final Object lock = new Object();
     private final ConcurrentHashMap<String, Resource> files = new ConcurrentHashMap<>(30);
-    private final ConcurrentHashMap<TemplateCacheKey, Template> templateCache =
-        new ConcurrentHashMap<TemplateCacheKey, Template>(30);
+    private final ConcurrentHashMap<TemplateCacheKey, StaticFolderTemplateEntry> templateCache =
+        new ConcurrentHashMap<TemplateCacheKey, StaticFolderTemplateEntry>(30);
     private final ConcurrentHashMap<Resource, byte[]> resourceCache = new ConcurrentHashMap<Resource, byte[]>(30);
 
     private final ResourceScanners scanners;
@@ -89,18 +91,11 @@ public class StaticFolderCacheEntry
 
     public void refresh(boolean force) throws IOException
     {
-        for (Template template : templateCache.values())
+        for (StaticFolderTemplateEntry template : templateCache.values())
         {
             try
             {
-                if (force)
-                {
-                    template.forceRefresh();
-                }
-                else
-                {
-                    template.refreshIfNeeded();
-                }
+                template.refresh(force);
             }
             catch (IOException e)
             {
@@ -114,20 +109,19 @@ public class StaticFolderCacheEntry
         }
     }
 
-    public byte[] renderResource(String file, HttpServletRequest request)
+    public StaticFolderRenderResponse renderResource(String file, HttpServletRequest request)
         throws ResourceNotFoundException, ResourceRenderException
     {
         Resource resource = findResource(file);
 
-        ResourceType resourceType =
-            resourceTypeRegistry.getResourceType(resource, mimeTypeHandler.getMimeType(resource.getFilename()));
+        MimeType mimeType = mimeTypeHandler.getMimeType(resource.getFilename());
+        ResourceType resourceType = resourceTypeRegistry.getResourceType(resource, mimeType);
 
         switch (resourceType)
         {
             case TEMPLATE:
-                String content = doRenderTemplate(resource, request);
-
-                return content.getBytes(charset);
+                // TODO: use the compression manager to find the compression type
+                return doRenderTemplate(resource, request, CompressionType.NO_COMPRESSION);
             case BINARY:
                 return doRenderBinary(resource, request);
             default:
@@ -197,7 +191,8 @@ public class StaticFolderCacheEntry
             switch (resourceType)
             {
                 case TEMPLATE:
-                    Template template = buildTemplate(resource, request);
+                    StaticFolderTemplateEntry template = buildTemplate(resource, request);
+
                     return template.getLastRefreshed();
 
                 case BINARY:
@@ -219,13 +214,14 @@ public class StaticFolderCacheEntry
         return "StaticFolderCacheEntry [location=" + location + "]";
     }
 
-    String doRenderTemplate(Resource resource, HttpServletRequest request) throws ResourceRenderException
+    StaticFolderRenderResponse doRenderTemplate(Resource resource, HttpServletRequest request,
+        CompressionType compressionType) throws ResourceRenderException
     {
         try
         {
-            Template template = buildTemplate(resource, request);
+            StaticFolderTemplateEntry template = buildTemplate(resource, request);
 
-            return template.render();
+            return template.render(compressionType, charset);
         }
         catch (IOException e)
         {
@@ -233,32 +229,38 @@ public class StaticFolderCacheEntry
         }
     }
 
-    protected Template buildTemplate(Resource resource, HttpServletRequest request) throws IOException
+    protected StaticFolderTemplateEntry buildTemplate(Resource resource, HttpServletRequest request) throws IOException
     {
         TemplateContext context = contextFactory.createContext(request, resource);
-        Template template;
+        StaticFolderTemplateEntry entry;
 
         if (cacheResources)
         {
-            template = getTemplateFromCache(resource, context);
+            entry = getTemplateFromCache(resource, context);
 
-            if (template == null)
+            if (entry == null)
             {
-                template = templateFactory.createTemplate(resource, context, charset);
+                Template template = templateFactory.createTemplate(resource, context, charset);
                 template.refreshIfNeeded();
 
-                templateCache.put(new TemplateCacheKey(resource, context), template);
+                entry = new StaticFolderTemplateEntry(template);
+
+                templateCache.put(new TemplateCacheKey(resource, context), entry);
             }
         }
         else
         {
-            template = templateFactory.createTemplate(resource, context, charset);
+            Template template = templateFactory.createTemplate(resource, context, charset);
             template.refreshIfNeeded();
+
+            entry = new StaticFolderTemplateEntry(template);
         }
-        return template;
+
+        return entry;
     }
 
-    private byte[] doRenderBinary(Resource resource, HttpServletRequest request) throws ResourceRenderException
+    private StaticFolderRenderResponse doRenderBinary(Resource resource, HttpServletRequest request)
+        throws ResourceRenderException
     {
         try
         {
@@ -271,11 +273,11 @@ public class StaticFolderCacheEntry
                     content = getContentFromInputStream(resource);
                 }
 
-                return content;
+                return new StaticFolderRenderResponse(content);
             }
             else
             {
-                return getContentFromInputStream(resource);
+                return new StaticFolderRenderResponse(getContentFromInputStream(resource));
             }
         }
         catch (IOException e)
@@ -292,9 +294,9 @@ public class StaticFolderCacheEntry
         }
     }
 
-    private Template getTemplateFromCache(Resource resource, TemplateContext context)
+    private StaticFolderTemplateEntry getTemplateFromCache(Resource resource, TemplateContext context)
     {
-        for (Entry<TemplateCacheKey, Template> entry : templateCache.entrySet())
+        for (Entry<TemplateCacheKey, StaticFolderTemplateEntry> entry : templateCache.entrySet())
         {
             TemplateCacheKey key = entry.getKey();
 

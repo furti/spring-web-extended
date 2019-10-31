@@ -9,14 +9,15 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
 
 import org.junit.Assert;
+import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.util.MimeType;
-import org.testng.annotations.Test;
 
 /**
  * @author Daniel Furtlehner
@@ -27,8 +28,8 @@ public class MimeTypeHandlerTest
     @Test
     public void getMimeType()
     {
-        MimeTypeHandler handler =
-            new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(), buildCacheableMimeTypes());
+        MimeTypeHandler handler = new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(),
+            buildCacheableMimeTypes(), new DefaultMimetypeCacheConfig(), new HashMap<>());
 
         {
             // Should use mime type from servlet context as not set in default mime types
@@ -55,36 +56,37 @@ public class MimeTypeHandlerTest
     @Test
     public void isCacheable()
     {
-        MimeTypeHandler handler =
-            new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(), buildCacheableMimeTypes());
+        MimeTypeHandler handler = new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(),
+            buildCacheableMimeTypes(), new DefaultMimetypeCacheConfig(), new HashMap<>());
 
         {
             // Javascript is not cacheable
-            boolean cacheable = handler.shouldBeCached("file.js");
+            Optional<String> cacheConfig = handler.getCacheConfig("file.js");
 
-            assertThat(cacheable, equalTo(false));
+            assertThat(cacheConfig.isEmpty(), equalTo(true));
         }
 
         {
             // HTML is not cacheable
-            boolean cacheable = handler.shouldBeCached("file.html");
+            Optional<String> cacheConfig = handler.getCacheConfig("file.html");
 
-            assertThat(cacheable, equalTo(false));
+            assertThat(cacheConfig.isEmpty(), equalTo(true));
         }
 
         {
-            // CSS is not cacheable
-            boolean cacheable = handler.shouldBeCached("file.css");
+            // CSS is cacheable
+            Optional<String> cacheConfig = handler.getCacheConfig("file.css");
 
-            assertThat(cacheable, equalTo(true));
+            assertThat(cacheConfig.isPresent(), equalTo(true));
+            assertThat(cacheConfig.get(), equalTo("public, max-age=86400, must-revalidate"));
         }
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void missingMimeType()
     {
-        MimeTypeHandler handler =
-            new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(), buildCacheableMimeTypes());
+        MimeTypeHandler handler = new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(),
+            buildCacheableMimeTypes(), new DefaultMimetypeCacheConfig(), new HashMap<>());
 
         handler.getMimeType("missing.file");
     }

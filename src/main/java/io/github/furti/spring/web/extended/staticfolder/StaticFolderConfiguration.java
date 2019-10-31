@@ -70,8 +70,11 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
     @Bean
     public MimeTypeHandler mimeTypeHandler(ServletContext servletContext)
     {
+        MimeTypeCacheRegistry registry = configurerConfiguration.getMimetypCacheRegistry();
+
         return new MimeTypeHandler(servletContext, configurerConfiguration.getMimeTypes(),
-            configurerConfiguration.getCachableMimeTypes());
+            configurerConfiguration.getCachableMimeTypes(), registry.getDefaultCacheConfig(),
+            registry.getMimeTypeCacheConfigs());
     }
 
     @Bean

@@ -122,11 +122,21 @@ public class DelegatingSpringWebExtendedConfigurer implements SpringWebExtendedC
         }
     }
 
+    @Override
     public void configureCompressableMimeTypes(List<MimeType> compressableMimeTypes)
     {
         for (SpringWebExtendedConfigurer configurer : configurers)
         {
             configurer.configureCompressableMimeTypes(compressableMimeTypes);
+        }
+    }
+
+    @Override
+    public void configureMimeTypeCaching(MimeTypeCacheRegistry mimeTypeCacheRegistry)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureMimeTypeCaching(mimeTypeCacheRegistry);
         }
     }
 }

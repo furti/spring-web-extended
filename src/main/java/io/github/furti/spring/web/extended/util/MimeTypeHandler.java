@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
@@ -22,14 +23,19 @@ public class MimeTypeHandler
     private final Map<String, String> wellKnownMimeTypes = new HashMap<>();
     private final ServletContext servletContext;
     private final Set<MimeType> cacheableMimeTypes = new HashSet<>();
+    private final MimeTypeCacheConfig defaultCacheConfig;
+    private final Map<MimeType, MimeTypeCacheConfig> mimetypeCacheConfigurations;
 
     public MimeTypeHandler(ServletContext servletContext, Map<String, String> mimeTypes,
-        Set<MimeType> cacheableMimeTypes)
+        Set<MimeType> cacheableMimeTypes, MimeTypeCacheConfig defaultCacheConfig,
+        Map<MimeType, MimeTypeCacheConfig> mimetypeCacheConfigurations)
     {
         this.servletContext = servletContext;
 
-        wellKnownMimeTypes.putAll(mimeTypes);
+        this.wellKnownMimeTypes.putAll(mimeTypes);
         this.cacheableMimeTypes.addAll(cacheableMimeTypes);
+        this.defaultCacheConfig = defaultCacheConfig;
+        this.mimetypeCacheConfigurations = mimetypeCacheConfigurations;
     }
 
     public MimeType getMimeType(String file)
@@ -53,10 +59,26 @@ public class MimeTypeHandler
         throw new IllegalArgumentException(String.format("No mimetype for %s found", file));
     }
 
-    public boolean shouldBeCached(String file)
+    /**
+     * @param file the file to check caching for
+     * @return the value for the Cache-Control header or a empty optional, if the file should not be cached at all.
+     */
+    public Optional<String> getCacheConfig(String file)
     {
         MimeType mimeType = getMimeType(file);
 
-        return cacheableMimeTypes.contains(mimeType);
+        if (!cacheableMimeTypes.contains(mimeType))
+        {
+            return Optional.empty();
+        }
+
+        MimeTypeCacheConfig cacheConfig = mimetypeCacheConfigurations.get(mimeType);
+
+        if (cacheConfig == null)
+        {
+            cacheConfig = defaultCacheConfig;
+        }
+
+        return Optional.of(cacheConfig.cacheConfig());
     }
 }

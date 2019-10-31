@@ -13,6 +13,7 @@ import org.springframework.util.MimeType;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.locale.LocaleSource;
+import io.github.furti.spring.web.extended.staticfolder.MimeTypeCacheRegistry;
 import io.github.furti.spring.web.extended.staticfolder.ResourceTypeRegistry;
 import io.github.furti.spring.web.extended.staticfolder.StaticFolderCache;
 import io.github.furti.spring.web.extended.staticfolder.StaticFoldersController;
@@ -140,6 +141,18 @@ public interface SpringWebExtendedConfigurer
      * @param compressableMimeTypes list of mime types that are subject to compression
      */
     default void configureCompressableMimeTypes(List<MimeType> compressableMimeTypes)
+    {
+        // Sublcasses override this for custom configuration
+    }
+
+    /**
+     * Let the application override the caching sematics for each available mime type. Per default all cachable
+     * mimetypes will get the following Cache-Control header applied: "public, max-age=86400, must-revalidate" This
+     * means they will be cached for 24 hours and then the browser sends a validation request.
+     * 
+     * @param mimeTypeCacheRegistry the registry to add cache configurations to
+     */
+    default void configureMimeTypeCaching(MimeTypeCacheRegistry mimeTypeCacheRegistry)
     {
         // Sublcasses override this for custom configuration
     }

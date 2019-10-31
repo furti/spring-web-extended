@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -36,9 +37,6 @@ import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
  */
 public class StaticFolderCache
 {
-    // Cache for a day. Then the client must revalidate
-    private static final long CACHE_TIME_IN_SECONDS = 24 * 60 * 60;
-
     private final Map<String, StaticFolderCacheEntry> entries = new HashMap<>();
     private final StaticFolderRegistry registry;
     private final ResourceScanners scanners;
@@ -142,9 +140,11 @@ public class StaticFolderCache
 
         headers.setLastModified(entry.entry.getLastModified(entry.file, request));
 
-        if (appInfo.isProductionMode() && this.mimeTypeHandler.shouldBeCached(entry.file))
+        Optional<String> cacheConfig = this.mimeTypeHandler.getCacheConfig(entry.file);
+
+        if (appInfo.isProductionMode() && cacheConfig.isPresent())
         {
-            headers.setCacheControl("public, max-age=" + CACHE_TIME_IN_SECONDS + ", must-revalidate");
+            headers.setCacheControl(cacheConfig.get());
             headers.setPragma("cache");
         }
         else

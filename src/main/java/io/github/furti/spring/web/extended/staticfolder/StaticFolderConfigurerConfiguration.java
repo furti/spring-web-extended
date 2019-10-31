@@ -50,6 +50,7 @@ public class StaticFolderConfigurerConfiguration
     private ResourceTypeRegistry resourceTypeRegistry;
     private List<LocaleSource> localeSources;
     private CompressionManager compressionManager;
+    private MimeTypeCacheRegistry mimeTypeCacheRegistry;
 
     @Autowired(required = false)
     public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
@@ -182,6 +183,18 @@ public class StaticFolderConfigurerConfiguration
         }
 
         return resourceTypeRegistry;
+    }
+
+    public MimeTypeCacheRegistry getMimetypCacheRegistry()
+    {
+        if (mimeTypeCacheRegistry == null)
+        {
+            mimeTypeCacheRegistry = new MimeTypeCacheRegistry();
+
+            configurer.configureMimeTypeCaching(mimeTypeCacheRegistry);
+        }
+
+        return mimeTypeCacheRegistry;
     }
 
     public List<LocaleSource> getLocaleSources()

@@ -45,6 +45,7 @@ import io.github.furti.spring.web.extended.template.DefaultTemplateContextFactor
 import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
 import io.github.furti.spring.web.extended.template.simple.SimpleTemplateFactory;
+import io.github.furti.spring.web.extended.util.DefaultMimetypeCacheConfig;
 import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
 
@@ -849,7 +850,8 @@ public class StaticFolderCacheTest
         Set<MimeType> cacheable = new HashSet<>();
         cacheable.add(MimeType.valueOf("application/javascript"));
 
-        return new MimeTypeHandler(Mockito.mock(ServletContext.class), mimeTypes, cacheable);
+        return new MimeTypeHandler(Mockito.mock(ServletContext.class), mimeTypes, cacheable,
+            new DefaultMimetypeCacheConfig(), new HashMap<>());
     }
 
     private ResourceScanners buildScanners()

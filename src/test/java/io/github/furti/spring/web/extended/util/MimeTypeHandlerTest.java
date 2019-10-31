@@ -63,14 +63,14 @@ public class MimeTypeHandlerTest
             // Javascript is not cacheable
             Optional<String> cacheConfig = handler.getCacheConfig("file.js");
 
-            assertThat(cacheConfig.isEmpty(), equalTo(true));
+            assertThat(cacheConfig.isPresent(), equalTo(false));
         }
 
         {
             // HTML is not cacheable
             Optional<String> cacheConfig = handler.getCacheConfig("file.html");
 
-            assertThat(cacheConfig.isEmpty(), equalTo(true));
+            assertThat(cacheConfig.isPresent(), equalTo(false));
         }
 
         {

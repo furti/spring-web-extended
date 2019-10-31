@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.porscheinformatik.common</groupId>
     <artifactId>spring-web-extended</artifactId>
-    <version>2.2.2.RELEASE</version>
+    <version>2.2.3-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -29,7 +29,7 @@
         <url>https://github.com/furti/spring-web-extended</url>
         <connection>scm:git:https://github.com/furti/spring-web-extended.git</connection>
         <developerConnection>scm:git:https://github.com/furti/spring-web-extended.git</developerConnection>
-        <tag>2.2.2.RELEASE</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>

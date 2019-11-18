@@ -72,6 +72,6 @@ public class DefaultStaticFolderRegistryTest
     public void charsetMustBeSet()
     {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
-        registry.registerFolder("/first", "classpath:first/", null);
+        registry.registerFolder("/first", "classpath:first/", (Charset) null);
     }
 }

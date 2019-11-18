@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.GZIPInputStream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -757,7 +757,7 @@ public class StaticFolderCacheTest
 
     private byte[] gunzip(byte[] zippedBytes)
     {
-        try (GzipCompressorInputStream input = new GzipCompressorInputStream(new ByteArrayInputStream(zippedBytes)))
+        try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(zippedBytes)))
         {
             return IOUtils.toByteArray(input);
         }

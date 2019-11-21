@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.http.DefaultLinkCreator;
 import io.github.furti.spring.web.extended.io.ClasspathResourceScanner;
@@ -19,7 +18,6 @@ import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
 import io.github.furti.spring.web.extended.template.legacy.DefaultTemplateRenderContextFactory;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackEntry;
-import io.github.furti.spring.web.extended.template.legacy.cache.script.ScriptStack;
 import io.github.furti.spring.web.extended.template.legacy.chunk.ChunkTemplateFactory;
 
 public class ScriptStackTest
@@ -40,8 +38,15 @@ public class ScriptStackTest
         assertThat(names.get(4), equalTo("localized"));
     }
 
-    @Test(dataProvider = "renderAllData")
-    public void renderAll(Locale locale, String expected) throws IOException
+    @Test
+    public void renderAll() throws IOException
+    {
+        performRenderAllData(new Locale("de"), "content1\ncontent2\nsubcontent\nsubcontent1\nde\n");
+        performRenderAllData(new Locale("en"), "content1\ncontent2\nsubcontent\nsubcontent1\nen\n");
+        performRenderAllData(new Locale("fr"), "content1\ncontent2\nsubcontent\nsubcontent1\ndefaultlocale\n");
+    }
+
+    private void performRenderAllData(Locale locale, String expected) throws IOException
     {
         ScriptStack stack = buildStack();
 
@@ -52,37 +57,19 @@ public class ScriptStackTest
         assertThat(renderAll, equalTo(expected));
     }
 
-    @Test(dataProvider = "renderData")
-    public void render(Locale locale, String name, String expected) throws IOException
+    @Test
+    public void render() throws IOException
     {
+        Locale locale = new Locale("de", "AT");
+        String name = "localized";
+        String expected = "de-at";
+
         ScriptStack stack = buildStack();
         LocaleContextHolder.setLocale(locale);
 
         String actual = stack.renderTemplate(name);
 
         assertThat(actual, equalTo(expected));
-    }
-
-    @DataProvider
-    public Object[][] renderAllData()
-    {
-        return new Object[][]{
-            {new Locale("de"), "content1\ncontent2\nsubcontent\nsubcontent1\nde\n"},
-            {new Locale("en"), "content1\ncontent2\nsubcontent\nsubcontent1\nen\n"},
-            {new Locale("fr"), "content1\ncontent2\nsubcontent\nsubcontent1\ndefaultlocale\n"}};
-    }
-
-    @DataProvider
-    public Object[][] renderData()
-    {
-        return new Object[][]{
-            // { new Locale("de"), "script1", "content1" },
-            // { new Locale("en"), "script1", "content1" },
-            // { new Locale("fr"), "script1", "content1" },
-            // { new Locale("fr"), "localized", "defaultlocale" },
-            // { new Locale("de"), "localized", "de" },
-            // { new Locale("en"), "localized", "en" },
-            {new Locale("de", "AT"), "localized", "de-at"}};
     }
 
     private ScriptStack buildStack() throws IOException

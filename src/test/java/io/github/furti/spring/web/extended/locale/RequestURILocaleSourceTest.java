@@ -7,18 +7,31 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.config.DefaultApplicationConfiguration;
-import io.github.furti.spring.web.extended.locale.RequestURILocaleSource;
 
 public class RequestURILocaleSourceTest
 {
 
-    @Test(dataProvider = "getLocaleData")
-    public void getLocale(String servletPath, String pathInfo, Locale expected)
+    @Test
+    public void getLocale()
+    {
+        performGetLocale(null, null, null);
+        performGetLocale("", null, null);
+        performGetLocale("", "", null);
+        performGetLocale("/", null, null);
+        performGetLocale("/", "/", null);
+        performGetLocale("/test", null, null);
+        performGetLocale("/abc", "/test", null);
+        performGetLocale("/de", "/test", new Locale("de"));
+        performGetLocale("/de-AT", "/test", new Locale("de", "AT"));
+        performGetLocale("/de-DE", "/test", new Locale("de"));
+        performGetLocale("/xy-AB", "/test", null);
+    }
+
+    private void performGetLocale(String servletPath, String pathInfo, Locale expected)
     {
         DefaultApplicationConfiguration appConfig = new DefaultApplicationConfiguration();
         appConfig.addLocale("de");
@@ -36,8 +49,22 @@ public class RequestURILocaleSourceTest
         assertThat(actual, equalTo(expected));
     }
 
-    @Test(dataProvider = "getPossibleLocaleData")
-    public void getPossibleLocale(String servletPath, String pathInfo, String expected)
+    @Test
+    public void getPossibleLocale()
+    {
+        performGetPossibleLocale(null, null, "");
+        performGetPossibleLocale("", null, "");
+        performGetPossibleLocale("abc", null, "abc");
+        performGetPossibleLocale("/", null, null);
+        performGetPossibleLocale("/test", null, "test");
+        performGetPossibleLocale("/abc", "/test", "abc");
+        performGetPossibleLocale("/de", "/test", "de");
+        performGetPossibleLocale("de_AT", "/test", "de_AT");
+        performGetPossibleLocale("/xy_AB", "/test/", "xy_AB");
+        performGetPossibleLocale("xy-AB", "/test/", "xy-AB");
+    }
+
+    private void performGetPossibleLocale(String servletPath, String pathInfo, String expected)
     {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getServletPath()).thenReturn(servletPath);
@@ -47,38 +74,5 @@ public class RequestURILocaleSourceTest
         String actual = source.getPossibleLocale(request, null);
 
         assertThat(actual, equalTo(expected));
-    }
-
-    @DataProvider
-    public Object[][] getLocaleData()
-    {
-        return new Object[][]{
-            {null, null, null},
-            {"", null, null},
-            {"", "", null},
-            {"/", null, null},
-            {"/", "/", null},
-            {"/test", null, null},
-            {"/abc", "/test", null},
-            {"/de", "/test", new Locale("de")},
-            {"/de-AT", "/test", new Locale("de", "AT")},
-            {"/de-DE", "/test", new Locale("de")},
-            {"/xy-AB", "/test", null}};
-    }
-
-    @DataProvider
-    public Object[][] getPossibleLocaleData()
-    {
-        return new Object[][]{
-            {null, null, ""},
-            {"", null, ""},
-            {"abc", null, "abc"},
-            {"/", null, null},
-            {"/test", null, "test"},
-            {"/abc", "/test", "abc"},
-            {"/de", "/test", "de"},
-            {"de_AT", "/test", "de_AT"},
-            {"/xy_AB", "/test/", "xy_AB"},
-            {"xy-AB", "/test/", "xy-AB"}};
     }
 }

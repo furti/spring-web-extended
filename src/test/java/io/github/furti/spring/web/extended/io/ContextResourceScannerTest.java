@@ -18,15 +18,12 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.mockito.Matchers;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
-import io.github.furti.spring.web.extended.io.ContextResourceScanner;
 
 public class ContextResourceScannerTest
 {
@@ -34,7 +31,7 @@ public class ContextResourceScannerTest
     private static final Path TMPDIR = Paths.get(System.getProperty("java.io.tmpdir"));
     private static final Path ROOTDIR = TMPDIR.resolve("springangularcontextscannertest");
 
-    @BeforeTest
+    @BeforeEach
     public void setup() throws IOException
     {
         deleteDirectory(ROOTDIR);
@@ -92,7 +89,7 @@ public class ContextResourceScannerTest
         assertThat(actual.containsKey("testfile_en.txt"), equalTo(true));
     }
 
-    @AfterTest
+    @AfterEach
     public void tearDown() throws IOException
     {
         deleteDirectory(ROOTDIR);
@@ -136,7 +133,7 @@ public class ContextResourceScannerTest
     private ServletContext buildServletContext() throws MalformedURLException
     {
         ServletContext context = Mockito.mock(ServletContext.class);
-        Mockito.when(context.getResource(Matchers.anyString())).then(invocation -> {
+        Mockito.when(context.getResource(Mockito.anyString())).then(invocation -> {
             String path = (String) invocation.getArguments()[0];
 
             if (!path.startsWith("/"))
@@ -157,7 +154,7 @@ public class ContextResourceScannerTest
             return fullPath.toUri().toURL();
         });
 
-        Mockito.when(context.getResourcePaths(Matchers.anyString())).then(invocation -> {
+        Mockito.when(context.getResourcePaths(Mockito.anyString())).then(invocation -> {
             String path = (String) invocation.getArguments()[0];
 
             if (!path.startsWith("/"))

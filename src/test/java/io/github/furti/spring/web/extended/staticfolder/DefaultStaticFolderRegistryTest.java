@@ -5,11 +5,12 @@ package io.github.furti.spring.web.extended.staticfolder;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.Charset;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import io.github.furti.spring.web.extended.StaticFolder;
 
@@ -54,24 +55,33 @@ public class DefaultStaticFolderRegistryTest
         assertThat(actualFolder.getLocation(), equalTo("file:second/"));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void locationMustEndWithSlash()
     {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
-        registry.registerFolder("/first", "classpath:first");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            registry.registerFolder("/first", "classpath:first");
+        });
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void pathMustStartWithSlash()
     {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
-        registry.registerFolder("first", "classpath:first/");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            registry.registerFolder("first", "classpath:first/");
+        });
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test
     public void charsetMustBeSet()
     {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
-        registry.registerFolder("/first", "classpath:first/", (Charset) null);
+
+        assertThrows(NullPointerException.class, () -> {
+            registry.registerFolder("/first", "classpath:first/", (Charset) null);
+        });
     }
 }

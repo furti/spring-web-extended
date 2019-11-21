@@ -9,10 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.springframework.util.MimeType;
-
-import com.beust.jcommander.internal.Nullable;
 
 import io.github.furti.spring.web.extended.util.DefaultMimetypeCacheConfig;
 import io.github.furti.spring.web.extended.util.MimeTypeCacheConfig;

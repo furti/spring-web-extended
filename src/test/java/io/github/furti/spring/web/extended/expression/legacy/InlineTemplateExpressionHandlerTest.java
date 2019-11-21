@@ -1,16 +1,16 @@
 package io.github.furti.spring.web.extended.expression.legacy;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Locale;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.io.ResourceType;
 import io.github.furti.spring.web.extended.template.legacy.DefaultTemplateRenderContext;
@@ -21,15 +21,15 @@ import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlStacks
 public class InlineTemplateExpressionHandlerTest
 {
 
-    @BeforeClass
-    public void setupFactory()
+    @BeforeAll
+    public static void setupFactory()
     {
         TemplateRenderContextHolder
             .setCurrentContext(new DefaultTemplateRenderContext(Locale.getDefault(), ResourceType.HTML));
     }
 
-    @AfterClass
-    public void cleanup()
+    @AfterAll
+    public static void cleanup()
     {
         TemplateRenderContextHolder.removeCurrentContext();
     }
@@ -43,14 +43,14 @@ public class InlineTemplateExpressionHandlerTest
         MatcherAssert.assertThat(result, CoreMatchers.equalTo("Test Content"));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test
     public void testUnknownTemplate()
     {
         InlineTemplateExpressionHandler handler = createHandler("testtemplate.html", "Test Content");
 
-        handler.process("unknownTemplate");
-
-        Assert.fail("Expected exception");
+        assertThrows(IllegalArgumentException.class, () -> {
+            handler.process("unknownTemplate");
+        });
     }
 
     @Test

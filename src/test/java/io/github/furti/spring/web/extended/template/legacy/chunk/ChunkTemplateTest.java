@@ -15,6 +15,9 @@
  */
 package io.github.furti.spring.web.extended.template.legacy.chunk;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -22,15 +25,13 @@ import java.nio.charset.Charset;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
-import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.io.ResourceType;
 import io.github.furti.spring.web.extended.template.legacy.DefaultTemplateRenderContext;
@@ -38,16 +39,15 @@ import io.github.furti.spring.web.extended.template.legacy.Template;
 import io.github.furti.spring.web.extended.template.legacy.TemplateFactory;
 import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContextHolder;
 import io.github.furti.spring.web.extended.template.legacy.TestExpressionHandlers;
-import io.github.furti.spring.web.extended.template.legacy.chunk.ChunkTemplateFactory;
 
 public class ChunkTemplateTest
 {
 
-    private TemplateFactory factory;
+    private static TemplateFactory factory;
     private final ResourceLoader loader = new DefaultResourceLoader();
 
-    @BeforeClass
-    public void setupFactory()
+    @BeforeAll
+    public static void setupFactory()
     {
         factory = new ChunkTemplateFactory();
 
@@ -58,45 +58,45 @@ public class ChunkTemplateTest
             .setCurrentContext(new DefaultTemplateRenderContext(Locale.getDefault(), ResourceType.HTML));
     }
 
-    @AfterClass
-    public void cleanup()
+    @AfterAll
+    public static void cleanup()
     {
         TemplateRenderContextHolder.removeCurrentContext();
     }
 
-    @Test(dataProvider = "renderTemplateData")
-    public void renderTemplate(Resource resource, String templateName, ResourceType type, String expected)
-        throws Exception
+    @Test
+    public void renderTemplate() throws Exception
     {
+        Resource resource =
+            loader.getResource("classpath:io/github/furti/spring/web/extended/template/chunk/Index.html");
+        String templateName = "index.html";
+        ResourceType type = ResourceType.HTML;
+        String expected = templateContent(
+            loader.getResource("classpath:io/github/furti/spring/web/extended/template/chunk/Index_expected.html"));
+
         Template t = factory.createTemplate(resource, templateName, resource.getDescription(), type, false);
 
         String actual = t.render();
 
-        Assert.assertThat(actual, CoreMatchers.equalTo(expected));
+        Assert.assertThat(actual, equalTo(expected));
     }
 
-    @Test(dataProvider = "renderTemplateData")
-    public void performanceTest(Resource resource, String templateName, ResourceType type, String expected)
-        throws Exception
+    @Test
+    public void performanceTest() throws Exception
     {
+        Resource resource =
+            loader.getResource("classpath:io/github/furti/spring/web/extended/template/chunk/Index.html");
+        String templateName = "index.html";
+        ResourceType type = ResourceType.HTML;
+        String expected = templateContent(
+            loader.getResource("classpath:io/github/furti/spring/web/extended/template/chunk/Index_expected.html"));
+
         Template t = factory.createTemplate(resource, templateName, resource.getDescription(), type, false);
 
         for (int i = 0; i < 1000; i++)
         {
-            Assert.assertThat(t.render(), CoreMatchers.equalTo(expected));
+            assertThat(t.render(), equalTo(expected));
         }
-    }
-
-    @DataProvider
-    public Object[][] renderTemplateData()
-    {
-        return new Object[][]{
-            {
-                loader.getResource("classpath:io/github/furti/spring/web/extended/template/chunk/Index.html"),
-                "index.html",
-                ResourceType.HTML,
-                templateContent(loader
-                    .getResource("classpath:io/github/furti/spring/web/extended/template/chunk/Index_expected.html"))}};
     }
 
     private String templateContent(Resource resource)

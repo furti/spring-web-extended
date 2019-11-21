@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.MimeType;
-import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.expression.DefaultExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;

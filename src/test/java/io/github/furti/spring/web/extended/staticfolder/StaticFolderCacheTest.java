@@ -5,6 +5,7 @@ package io.github.furti.spring.web.extended.staticfolder;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
@@ -21,7 +22,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.StaticMessageSource;
@@ -779,7 +780,7 @@ public class StaticFolderCacheTest
         assertThat(actualResponse.getHeaders().getPragma(), equalTo("no-cache"));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void testMissingFolder()
     {
         StaticFolderRegistry registry =
@@ -791,10 +792,13 @@ public class StaticFolderCacheTest
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/something");
-        cache.render(request);
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            cache.render(request);
+        });
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void testMissingFallback()
     {
         StaticFolderRegistry registry = buildRegistry(false, true, "/app",
@@ -806,10 +810,13 @@ public class StaticFolderCacheTest
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/fallback/test/all");
-        cache.render(request);
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            cache.render(request);
+        });
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void testMissingResource()
     {
         StaticFolderRegistry registry =
@@ -821,7 +828,10 @@ public class StaticFolderCacheTest
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/app/missing.js");
-        cache.render(request);
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            cache.render(request);
+        });
     }
 
     private ApplicationInfo buildAppInfo(boolean productionMode)

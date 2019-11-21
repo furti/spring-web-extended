@@ -6,8 +6,8 @@ package io.github.furti.spring.web.extended.staticfolder;
 import static org.junit.Assert.*;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.MimeType;
-import org.testng.annotations.Test;
 
 import io.github.furti.spring.web.extended.template.StringResource;
 
@@ -77,8 +77,9 @@ public class DefaultResourceTypeRegistryTest
     {
         ResourceTypeRegistry registry = buildRegistry();
 
-        ResourceType resourceType = registry.getResourceType(new StringResource("/some/path/binary.js", ""),
-            MimeType.valueOf("application/javascript"));
+        ResourceType resourceType = registry
+            .getResourceType(new StringResource("/some/path/binary.js", ""),
+                MimeType.valueOf("application/javascript"));
 
         assertThat(resourceType, CoreMatchers.equalTo(ResourceType.BINARY));
     }

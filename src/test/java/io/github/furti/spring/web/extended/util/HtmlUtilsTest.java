@@ -1,49 +1,31 @@
 package io.github.furti.spring.web.extended.util;
 
+import static io.github.furti.spring.web.extended.util.HtmlUtils.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-
-import io.github.furti.spring.web.extended.util.HtmlUtils;
+import org.junit.jupiter.api.Test;
 
 public class HtmlUtilsTest
 {
 
-    @Test(dataProvider = "scriptData")
-    public void buildScriptLink(String url, String expected)
+    @Test
+    public void buildScriptLinkTest()
     {
-        String actual = HtmlUtils.buildScriptLink(url);
-
-        assertThat(actual, equalTo(expected));
+        assertThat(buildScriptLink(null), equalTo("<script src=\"\" type=\"text/javascript\"></script>"));
+        assertThat(buildScriptLink(""), equalTo("<script src=\"\" type=\"text/javascript\"></script>"));
+        assertThat(buildScriptLink("test"), equalTo("<script src=\"test\" type=\"text/javascript\"></script>"));
+        assertThat(buildScriptLink("test/test.js"),
+            equalTo("<script src=\"test/test.js\" type=\"text/javascript\"></script>"));
     }
 
-    @Test(dataProvider = "styleData")
-    public void buildStyleLink(String url, String expected)
+    @Test
+    public void buildStyleLinkTest()
     {
-        String actual = HtmlUtils.buildStyleLink(url);
-
-        assertThat(actual, equalTo(expected));
-    }
-
-    @DataProvider
-    public Object[][] scriptData()
-    {
-        return new Object[][]{
-            {null, "<script src=\"\" type=\"text/javascript\"></script>"},
-            {"", "<script src=\"\" type=\"text/javascript\"></script>"},
-            {"test", "<script src=\"test\" type=\"text/javascript\"></script>"},
-            {"test/test.js", "<script src=\"test/test.js\" type=\"text/javascript\"></script>"}};
-    }
-
-    @DataProvider
-    public Object[][] styleData()
-    {
-        return new Object[][]{
-            {null, "<link href=\"\" type=\"text/css\" rel=\"stylesheet\">"},
-            {"", "<link href=\"\" type=\"text/css\" rel=\"stylesheet\">"},
-            {"test", "<link href=\"test\" type=\"text/css\" rel=\"stylesheet\">"},
-            {"test/test.css", "<link href=\"test/test.css\" type=\"text/css\" rel=\"stylesheet\">"}};
+        assertThat(buildStyleLink(null), equalTo("<link href=\"\" type=\"text/css\" rel=\"stylesheet\">"));
+        assertThat(buildStyleLink(""), equalTo("<link href=\"\" type=\"text/css\" rel=\"stylesheet\">"));
+        assertThat(buildStyleLink("test"), equalTo("<link href=\"test\" type=\"text/css\" rel=\"stylesheet\">"));
+        assertThat(buildStyleLink("test/test.css"),
+            equalTo("<link href=\"test/test.css\" type=\"text/css\" rel=\"stylesheet\">"));
     }
 }

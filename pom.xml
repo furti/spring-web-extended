@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.porscheinformatik.common</groupId>
     <artifactId>spring-web-extended</artifactId>
-    <version>2.4.0.RELEASE</version>
+    <version>2.4.1-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

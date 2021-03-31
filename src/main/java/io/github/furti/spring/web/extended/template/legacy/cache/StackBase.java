@@ -48,7 +48,7 @@ public abstract class StackBase extends AbstractTemplateCache
     {
         Map<String, Resource> resources = scanners.scanResources(location, basePath);
 
-        if (resources == null)
+        if (resources == null || resources.isEmpty())
         {
             logger.warn("No resources found in location " + location);
             return;
@@ -95,7 +95,7 @@ public abstract class StackBase extends AbstractTemplateCache
          * Spring does not log the message right if we only throw a
          * illegalargumentexception. So we log it manually here
          */
-        if (resources == null)
+        if (resources == null || resources.isEmpty())
         {
             String message = "No Resources for name " + name + " and location " + location + " found";
 

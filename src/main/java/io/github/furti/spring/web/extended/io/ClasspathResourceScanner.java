@@ -20,6 +20,11 @@ public class ClasspathResourceScanner extends AbstractResourceScanner
     @Override
     public Map<String, Resource> doScanResources(String pattern, String basePath) throws IOException
     {
+        if (!pattern.startsWith(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX))
+        {
+            pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + pattern;
+        }
+
         Resource[] resources = resourcePatternResolver.getResources(pattern);
 
         if (resources == null || resources.length == 0)

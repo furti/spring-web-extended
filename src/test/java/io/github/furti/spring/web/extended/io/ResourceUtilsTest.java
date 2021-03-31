@@ -1,7 +1,7 @@
 package io.github.furti.spring.web.extended.io;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import java.util.Arrays;
 import java.util.Locale;

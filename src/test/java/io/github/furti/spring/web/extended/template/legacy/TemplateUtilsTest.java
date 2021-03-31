@@ -1,7 +1,7 @@
 package io.github.furti.spring.web.extended.template.legacy;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.jupiter.api.Test;
 

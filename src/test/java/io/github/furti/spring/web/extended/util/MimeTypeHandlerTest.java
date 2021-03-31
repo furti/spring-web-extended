@@ -4,7 +4,8 @@
 package io.github.furti.spring.web.extended.util;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,8 +15,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.util.MimeType;
 
@@ -35,21 +35,21 @@ public class MimeTypeHandlerTest
             // Should use mime type from servlet context as not set in default mime types
             MimeType mimeType = handler.getMimeType("file.html");
 
-            Assert.assertThat(mimeType, equalTo(MimeType.valueOf("text/html")));
+            assertThat(mimeType, equalTo(MimeType.valueOf("text/html")));
         }
 
         {
             // Should use mime type from servlet context as not set in default mime types
             MimeType mimeType = handler.getMimeType("file.js");
 
-            Assert.assertThat(mimeType, equalTo(MimeType.valueOf("overriden/js")));
+            assertThat(mimeType, equalTo(MimeType.valueOf("overriden/js")));
         }
 
         {
             // Should use mime type from servlet context as not set in default mime types
             MimeType mimeType = handler.getMimeType("file.missing");
 
-            Assert.assertThat(mimeType, equalTo(MimeType.valueOf("missing/type")));
+            assertThat(mimeType, equalTo(MimeType.valueOf("missing/type")));
         }
     }
 
@@ -82,13 +82,14 @@ public class MimeTypeHandlerTest
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void missingMimeType()
     {
         MimeTypeHandler handler = new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(),
             buildCacheableMimeTypes(), new DefaultMimetypeCacheConfig(), new HashMap<>());
 
-        handler.getMimeType("missing.file");
+        assertThrows(IllegalArgumentException.class, () -> handler.getMimeType("missing.file"));
+
     }
 
     private Set<MimeType> buildCacheableMimeTypes()

@@ -4,11 +4,11 @@
 package io.github.furti.spring.web.extended.template.simple;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.MimeType;
 
@@ -34,7 +34,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo(""));
+        assertThat(actualContent, equalTo(""));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("#null:test#"));
+        assertThat(actualContent, equalTo("#null:test#"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("somevalue"));
+        assertThat(actualContent, equalTo("somevalue"));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("avalue"));
+        assertThat(actualContent, equalTo("avalue"));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("another value"));
+        assertThat(actualContent, equalTo("another value"));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("#value#"));
+        assertThat(actualContent, equalTo("#value#"));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("Some Paragraph # and a expression"));
+        assertThat(actualContent, equalTo("Some Paragraph # and a expression"));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("Some Template starting\nand ending with an expression"));
+        assertThat(actualContent, equalTo("Some Template starting\nand ending with an expression"));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class SimpleTemplateFactoryTest
 
         String actualContent = template.render();
 
-        Assert.assertThat(actualContent, equalTo("Some Template not starting\nand ending with an expression"));
+        assertThat(actualContent, equalTo("Some Template not starting\nand ending with an expression"));
     }
 
     protected Template buildTemplate(String content) throws IOException

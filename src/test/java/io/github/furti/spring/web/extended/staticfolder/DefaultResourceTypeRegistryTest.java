@@ -3,7 +3,7 @@
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;

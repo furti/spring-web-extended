@@ -4,7 +4,7 @@
 package io.github.furti.spring.web.extended.staticfolder;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.Charset;

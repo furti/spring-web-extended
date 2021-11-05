@@ -6,6 +6,7 @@ package io.github.furti.spring.web.extended.staticfolder;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.Optional;
 
@@ -37,6 +38,8 @@ import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
  */
 public class StaticFolderCache
 {
+    private static final String ROOT_PATH = "/";
+
     private final Map<String, StaticFolderCacheEntry> entries = new HashMap<>();
     private final StaticFolderRegistry registry;
     private final ResourceScanners scanners;
@@ -46,6 +49,8 @@ public class StaticFolderCache
     private final ResourceTypeRegistry resourceTypeRegistry;
     private final ApplicationInfo appInfo;
     private final CompressionManager compressionManager;
+
+    private Optional<StaticFolderCacheEntry> root = Optional.empty();
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -78,7 +83,14 @@ public class StaticFolderCache
 
             entry.reload();
 
-            entries.put(staticFolder.getBasePath(), entry);
+            if (Objects.equals(staticFolder.getBasePath(), ROOT_PATH))
+            {
+                this.root = Optional.of(entry);
+            }
+            else
+            {
+                entries.put(staticFolder.getBasePath(), entry);
+            }
         }
     }
 
@@ -176,18 +188,25 @@ public class StaticFolderCache
                 String file = path.substring(entry.getKey().length());
 
                 //Fallback to index if the folder was requested
-                if (StringUtils.isEmpty(file) || "/".equals(file) || entry.getValue().isIndexFallback(file))
+                if (StringUtils.isEmpty(file) || ROOT_PATH.equals(file) || entry.getValue().isIndexFallback(file))
                 {
                     file = "index.html";
                 }
 
-                if (file.startsWith("/"))
-                {
-                    file = file.substring(1);
-                }
-
                 return new RenderEntry(entry.getValue(), entry.getKey(), file);
             }
+        }
+
+        if (root.isPresent())
+        {
+            String file = path;
+
+            if (path.isEmpty() || ROOT_PATH.equals(path) || root.get().isIndexFallback(path))
+            {
+                file = "index.html";
+            }
+
+            return new RenderEntry(root.get(), ROOT_PATH, file);
         }
 
         return null;
@@ -220,7 +239,15 @@ public class StaticFolderCache
             super();
             this.entry = entry;
             this.basePath = basePath;
-            this.file = file;
+
+            if (file.startsWith("/"))
+            {
+                this.file = file.substring(1);
+            }
+            else
+            {
+                this.file = file;
+            }
         }
 
         public StaticFolderRenderResponse render(HttpServletRequest request)

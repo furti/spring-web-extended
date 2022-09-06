@@ -20,10 +20,14 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.servlet.LocaleResolver;
+
 /**
  * @author Daniel Furtlehner
+ * @deprecated Use a {@link LocaleResolver} instead. Will be removed in a future release
  *
  */
+@Deprecated
 public interface LocaleSource
 {
 

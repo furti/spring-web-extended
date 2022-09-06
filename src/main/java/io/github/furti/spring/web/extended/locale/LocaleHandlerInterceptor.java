@@ -17,14 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.util.Assert;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import io.github.furti.spring.web.extended.util.LocaleUtils;
 
 /**
  * @author Daniel Furtlehner
  */
-public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
+public class LocaleHandlerInterceptor implements HandlerInterceptor
 {
 
     private final List<LocaleSource> sources;
@@ -33,22 +33,16 @@ public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
     public LocaleHandlerInterceptor(List<LocaleSource> sources)
     {
         super();
-        Assert.notEmpty(sources, "LocaleSources must not be empty");
+
         this.sources = sources;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
     {
-        for (LocaleSource source : sources)
+        if (handleLocaleSources(request, response))
         {
-            Locale locale = source.getLocale(request, response);
-
-            if (locale != null)
-            {
-                LocaleContextHolder.setLocale(locale, true);
-                return true;
-            }
+            return true;
         }
 
         // If no Locale is available we simply use the one from the request
@@ -71,6 +65,23 @@ public class LocaleHandlerInterceptor extends HandlerInterceptorAdapter
         LocaleContextHolder.setLocale(availableLocales.get(0));
 
         return true;
+    }
+
+    private boolean handleLocaleSources(HttpServletRequest request, HttpServletResponse response)
+    {
+        for (LocaleSource source : sources)
+        {
+            Locale locale = source.getLocale(request, response);
+
+            if (locale != null)
+            {
+                LocaleContextHolder.setLocale(locale, true);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Autowired

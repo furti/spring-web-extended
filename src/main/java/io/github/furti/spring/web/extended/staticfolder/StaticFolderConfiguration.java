@@ -155,10 +155,7 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
         {
             List<LocaleSource> sources = configurerConfiguration.getLocaleSources();
 
-            if (!CollectionUtils.isEmpty(sources))
-            {
-                localeHandlerInterceptor = new LocaleHandlerInterceptor(sources);
-            }
+            localeHandlerInterceptor = new LocaleHandlerInterceptor(sources);
         }
 
         return localeHandlerInterceptor;

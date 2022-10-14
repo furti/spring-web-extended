@@ -1,13 +1,13 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -85,7 +85,7 @@ public class StaticFolderCache
 
             if (Objects.equals(staticFolder.getBasePath(), ROOT_PATH))
             {
-                this.root = Optional.of(entry);
+                root = Optional.of(entry);
             }
             else
             {
@@ -96,6 +96,18 @@ public class StaticFolderCache
 
     public void refreshFolders(boolean force)
     {
+        if (root.isPresent())
+        {
+            try
+            {
+                root.get().refresh(force);
+            }
+            catch (IOException e)
+            {
+                logger.error(String.format("Error refreshing template for folder%s", root.get()), e);
+            }
+        }
+
         for (StaticFolderCacheEntry entry : entries.values())
         {
             try
@@ -137,7 +149,7 @@ public class StaticFolderCache
                 e);
         }
 
-        return new ResponseEntity<byte[]>(renderResponse.getContent(),
+        return new ResponseEntity<>(renderResponse.getContent(),
             buildHeaders(entry, request, renderResponse.getHeaders()), HttpStatus.OK);
     }
 
@@ -146,13 +158,13 @@ public class StaticFolderCache
     {
         HttpHeaders headers = new HttpHeaders();
 
-        MimeType mimeType = this.mimeTypeHandler.getMimeType(entry.file);
+        MimeType mimeType = mimeTypeHandler.getMimeType(entry.file);
 
         headers.setContentType(new MediaType(mimeType.getType(), mimeType.getSubtype(), entry.entry.getCharset()));
 
         headers.setLastModified(entry.entry.getLastModified(entry.file, request));
 
-        Optional<String> cacheConfig = this.mimeTypeHandler.getCacheConfig(entry.file);
+        Optional<String> cacheConfig = mimeTypeHandler.getCacheConfig(entry.file);
 
         if (appInfo.isProductionMode() && cacheConfig.isPresent())
         {

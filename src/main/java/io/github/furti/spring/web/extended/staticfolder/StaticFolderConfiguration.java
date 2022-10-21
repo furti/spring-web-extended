@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -122,6 +121,15 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
             ReloadableResourceBundleMessageSource delegate = new ReloadableResourceBundleMessageSource();
             delegate.setFallbackToSystemLocale(false);
             delegate.setDefaultEncoding(registry.getEncoding());
+
+            /*
+             * When we are in development mode, we want the messages to be reloaded.
+             * Otherwise we have to restart the server to see new or updated messages.
+             */
+            if (!configurerConfiguration.getApplicationInfo().isProductionMode())
+            {
+                delegate.setCacheMillis(10000);
+            }
 
             Collection<String> basenames = registry.getBasenames();
 

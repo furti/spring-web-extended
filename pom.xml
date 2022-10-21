@@ -19,7 +19,7 @@
 
     <properties>
         <chunk-templates.version>3.5.0</chunk-templates.version>
-        <commons-text.version>1.8</commons-text.version>
+        <commons-text.version>1.10.0</commons-text.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

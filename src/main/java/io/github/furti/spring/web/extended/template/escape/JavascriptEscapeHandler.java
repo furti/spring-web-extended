@@ -3,7 +3,7 @@
  */
 package io.github.furti.spring.web.extended.template.escape;
 
-import org.apache.commons.text.StringEscapeUtils;
+import org.owasp.encoder.Encode;
 
 import io.github.furti.spring.web.extended.template.ContentEscapeHandler;
 
@@ -16,7 +16,7 @@ public class JavascriptEscapeHandler implements ContentEscapeHandler
     @Override
     public String escapeContent(String content)
     {
-        return StringEscapeUtils.escapeEcmaScript(content);
+        return Encode.forJavaScript(content);
     }
 
 }

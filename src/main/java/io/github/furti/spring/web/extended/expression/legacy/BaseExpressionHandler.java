@@ -1,6 +1,6 @@
 package io.github.furti.spring.web.extended.expression.legacy;
 
-import org.apache.commons.text.StringEscapeUtils;
+import org.owasp.encoder.Encode;
 
 import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContext;
 import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContextHolder;
@@ -40,9 +40,9 @@ public abstract class BaseExpressionHandler implements ExpressionHandler
         switch (context.getResourceType())
         {
             case HTML:
-                return StringEscapeUtils.escapeHtml4(value);
+                return Encode.forHtml(value);
             case SCRIPT:
-                return StringEscapeUtils.escapeEcmaScript(value);
+                return Encode.forJavaScript(value);
             default:
                 return value;
         }

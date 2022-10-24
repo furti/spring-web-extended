@@ -60,7 +60,7 @@ public class InlineTemplateExpressionHandlerTest
             createHandler("testtemplate.html", "\nThis\r\n\tis\t\ra\f\"T  E  S  T\".\r");
         String result = handler.process("testTemplate");
 
-        MatcherAssert.assertThat(result, CoreMatchers.equalTo("This  is a &quot;T  E  S  T&quot;."));
+        MatcherAssert.assertThat(result, CoreMatchers.equalTo("This  is a &#34;T  E  S  T&#34;."));
     }
 
     private InlineTemplateExpressionHandler createHandler(String templateName, String renderedTemplate)

@@ -20,7 +20,7 @@
 
     <properties>
         <chunk-templates.version>3.5.0</chunk-templates.version>
-        <commons-text.version>1.10.0</commons-text.version>
+        <owasp-encoder.version>1.2.3</owasp-encoder.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -60,9 +60,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>${commons-text.version}</version>
+            <groupId>org.owasp.encoder</groupId>
+            <artifactId>encoder</artifactId>
+            <version>${owasp-encoder.version}</version>
         </dependency>
 
         <dependency>
@@ -75,7 +75,6 @@
             <groupId>ro.isdc.wro4j</groupId>
             <artifactId>wro4j-extensions</artifactId>
             <version>1.10.1</version>
-
 
             <exclusions>
                 <exclusion>

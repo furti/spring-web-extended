@@ -43,6 +43,17 @@ public interface SpringWebExtendedConfigurer
     void configureHtmlTemplates(StackConfig config);
 
     /**
+     * Configure folders where assets are allowed to be served from. Only files inside this folders will be served by
+     * the Asset controller. Every folder used in a asset expression should be contained in this list.
+     * 
+     * @param whitelist the list of allowed folders.
+     */
+    default void configureAssetWhitelist(List<String> whitelist)
+    {
+        // Subclasses can override to add folders to the whitelist
+    }
+
+    /**
      * Works in combination with the {@link CdnExpressionHandler}. Is espessially usefull if you want to load javascript
      * libraries (e.g. jquery, angular,...) from their CDN location to optimize loading and caching of this resources.
      * 

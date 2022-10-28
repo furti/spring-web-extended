@@ -22,6 +22,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.env.Environment;
 import org.springframework.util.CollectionUtils;
 
+import io.github.furti.spring.web.extended.asset.AssetFolderWhitelist;
 import io.github.furti.spring.web.extended.asset.CdnConfig;
 import io.github.furti.spring.web.extended.asset.DefaultCdnConfig;
 import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
@@ -57,6 +58,7 @@ public class SpringWebExtendedConfigurerConfig
     private DefaultStackConfig scriptConfig, styleConfig, htmlConfig;
     private OptimizerConfig optimizerConfig;
     private CdnConfig cdnConfig;
+    private AssetFolderWhitelist assetWhitelist;
 
     @Autowired(required = false)
     public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
@@ -142,6 +144,21 @@ public class SpringWebExtendedConfigurerConfig
         }
 
         return cdnConfig;
+    }
+
+    public AssetFolderWhitelist getAssetWhitelist()
+    {
+        if (assetWhitelist == null)
+        {
+            List<String> whitelist = new ArrayList<String>();
+
+            configurer.configureAssetWhitelist(whitelist);
+
+            assetWhitelist = new AssetFolderWhitelist(whitelist);
+
+        }
+
+        return assetWhitelist;
     }
 
     public DefaultStackConfig getScriptConfig()

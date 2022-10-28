@@ -29,6 +29,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import io.github.furti.spring.web.extended.asset.AssetFolderWhitelist;
 import io.github.furti.spring.web.extended.io.LocalizedResourceLoader;
 import io.github.furti.spring.web.extended.io.LocalizedResourceLoaderImpl;
 import io.github.furti.spring.web.extended.io.ResourceScannerConfig;
@@ -125,6 +126,12 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
         htmlStacks.setOptimizerChain(optimizerChain());
         htmlStacks.setScanners(scannerConfig.resourceScanners());
         return htmlStacks;
+    }
+
+    @Bean
+    public AssetFolderWhitelist assetFolderWhitelist()
+    {
+        return configurerConfig.getAssetWhitelist();
     }
 
     @Bean

@@ -136,4 +136,13 @@ public class DelegatingSpringWebExtendedConfiguerer implements SpringWebExtended
             configurer.configureCDN(config);
         }
     }
+
+    @Override
+    public void configureAssetWhitelist(List<String> whitelist)
+    {
+        for (SpringWebExtendedConfigurer configurer : configurers)
+        {
+            configurer.configureAssetWhitelist(whitelist);
+        }
+    }
 }

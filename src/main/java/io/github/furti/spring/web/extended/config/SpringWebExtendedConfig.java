@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -39,6 +40,7 @@ import io.github.furti.spring.web.extended.locale.LocaleContextHolderBackedLocal
 import io.github.furti.spring.web.extended.locale.LocaleHandlerInterceptor;
 import io.github.furti.spring.web.extended.locale.LocaleSource;
 import io.github.furti.spring.web.extended.servlet.RequestResponseContextHandlerInterceptor;
+import io.github.furti.spring.web.extended.staticfolder.StaticFolderConfiguration;
 import io.github.furti.spring.web.extended.template.legacy.cache.DefaultStackConfig;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackConfig;
 import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlStacks;
@@ -62,8 +64,11 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     @Autowired
     private ResourceScannerConfig scannerConfig;
 
+    @Autowired
+    private Optional<StaticFolderConfiguration> staticFolderConfig;
+
     @Bean
-    public MessageSource delegateMessageSource()
+    public MessageSource legacyDelegateMessageSource()
     {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setFallbackToSystemLocale(false);
@@ -74,7 +79,7 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     }
 
     @Bean
-    public LocaleContext localeContext()
+    public LocaleContext legacyLocaleContext()
     {
         return new LocaleContextHolderBackedLocaleContext();
     }
@@ -173,6 +178,11 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     @Override
     public void addInterceptors(InterceptorRegistry registry)
     {
+        if (staticFolderConfig.isPresent())
+        {
+            return;
+        }
+
         registry.addInterceptor(new RequestResponseContextHandlerInterceptor());
 
         List<LocaleSource> sources = configurerConfig.getLocaleSources();

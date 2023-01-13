@@ -20,7 +20,7 @@ public class SpringWebExtendedDefaults
 
     @Bean
     @DefaultBean(TemplateFactory.class)
-    public TemplateFactory defaultTemplateFactory()
+    public TemplateFactory legacyDefaultTemplateFactory()
     {
         return new ChunkTemplateFactory();
     }
@@ -34,7 +34,7 @@ public class SpringWebExtendedDefaults
 
     @Bean
     @DefaultBean(TemplateRenderContextFactory.class)
-    public TemplateRenderContextFactory defaultTemplateRenderContextFactory()
+    public TemplateRenderContextFactory legacyDefaultTemplateRenderContextFactory()
     {
         return new DefaultTemplateRenderContextFactory();
     }

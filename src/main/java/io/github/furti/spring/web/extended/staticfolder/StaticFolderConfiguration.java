@@ -89,6 +89,7 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
     }
 
     @Bean
+    @Primary
     public LocaleContext localeContext()
     {
         return new LocaleContextHolderBackedLocaleContext();

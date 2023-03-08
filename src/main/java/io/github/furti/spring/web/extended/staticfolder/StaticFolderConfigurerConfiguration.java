@@ -134,6 +134,7 @@ public class StaticFolderConfigurerConfiguration
 
             // Add some basic mime types
             mimeTypes.put(".js.map", "application/json");
+            mimeTypes.put(".css.map", "application/json");
             mimeTypes.put(".ico", "image/x-icon");
 
             configurer.configureMimeTypes(mimeTypes);

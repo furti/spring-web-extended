@@ -8,8 +8,8 @@
  */
 package io.github.furti.spring.web.extended.locale;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Daniel Furtlehner

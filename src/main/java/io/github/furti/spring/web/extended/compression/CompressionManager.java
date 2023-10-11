@@ -5,8 +5,8 @@ package io.github.furti.spring.web.extended.compression;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.util.MimeType;
 

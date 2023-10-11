@@ -1,12 +1,10 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
 import java.util.Collection;
 import java.util.List;
-
-import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -34,20 +32,23 @@ import io.github.furti.spring.web.extended.template.TemplateContextFactory;
 import io.github.furti.spring.web.extended.template.TemplateFactory;
 import io.github.furti.spring.web.extended.template.simple.ContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.util.MimeTypeHandler;
+import jakarta.servlet.ServletContext;
 
 /**
- * A Configuration that enables static folder style. Static folder style means, that there is a single root folder per
- * single page application. This folder contains a index.html file that will be served by default and subsequent
- * requests for resources will be served from this folder. This is useful for angular-cli apps and other modern web
+ * A Configuration that enables static folder style. Static folder style means,
+ * that there is a single root folder per
+ * single page application. This folder contains a index.html file that will be
+ * served by default and subsequent
+ * requests for resources will be served from this folder. This is useful for
+ * angular-cli apps and other modern web
  * frameworks.
- * 
+ *
  * @author Daniel Furtlehner
  */
 @Configuration
-@Import({ResourceScannerConfig.class, ExpressionHandlerConfig.class})
+@Import({ ResourceScannerConfig.class, ExpressionHandlerConfig.class })
 @ComponentScan(basePackageClasses = StaticFolderConfiguration.class)
-public class StaticFolderConfiguration implements WebMvcConfigurer
-{
+public class StaticFolderConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private StaticFolderConfigurerConfiguration configurerConfiguration;
@@ -56,48 +57,42 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
 
     @Bean
     public StaticFolderCache staticFolderCache(ResourceScanners scanners, MimeTypeHandler mimeTypeHandler,
-        TemplateFactory templateFactory, TemplateContextFactory contextFactory,
-        ResourceTypeRegistry resourceTypeRegistry)
-    {
+            TemplateFactory templateFactory, TemplateContextFactory contextFactory,
+            ResourceTypeRegistry resourceTypeRegistry) {
         StaticFolderRegistry staticFolderRegistry = configurerConfiguration.getStaticFolderRegistry();
 
         return new StaticFolderCache(staticFolderRegistry, scanners, mimeTypeHandler, templateFactory, contextFactory,
-            resourceTypeRegistry, configurerConfiguration.getApplicationInfo(),
-            configurerConfiguration.getCompressionManager());
+                resourceTypeRegistry, configurerConfiguration.getApplicationInfo(),
+                configurerConfiguration.getCompressionManager());
     }
 
     @Bean
-    public MimeTypeHandler mimeTypeHandler(ServletContext servletContext)
-    {
+    public MimeTypeHandler mimeTypeHandler(ServletContext servletContext) {
         MimeTypeCacheRegistry registry = configurerConfiguration.getMimetypCacheRegistry();
 
         return new MimeTypeHandler(servletContext, configurerConfiguration.getMimeTypes(),
-            configurerConfiguration.getCachableMimeTypes(), registry.getDefaultCacheConfig(),
-            registry.getMimeTypeCacheConfigs());
+                configurerConfiguration.getCachableMimeTypes(), registry.getDefaultCacheConfig(),
+                registry.getMimeTypeCacheConfigs());
     }
 
     @Bean
-    public ContentEscapeHandlerRegistry contentEscapeHandlers()
-    {
+    public ContentEscapeHandlerRegistry contentEscapeHandlers() {
         return configurerConfiguration.getContentExceptHandlerRegistry();
     }
 
     @Bean
-    public ResourceTypeRegistry resourceTypeRegistry()
-    {
+    public ResourceTypeRegistry resourceTypeRegistry() {
         return configurerConfiguration.getResourceTypeRegistry();
     }
 
     @Bean
     @Primary
-    public LocaleContext localeContext()
-    {
+    public LocaleContext localeContext() {
         return new LocaleContextHolderBackedLocaleContext();
     }
 
     @Bean
-    public StaticFolderHandlerMapping staticFolderHandlerMapping()
-    {
+    public StaticFolderHandlerMapping staticFolderHandlerMapping() {
         StaticFolderHandlerMapping hm = new StaticFolderHandlerMapping();
 
         hm.setInterceptors(localeHandlerInterceptor());
@@ -107,18 +102,14 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
 
     @Bean
     @Primary
-    public MessageSource delegateMessageSource()
-    {
+    public MessageSource delegateMessageSource() {
         DelegatingMessageSource messageSource = new DelegatingMessageSource();
 
         MessageRegistry registry = configurerConfiguration.getMessageRegistry();
 
-        if (registry.getMessageSource() != null)
-        {
+        if (registry.getMessageSource() != null) {
             messageSource.setParentMessageSource(registry.getMessageSource());
-        }
-        else
-        {
+        } else {
             ReloadableResourceBundleMessageSource delegate = new ReloadableResourceBundleMessageSource();
             delegate.setFallbackToSystemLocale(false);
             delegate.setDefaultEncoding(registry.getEncoding());
@@ -127,15 +118,13 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
              * When we are in development mode, we want the messages to be reloaded.
              * Otherwise we have to restart the server to see new or updated messages.
              */
-            if (!configurerConfiguration.getApplicationInfo().isProductionMode())
-            {
+            if (!configurerConfiguration.getApplicationInfo().isProductionMode()) {
                 delegate.setCacheMillis(10000);
             }
 
             Collection<String> basenames = registry.getBasenames();
 
-            if (!basenames.isEmpty())
-            {
+            if (!basenames.isEmpty()) {
                 delegate.addBasenames(basenames.toArray(new String[basenames.size()]));
             }
 
@@ -146,22 +135,18 @@ public class StaticFolderConfiguration implements WebMvcConfigurer
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry)
-    {
+    public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new RequestResponseContextHandlerInterceptor());
 
         LocaleHandlerInterceptor localeInterceptor = localeHandlerInterceptor();
 
-        if (localeInterceptor != null)
-        {
+        if (localeInterceptor != null) {
             registry.addInterceptor(localeInterceptor);
         }
     }
 
-    private LocaleHandlerInterceptor localeHandlerInterceptor()
-    {
-        if (localeHandlerInterceptor == null)
-        {
+    private LocaleHandlerInterceptor localeHandlerInterceptor() {
+        if (localeHandlerInterceptor == null) {
             List<LocaleSource> sources = configurerConfiguration.getLocaleSources();
 
             localeHandlerInterceptor = new LocaleHandlerInterceptor(sources);

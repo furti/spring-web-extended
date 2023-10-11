@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MimeType;
@@ -53,7 +54,7 @@ public class DefaultCompressionManager implements CompressionManager
     }
 
     @Override
-    public CompressionResponse compressData(byte[] data, CompressionType requestedCompressionType) throws IOException
+    public CompressionResponse compressData(byte[] data, @Nonnull CompressionType requestedCompressionType) throws IOException
     {
         if (data.length < MIN_CONTENT_LENGTH_FOR_COMPRESSION)
         {

@@ -3,7 +3,7 @@ package io.github.furti.spring.web.extended.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class RequestUtils
 {

@@ -3,7 +3,7 @@
  */
 package io.github.furti.spring.web.extended.template;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.core.io.Resource;
 

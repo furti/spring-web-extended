@@ -10,8 +10,6 @@ package io.github.furti.spring.web.extended.template.legacy.cache.html;
 
 import java.util.regex.Pattern;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -23,10 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import io.github.furti.spring.web.extended.io.ResourceUtils;
 import io.github.furti.spring.web.extended.util.RequestUtils;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
-public class HtmlTemplateController
-{
+public class HtmlTemplateController {
     private static final String INDEX = "index.html";
 
     private static final Pattern PATH_PATTERN = Pattern.compile("^.*template/(.*)");
@@ -34,77 +32,61 @@ public class HtmlTemplateController
     protected HtmlStacks stacks;
     private final Boolean fallbackToIndex;
 
-    public HtmlTemplateController(Boolean fallbackToIndex)
-    {
+    public HtmlTemplateController(Boolean fallbackToIndex) {
         this.fallbackToIndex = fallbackToIndex != null ? fallbackToIndex : Boolean.TRUE;
     }
 
     @RequestMapping(value = "**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     @ResponseBody
-    public String handleIndex()
-    {
-        if (!indexAvaliable())
-        {
+    public String handleIndex() {
+        if (!indexAvaliable()) {
             throw new ResourceNotFoundException(INDEX);
         }
 
         return renderDefaultTemplate(INDEX);
     }
 
-    @RequestMapping(value = "**/template/**", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    @RequestMapping(value = { "/template/**", "/*/*/template/**",
+            "/*/*/*/template/**" }, method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
     @ResponseBody
-    public String handleTemplate(HttpServletRequest request)
-    {
+    public String handleTemplate(HttpServletRequest request) {
         String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN).toLowerCase() + ".html";
-        if (isDefaultTemplate(path))
-        {
+        if (isDefaultTemplate(path)) {
             return renderDefaultTemplate(path);
         }
-        else
-        {
-            String[] pathAndFile = ResourceUtils.pathAndFile(path);
+        String[] pathAndFile = ResourceUtils.pathAndFile(path);
 
-            if (StringUtils.hasText(pathAndFile[0]))
-            {
-                if (isTemplate(pathAndFile[0], pathAndFile[1]))
-                {
-                    return renderTemplate(pathAndFile[0], pathAndFile[1]);
-                }
+        if (StringUtils.hasText(pathAndFile[0])) {
+            if (isTemplate(pathAndFile[0], pathAndFile[1])) {
+                return renderTemplate(pathAndFile[0], pathAndFile[1]);
             }
         }
 
-        if (fallbackToIndex.booleanValue() && indexAvaliable())
-        {
+        if (fallbackToIndex.booleanValue() && indexAvaliable()) {
             return renderDefaultTemplate(INDEX);
         }
 
         throw new ResourceNotFoundException(path);
     }
 
-    private boolean indexAvaliable()
-    {
+    private boolean indexAvaliable() {
         return isDefaultTemplate(INDEX);
     }
 
-    protected boolean isDefaultTemplate(String templateName)
-    {
+    protected boolean isDefaultTemplate(String templateName) {
         return isTemplate("", templateName);
     }
 
-    protected boolean isTemplate(String stackName, String templateName)
-    {
+    protected boolean isTemplate(String stackName, String templateName) {
         return stacks.hasStack(stackName) && stacks.get(stackName).hasTemplate(templateName);
     }
 
-    protected String renderDefaultTemplate(String templateName)
-    {
+    protected String renderDefaultTemplate(String templateName) {
         return renderTemplate("", templateName);
     }
 
-    protected String renderTemplate(String stackName, String templateName) throws ResourceNotFoundException
-    {
-        if (!stacks.hasStack(stackName))
-        {
+    protected String renderTemplate(String stackName, String templateName) throws ResourceNotFoundException {
+        if (!stacks.hasStack(stackName)) {
             throw new ResourceNotFoundException(String.format("%s:%s", stackName, templateName));
         }
 
@@ -112,8 +94,7 @@ public class HtmlTemplateController
     }
 
     @Autowired
-    public void setStacks(HtmlStacks stacks)
-    {
+    public void setStacks(HtmlStacks stacks) {
         this.stacks = stacks;
     }
 }

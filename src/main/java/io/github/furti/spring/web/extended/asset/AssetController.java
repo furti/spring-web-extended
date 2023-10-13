@@ -54,7 +54,7 @@ public class AssetController extends ResourceHttpRequestHandler
      * @throws IOException - If an exception occurs while streaming the resource
      * @throws ServletException
      */
-    @RequestMapping(value = "/**/asset/**", method = RequestMethod.GET)
+    @RequestMapping(value = {"/asset/**", "/*/*/asset/**", "/*/*/*/asset/**"}, method = RequestMethod.GET)
     public void handleAsset(HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException
     {

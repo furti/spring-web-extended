@@ -25,8 +25,8 @@
 
     <scm>
         <url>https://github.com/furti/spring-web-extended</url>
-        <connection>scm:git:https://github.com/furti/spring-web-extended.git</connection>
-        <developerConnection>scm:git:https://github.com/furti/spring-web-extended.git</developerConnection>
+        <connection>scm:git:git@github.com:furti/spring-web-extended.git</connection>
+        <developerConnection>scm:git:git@github.com:furti/spring-web-extended.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 

@@ -3,13 +3,15 @@ package io.github.furti.spring.web.extended.io;
 import java.io.IOException;
 import java.util.Map;
 
+import jakarta.annotation.Nullable;
+
 import org.springframework.core.io.Resource;
 
 public abstract class AbstractResourceScanner implements ResourceScanner
 {
 
     @Override
-    public Map<String, Resource> scanResources(String pattern, String basePath) throws IOException
+    public Map<String, Resource> scanResources(String pattern, @Nullable String basePath) throws IOException
     {
         if (basePath == null)
         {

@@ -8,8 +8,6 @@
  */
 package io.github.furti.spring.web.extended.template.legacy.cache.style;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,28 +17,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import io.github.furti.spring.web.extended.template.legacy.ResourceControllerBase;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
-@RequestMapping(value = "/**/style")
-public class StyleController extends ResourceControllerBase
-{
+@RequestMapping(value = { "/style", "/*/*/style", "/*/*/*/style" })
+public class StyleController extends ResourceControllerBase {
     private StyleStacks stacks;
 
-    @RequestMapping(value = "/single/{stackId}/{styleName}", method = RequestMethod.GET,
-        produces = "text/css; charset=UTF-8")
+    @RequestMapping(value = "/single/{stackId}/{styleName}", method = RequestMethod.GET, produces = "text/css; charset=UTF-8")
     @ResponseBody
     public String handleStylesheet(@PathVariable("stackId") String stackId, @PathVariable("styleName") String styleName,
-        HttpServletResponse response)
-    {
-        if (stacks == null || !stacks.hasStack(stackId))
-        {
+            HttpServletResponse response) {
+        if (stacks == null || !stacks.hasStack(stackId)) {
             throw new ResourceNotFoundException(String.format("%s:%s", stackId, styleName));
         }
 
         StyleStack stack = stacks.get(stackId);
 
-        if (!stack.hasTemplate(styleName))
-        {
+        if (!stack.hasTemplate(styleName)) {
             throw new ResourceNotFoundException(String.format("%s:%s", stackId, styleName));
         }
 
@@ -51,10 +45,8 @@ public class StyleController extends ResourceControllerBase
 
     @RequestMapping(value = "/stack/{stackId}", method = RequestMethod.GET, produces = "text/css; charset=UTF-8")
     @ResponseBody
-    public String handleStack(@PathVariable("stackId") String stackId, HttpServletResponse response)
-    {
-        if (stacks == null || !stacks.hasStack(stackId))
-        {
+    public String handleStack(@PathVariable("stackId") String stackId, HttpServletResponse response) {
+        if (stacks == null || !stacks.hasStack(stackId)) {
             throw new ResourceNotFoundException(String.format("%s:*", stackId));
         }
 
@@ -68,8 +60,7 @@ public class StyleController extends ResourceControllerBase
     }
 
     @Autowired
-    public void setStacks(StyleStacks stacks)
-    {
+    public void setStacks(StyleStacks stacks) {
         this.stacks = stacks;
     }
 }

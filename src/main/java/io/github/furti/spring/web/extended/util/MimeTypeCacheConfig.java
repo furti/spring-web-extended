@@ -3,7 +3,7 @@
  */
 package io.github.furti.spring.web.extended.util;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 /**
  * @author Daniel Furtlehner

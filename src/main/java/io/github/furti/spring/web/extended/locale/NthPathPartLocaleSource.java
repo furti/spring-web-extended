@@ -15,8 +15,8 @@
  */
 package io.github.furti.spring.web.extended.locale;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Extracts the portion of a path at the specified partIndex. Each part must be separated by a /. A starting / will be

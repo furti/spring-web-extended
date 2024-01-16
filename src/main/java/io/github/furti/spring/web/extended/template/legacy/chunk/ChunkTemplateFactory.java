@@ -18,7 +18,7 @@ package io.github.furti.spring.web.extended.template.legacy.chunk;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

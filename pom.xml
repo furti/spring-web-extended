@@ -2,12 +2,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.porscheinformatik.common</groupId>
     <artifactId>spring-web-extended</artifactId>
-    <version>2.7.4-SNAPSHOT</version>
+    <version>3.2.0-RC2-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
+        <version>3.1.4</version>
     </parent>
 
     <licenses>
@@ -18,7 +18,7 @@
     </licenses>
 
     <properties>
-        <chunk-templates.version>3.5.0</chunk-templates.version>
+        <chunk-templates.version>3.6.2</chunk-templates.version>
         <owasp-encoder.version>1.2.3</owasp-encoder.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -32,8 +32,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
         </dependency>
 
         <dependency>
@@ -65,19 +65,19 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>ro.isdc.wro4j</groupId>
             <artifactId>wro4j-extensions</artifactId>
-            <version>1.10.1</version>
+            <version>2.0.0</version>
 
             <exclusions>
                 <exclusion>
-                    <groupId>javax.servlet</groupId>
+                    <groupId>jakarta.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
                 <exclusion>

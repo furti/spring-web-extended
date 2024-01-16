@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class AssetController extends ResourceHttpRequestHandler
      * @throws IOException - If an exception occurs while streaming the resource
      * @throws ServletException
      */
-    @RequestMapping(value = "/**/asset/**", method = RequestMethod.GET)
+    @RequestMapping(value = {"/asset/**", "/*/*/asset/**", "/*/*/*/asset/**"}, method = RequestMethod.GET)
     public void handleAsset(HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException
     {

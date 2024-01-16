@@ -29,11 +29,11 @@ public final class HtmlUtils
 
     public static String buildScriptLink(String url)
     {
-        return "<script src=\"" + (url != null ? url : "") + "\" " + "type=\"text/javascript\"></script>";
+        return "<script src=\"" + (url != null ? url : "") + "\" type=\"text/javascript\"></script>";
     }
 
     public static String buildStyleLink(String url)
     {
-        return "<link href=\"" + (url != null ? url : "") + "\" " + "type=\"text/css\" rel=\"stylesheet\">";
+        return "<link href=\"" + (url != null ? url : "") + "\" type=\"text/css\" rel=\"stylesheet\">";
     }
 }

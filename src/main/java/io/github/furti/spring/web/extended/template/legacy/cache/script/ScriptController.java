@@ -8,8 +8,6 @@
  */
 package io.github.furti.spring.web.extended.template.legacy.cache.script;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,29 +17,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import io.github.furti.spring.web.extended.template.legacy.ResourceControllerBase;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller
-@RequestMapping(value = "/**/script")
-public class ScriptController extends ResourceControllerBase
-{
+@RequestMapping(value = { "/script", "/*/*/script", "/*/*/*/script" })
+public class ScriptController extends ResourceControllerBase {
 
     private ScriptStacks stacks;
 
-    @RequestMapping(value = "/single/{stackId}/{scriptName}", method = RequestMethod.GET,
-        produces = "text/javascript; charset=UTF-8")
+    @RequestMapping(value = "/single/{stackId}/{scriptName}", method = RequestMethod.GET, produces = "text/javascript; charset=UTF-8")
     @ResponseBody
     public String handleScript(@PathVariable("stackId") String stackId, @PathVariable("scriptName") String scriptName,
-        HttpServletResponse response)
-    {
-        if (stacks == null || !stacks.hasStack(stackId))
-        {
+            HttpServletResponse response) {
+        if (stacks == null || !stacks.hasStack(stackId)) {
             throw new ResourceNotFoundException(String.format("%s:%s", stackId, scriptName));
         }
 
         ScriptStack stack = stacks.get(stackId);
 
-        if (!stack.hasTemplate(scriptName))
-        {
+        if (!stack.hasTemplate(scriptName)) {
             throw new ResourceNotFoundException(String.format("%s:%s", stackId, scriptName));
         }
 
@@ -52,10 +46,8 @@ public class ScriptController extends ResourceControllerBase
 
     @RequestMapping(value = "/stack/{stackId}", method = RequestMethod.GET, produces = "text/javascript; charset=UTF-8")
     @ResponseBody
-    public String handleStack(@PathVariable("stackId") String stackId, HttpServletResponse response)
-    {
-        if (stacks == null || !stacks.hasStack(stackId))
-        {
+    public String handleStack(@PathVariable("stackId") String stackId, HttpServletResponse response) {
+        if (stacks == null || !stacks.hasStack(stackId)) {
             throw new ResourceNotFoundException(String.format("%s:*", stackId));
         }
 
@@ -67,8 +59,7 @@ public class ScriptController extends ResourceControllerBase
     }
 
     @Autowired
-    public void setStacks(ScriptStacks stacks)
-    {
+    public void setStacks(ScriptStacks stacks) {
         this.stacks = stacks;
     }
 }

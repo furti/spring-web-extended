@@ -52,12 +52,11 @@ import io.github.furti.spring.web.extended.util.PathUtils;
 @Configuration
 @EnableScheduling
 @EnableWebMvc
-@Import(value = {ResourceScannerConfig.class, ExpressionHandlerConfig.class, SpringWebExtendedConfigurerConfig.class})
+@Import(value = { ResourceScannerConfig.class, ExpressionHandlerConfig.class, SpringWebExtendedConfigurerConfig.class })
 // TODO: maybe we should add a handlerinterceptor that adds no-cache headers
 // for json responses. Spring security adds this headers by default. So we can
 // skip this i think
-public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConfigurer
-{
+public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConfigurer {
     @Autowired
     private SpringWebExtendedConfigurerConfig configurerConfig;
 
@@ -68,8 +67,7 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     private Optional<StaticFolderConfiguration> staticFolderConfig;
 
     @Bean
-    public MessageSource legacyDelegateMessageSource()
-    {
+    public MessageSource legacyDelegateMessageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setFallbackToSystemLocale(false);
 
@@ -79,28 +77,24 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     }
 
     @Bean
-    public LocaleContext legacyLocaleContext()
-    {
+    public LocaleContext legacyLocaleContext() {
         return new LocaleContextHolderBackedLocaleContext();
     }
 
     @Bean
-    public LocalizedResourceLoader localizedResourceLoader()
-    {
+    public LocalizedResourceLoader localizedResourceLoader() {
         return new LocalizedResourceLoaderImpl();
     }
 
     @Bean
-    public ApplicationConfiguration appConfig() throws IOException
-    {
+    public ApplicationConfiguration appConfig() throws IOException {
         DefaultApplicationConfiguration appConfig = configurerConfig.appConfig();
         setupScannedLocales(appConfig);
         return appConfig;
     }
 
     @Bean
-    public StyleStacks styleStacks()
-    {
+    public StyleStacks styleStacks() {
         DefaultStackConfig config = configurerConfig.getStyleConfig();
 
         StyleStacks styleStacks = new StyleStacks(config);
@@ -111,8 +105,7 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     }
 
     @Bean
-    public ScriptStacks scriptStacks()
-    {
+    public ScriptStacks scriptStacks() {
         DefaultStackConfig config = configurerConfig.getScriptConfig();
         ScriptStacks scriptStacks = new ScriptStacks(config);
         scriptStacks.setAppConfig(configurerConfig.appConfig());
@@ -122,8 +115,7 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     }
 
     @Bean
-    public HtmlStacks htmlStacks()
-    {
+    public HtmlStacks htmlStacks() {
         DefaultStackConfig config = configurerConfig.getHtmlConfig();
 
         HtmlStacks htmlStacks = new HtmlStacks(config);
@@ -134,33 +126,28 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
     }
 
     @Bean
-    public AssetFolderWhitelist assetFolderWhitelist()
-    {
+    public AssetFolderWhitelist assetFolderWhitelist() {
         return configurerConfig.getAssetWhitelist();
     }
 
     @Bean
-    public OptimizerChain optimizerChain()
-    {
+    public OptimizerChain optimizerChain() {
         return new OptimizerChain(configurerConfig.getOptimizerConfig());
     }
 
     @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar)
-    {
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         StackConfig htmlConfig = configurerConfig.getHtmlConfig();
         final HtmlStacks htmlStacks = htmlStacks();
 
-        if (htmlConfig.getRefreshIntervall() > 0 && htmlStacks != null)
-        {
+        if (htmlConfig.getRefreshIntervall() > 0 && htmlStacks != null) {
             taskRegistrar.addFixedDelayTask(() -> htmlStacks.refresh(), htmlConfig.getRefreshIntervall() * 1000);
         }
 
         StackConfig styleConfig = configurerConfig.getStyleConfig();
         final StyleStacks styles = styleStacks();
 
-        if (styleConfig.getRefreshIntervall() > 0 && styles != null)
-        {
+        if (styleConfig.getRefreshIntervall() > 0 && styles != null) {
 
             taskRegistrar.addFixedDelayTask(() -> styles.refresh(), styleConfig.getRefreshIntervall() * 1000);
         }
@@ -168,18 +155,15 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
         StackConfig scriptConfig = configurerConfig.getScriptConfig();
         final ScriptStacks scripts = scriptStacks();
 
-        if (scriptConfig.getRefreshIntervall() > 0 && scripts != null)
-        {
+        if (scriptConfig.getRefreshIntervall() > 0 && scripts != null) {
 
             taskRegistrar.addFixedDelayTask(() -> scripts.refresh(), scriptConfig.getRefreshIntervall() * 1000);
         }
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry)
-    {
-        if (staticFolderConfig.isPresent())
-        {
+    public void addInterceptors(InterceptorRegistry registry) {
+        if (staticFolderConfig.isPresent()) {
             return;
         }
 
@@ -187,8 +171,7 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
 
         List<LocaleSource> sources = configurerConfig.getLocaleSources();
 
-        if (!CollectionUtils.isEmpty(sources))
-        {
+        if (!CollectionUtils.isEmpty(sources)) {
             LocaleHandlerInterceptor interceptor = new LocaleHandlerInterceptor(sources);
             interceptor.setAvailableLocales(configurerConfig.appConfig().getSupportedLocales());
 
@@ -196,54 +179,38 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
         }
     }
 
-    private void setupScannedLocales(DefaultApplicationConfiguration appConfig) throws IOException
-    {
-        if (appConfig.getMessagesToScan().isEmpty())
-        {
+    private void setupScannedLocales(DefaultApplicationConfiguration appConfig) throws IOException {
+        if (appConfig.getMessagesToScan().isEmpty()) {
             return;
         }
 
-        //We scan the messages directory for all locales that are translated.
+        // We scan the messages directory for all locales that are translated.
         ResourceScanners resourceScanners = scannerConfig.resourceScanners();
 
-        for (String path : appConfig.getMessagesToScan())
-        {
+        for (String path : appConfig.getMessagesToScan()) {
 
             Map<String, Resource> messages = resourceScanners.scanResources(PathUtils.join(path, "**/*"), null);
 
-            if (messages == null || messages.isEmpty())
-            {
+            if (messages == null || messages.isEmpty()) {
                 throw new RuntimeException("No Messages found for supported locales");
             }
-            else
-            {
-                for (String messageName : messages.keySet())
-                {
-                    String localeString =
-                        ResourceUtils.getLocaleFromName(ResourceUtils.getNameAndEnding(messageName)[0]);
+            for (String messageName : messages.keySet()) {
+                String localeString = ResourceUtils.getLocaleFromName(ResourceUtils.getNameAndEnding(messageName)[0]);
 
-                    if (localeString != null)
-                    {
-                        String[] localeParts = localeString.split("_");
-                        Locale locale = null;
+                if (localeString != null) {
+                    String[] localeParts = localeString.split("_");
+                    Locale locale = null;
 
-                        if (localeParts.length == 3)
-                        {
-                            locale = new Locale(localeParts[0], localeParts[1], localeParts[2]);
-                        }
-                        else if (localeParts.length == 2)
-                        {
-                            locale = new Locale(localeParts[0], localeParts[1]);
-                        }
-                        else
-                        {
-                            locale = new Locale(localeParts[0]);
-                        }
+                    if (localeParts.length == 3) {
+                        locale = new Locale(localeParts[0], localeParts[1], localeParts[2]);
+                    } else if (localeParts.length == 2) {
+                        locale = new Locale(localeParts[0], localeParts[1]);
+                    } else {
+                        locale = new Locale(localeParts[0]);
+                    }
 
-                        if (locale != null && !appConfig.getRawSupportedLocales().contains(locale))
-                        {
-                            appConfig.getRawSupportedLocales().add(locale);
-                        }
+                    if (locale != null && !appConfig.getRawSupportedLocales().contains(locale)) {
+                        appConfig.getRawSupportedLocales().add(locale);
                     }
                 }
             }

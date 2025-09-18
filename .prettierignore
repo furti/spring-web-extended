@@ -1,0 +1,3 @@
+*.hbs
+src/test/resources/**/*.html
+src/test/resources/**/*.js

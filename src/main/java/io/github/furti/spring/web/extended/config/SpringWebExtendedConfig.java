@@ -8,28 +8,6 @@
  */
 package io.github.furti.spring.web.extended.config;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.i18n.LocaleContext;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.io.Resource;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import io.github.furti.spring.web.extended.asset.AssetFolderWhitelist;
 import io.github.furti.spring.web.extended.io.LocalizedResourceLoader;
 import io.github.furti.spring.web.extended.io.LocalizedResourceLoaderImpl;
@@ -48,6 +26,26 @@ import io.github.furti.spring.web.extended.template.legacy.cache.script.ScriptSt
 import io.github.furti.spring.web.extended.template.legacy.cache.style.StyleStacks;
 import io.github.furti.spring.web.extended.template.legacy.optimize.OptimizerChain;
 import io.github.furti.spring.web.extended.util.PathUtils;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableScheduling
@@ -57,6 +55,7 @@ import io.github.furti.spring.web.extended.util.PathUtils;
 // for json responses. Spring security adds this headers by default. So we can
 // skip this i think
 public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConfigurer {
+
     @Autowired
     private SpringWebExtendedConfigurerConfig configurerConfig;
 
@@ -148,7 +147,6 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
         final StyleStacks styles = styleStacks();
 
         if (styleConfig.getRefreshIntervall() > 0 && styles != null) {
-
             taskRegistrar.addFixedDelayTask(() -> styles.refresh(), styleConfig.getRefreshIntervall() * 1000);
         }
 
@@ -156,7 +154,6 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
         final ScriptStacks scripts = scriptStacks();
 
         if (scriptConfig.getRefreshIntervall() > 0 && scripts != null) {
-
             taskRegistrar.addFixedDelayTask(() -> scripts.refresh(), scriptConfig.getRefreshIntervall() * 1000);
         }
     }
@@ -188,7 +185,6 @@ public class SpringWebExtendedConfig implements SchedulingConfigurer, WebMvcConf
         ResourceScanners resourceScanners = scannerConfig.resourceScanners();
 
         for (String path : appConfig.getMessagesToScan()) {
-
             Map<String, Resource> messages = resourceScanners.scanResources(PathUtils.join(path, "**/*"), null);
 
             if (messages == null || messages.isEmpty()) {

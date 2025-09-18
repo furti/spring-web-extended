@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.util;
 
@@ -7,14 +7,12 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import jakarta.servlet.ServletContext;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import jakarta.servlet.ServletContext;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.util.MimeType;
@@ -22,14 +20,17 @@ import org.springframework.util.MimeType;
 /**
  * @author Daniel Furtlehner
  */
-public class MimeTypeHandlerTest
-{
+public class MimeTypeHandlerTest {
 
     @Test
-    public void getMimeType()
-    {
-        MimeTypeHandler handler = new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(),
-            buildCacheableMimeTypes(), new DefaultMimetypeCacheConfig(), new HashMap<>());
+    public void getMimeType() {
+        MimeTypeHandler handler = new MimeTypeHandler(
+            buildServletContext(),
+            buildDefaultMimeTypes(),
+            buildCacheableMimeTypes(),
+            new DefaultMimetypeCacheConfig(),
+            new HashMap<>()
+        );
 
         {
             // Should use mime type from servlet context as not set in default mime types
@@ -54,10 +55,14 @@ public class MimeTypeHandlerTest
     }
 
     @Test
-    public void isCacheable()
-    {
-        MimeTypeHandler handler = new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(),
-            buildCacheableMimeTypes(), new DefaultMimetypeCacheConfig(), new HashMap<>());
+    public void isCacheable() {
+        MimeTypeHandler handler = new MimeTypeHandler(
+            buildServletContext(),
+            buildDefaultMimeTypes(),
+            buildCacheableMimeTypes(),
+            new DefaultMimetypeCacheConfig(),
+            new HashMap<>()
+        );
 
         {
             // Javascript is not cacheable
@@ -83,17 +88,19 @@ public class MimeTypeHandlerTest
     }
 
     @Test
-    public void missingMimeType()
-    {
-        MimeTypeHandler handler = new MimeTypeHandler(buildServletContext(), buildDefaultMimeTypes(),
-            buildCacheableMimeTypes(), new DefaultMimetypeCacheConfig(), new HashMap<>());
+    public void missingMimeType() {
+        MimeTypeHandler handler = new MimeTypeHandler(
+            buildServletContext(),
+            buildDefaultMimeTypes(),
+            buildCacheableMimeTypes(),
+            new DefaultMimetypeCacheConfig(),
+            new HashMap<>()
+        );
 
         assertThrows(IllegalArgumentException.class, () -> handler.getMimeType("missing.file"));
-
     }
 
-    private Set<MimeType> buildCacheableMimeTypes()
-    {
+    private Set<MimeType> buildCacheableMimeTypes() {
         Set<MimeType> cacheable = new HashSet<>();
 
         cacheable.add(MimeType.valueOf("text/css"));
@@ -101,8 +108,7 @@ public class MimeTypeHandlerTest
         return cacheable;
     }
 
-    private Map<String, String> buildDefaultMimeTypes()
-    {
+    private Map<String, String> buildDefaultMimeTypes() {
         Map<String, String> mimeTypes = new HashMap<>();
 
         mimeTypes.put(".missing", "missing/type");
@@ -111,8 +117,7 @@ public class MimeTypeHandlerTest
         return mimeTypes;
     }
 
-    private ServletContext buildServletContext()
-    {
+    private ServletContext buildServletContext() {
         ServletContext context = Mockito.mock(ServletContext.class);
 
         Mockito.when(context.getMimeType("file.js")).thenReturn("application/javascript");

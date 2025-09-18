@@ -15,64 +15,57 @@
  */
 package io.github.furti.spring.web.extended.template.legacy.chunk;
 
-import java.io.IOException;
-import java.util.Collection;
-
-import jakarta.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.util.CollectionUtils;
-
 import com.x5.template.Theme;
-
 import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
 import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandlers;
 import io.github.furti.spring.web.extended.io.ResourceType;
 import io.github.furti.spring.web.extended.template.legacy.Template;
 import io.github.furti.spring.web.extended.template.legacy.TemplateFactory;
+import jakarta.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.util.CollectionUtils;
 
-public class ChunkTemplateFactory implements TemplateFactory
-{
+public class ChunkTemplateFactory implements TemplateFactory {
+
     private ExpressionHandlers expressionHandlers;
     private Theme theme;
 
     @Override
-    public Template createTemplate(Resource resource, String templateName, String location, ResourceType type,
-        boolean optimized)
-    {
-        try
-        {
+    public Template createTemplate(
+        Resource resource,
+        String templateName,
+        String location,
+        ResourceType type,
+        boolean optimized
+    ) {
+        try {
             ChunkTemplate template = new ChunkTemplate(type, templateName, location, optimized, resource, theme);
             template.refresh();
 
             return template;
-        }
-        catch (IOException ex)
-        {
+        } catch (IOException ex) {
             throw new RuntimeException("Error creating ChunkTemplate for template " + templateName, ex);
         }
     }
 
     @PostConstruct
-    public void buildTheme()
-    {
+    public void buildTheme() {
         theme = new Theme();
 
-        if (expressionHandlers == null)
-        {
+        if (expressionHandlers == null) {
             return;
         }
 
         Collection<String> expressionHandlerNames = expressionHandlers.getHandlerNames();
 
-        if (CollectionUtils.isEmpty(expressionHandlerNames))
-        {
+        if (CollectionUtils.isEmpty(expressionHandlerNames)) {
             return;
         }
 
-        for (String handlerName : expressionHandlerNames)
-        {
+        for (String handlerName : expressionHandlerNames) {
             ExpressionHandler handler = expressionHandlers.getHandler(handlerName);
 
             theme.addProtocol(new ExpressionHandlerContentSource(handlerName, handler));
@@ -80,8 +73,7 @@ public class ChunkTemplateFactory implements TemplateFactory
     }
 
     @Autowired
-    public void setExpressionHandlers(ExpressionHandlers expressionHandlers)
-    {
+    public void setExpressionHandlers(ExpressionHandlers expressionHandlers) {
         this.expressionHandlers = expressionHandlers;
     }
 }

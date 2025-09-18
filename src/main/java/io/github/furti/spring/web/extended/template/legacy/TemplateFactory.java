@@ -15,12 +15,15 @@
  */
 package io.github.furti.spring.web.extended.template.legacy;
 
+import io.github.furti.spring.web.extended.io.ResourceType;
 import org.springframework.core.io.Resource;
 
-import io.github.furti.spring.web.extended.io.ResourceType;
-
-public interface TemplateFactory
-{
-    Template createTemplate(Resource resource, String templateName, String location, ResourceType type,
-        boolean optimized);
+public interface TemplateFactory {
+    Template createTemplate(
+        Resource resource,
+        String templateName,
+        String location,
+        ResourceType type,
+        boolean optimized
+    );
 }

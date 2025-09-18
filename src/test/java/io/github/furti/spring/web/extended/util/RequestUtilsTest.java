@@ -3,19 +3,15 @@ package io.github.furti.spring.web.extended.util;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-import java.util.regex.Pattern;
-
 import jakarta.servlet.http.HttpServletRequest;
-
+import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class RequestUtilsTest
-{
+public class RequestUtilsTest {
 
     @Test
-    public void getPathFromRegex()
-    {
+    public void getPathFromRegex() {
         performgetPathFromRegex(null, "", null, false);
         performgetPathFromRegex("/test/templates/ab/cd", "^.*templates/(.*)", "ab/cd", false);
         performgetPathFromRegex("/test/templates/ab/cd", "^.*template/(.*)", null, false);
@@ -23,8 +19,7 @@ public class RequestUtilsTest
         performgetPathFromRegex("/test/templates/ab;jsessionid=abasce/cd", "^.*templates/(.*)", "ab/cd", true);
     }
 
-    private void performgetPathFromRegex(String uri, String regex, String expected, boolean sessionidFromURL)
-    {
+    private void performgetPathFromRegex(String uri, String regex, String expected, boolean sessionidFromURL) {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getRequestURI()).thenReturn(uri);
         Mockito.when(request.isRequestedSessionIdFromURL()).thenReturn(sessionidFromURL);

@@ -5,45 +5,39 @@ package io.github.furti.spring.web.extended.template;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.util.MimeType;
 
 /**
  * @author Daniel Furtlehner
  */
-public class DefaultTemplateContext implements TemplateContext
-{
+public class DefaultTemplateContext implements TemplateContext {
+
     private final MimeType mimeType;
     private final Map<Object, Object> parameters = new HashMap<>();
 
-    public DefaultTemplateContext(MimeType mimeType)
-    {
+    public DefaultTemplateContext(MimeType mimeType) {
         super();
         this.mimeType = mimeType;
     }
 
-    public DefaultTemplateContext addParameter(Object key, Object value)
-    {
+    public DefaultTemplateContext addParameter(Object key, Object value) {
         parameters.put(key, value);
 
         return this;
     }
 
     @Override
-    public Object getParameter(Object key)
-    {
+    public Object getParameter(Object key) {
         return parameters.get(key);
     }
 
     @Override
-    public MimeType getMimeType()
-    {
+    public MimeType getMimeType() {
         return mimeType;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
 
@@ -53,38 +47,29 @@ public class DefaultTemplateContext implements TemplateContext
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
 
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
 
         DefaultTemplateContext other = (DefaultTemplateContext) obj;
 
-        if (parameters == null)
-        {
-            if (other.parameters != null)
-            {
+        if (parameters == null) {
+            if (other.parameters != null) {
                 return false;
             }
-        }
-        else if (!parameters.equals(other.parameters))
-        {
+        } else if (!parameters.equals(other.parameters)) {
             return false;
         }
 
         return true;
     }
-
 }

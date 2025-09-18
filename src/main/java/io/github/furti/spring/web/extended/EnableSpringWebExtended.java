@@ -1,20 +1,18 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
+import io.github.furti.spring.web.extended.staticfolder.StaticFolderConfiguration;
+import io.github.furti.spring.web.extended.staticfolder.StaticFolderSpringWebExtendedImportSelector;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import io.github.furti.spring.web.extended.staticfolder.StaticFolderConfiguration;
-import io.github.furti.spring.web.extended.staticfolder.StaticFolderSpringWebExtendedImportSelector;
 
 /**
  * Add this annotation to @{@link Configuration} classes to enable extended web support configured in
@@ -47,14 +45,11 @@ import io.github.furti.spring.web.extended.staticfolder.StaticFolderSpringWebExt
  * different content for different contexts. To customize the context simply register a bean of
  * {@link TemplateRenderContextFactory} inside the application context.
  * </p>
- * 
+ *
  * @author Daniel Furtlehner
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-@Import(value = {StaticFolderSpringWebExtendedImportSelector.class})
+@Import(value = { StaticFolderSpringWebExtendedImportSelector.class })
 @EnableWebMvc
-public @interface EnableSpringWebExtended
-{
-
-}
+public @interface EnableSpringWebExtended {}

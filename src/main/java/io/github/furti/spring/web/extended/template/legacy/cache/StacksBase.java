@@ -8,17 +8,6 @@
  */
 package io.github.furti.spring.web.extended.template.legacy.cache;
 
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import jakarta.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import io.github.furti.spring.web.extended.config.ApplicationConfiguration;
 import io.github.furti.spring.web.extended.http.LinkCreator;
 import io.github.furti.spring.web.extended.io.ResourceScanners;
@@ -26,9 +15,16 @@ import io.github.furti.spring.web.extended.template.legacy.TemplateFactory;
 import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContextFactory;
 import io.github.furti.spring.web.extended.template.legacy.cache.style.StyleStacks;
 import io.github.furti.spring.web.extended.template.legacy.optimize.OptimizerChain;
+import jakarta.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class StacksBase<T extends StackBase>
-{
+public abstract class StacksBase<T extends StackBase> {
 
     private static final Logger LOG = LoggerFactory.getLogger(StyleStacks.class);
 
@@ -43,35 +39,29 @@ public abstract class StacksBase<T extends StackBase>
 
     private ApplicationConfiguration appConfig;
 
-    public StacksBase(DefaultStackConfig config)
-    {
+    public StacksBase(DefaultStackConfig config) {
         super();
         this.config = config;
     }
 
-    public boolean hasStack(String stackId)
-    {
+    public boolean hasStack(String stackId) {
         return stacks != null && stacks.containsKey(stackId);
     }
 
-    public T get(String stackId)
-    {
+    public T get(String stackId) {
         return stacks != null ? stacks.get(stackId) : null;
     }
 
     @PostConstruct
-    private void setupStacks() throws IOException
-    {
+    private void setupStacks() throws IOException {
         stacks = new LinkedHashMap<>();
         Map<String, LinkedHashMap<String, StackEntry>> stackConfigs = config.getStacks();
 
-        if (stackConfigs == null)
-        {
+        if (stackConfigs == null) {
             return;
         }
 
-        for (Entry<String, LinkedHashMap<String, StackEntry>> entry : stackConfigs.entrySet())
-        {
+        for (Entry<String, LinkedHashMap<String, StackEntry>> entry : stackConfigs.entrySet()) {
             T stack = createNewInstance(entry.getKey(), config.isNoCaching(entry.getKey()));
             stack.setTemplateFactory(templateFactory);
             stack.setScanners(scanners);
@@ -80,8 +70,7 @@ public abstract class StacksBase<T extends StackBase>
             stack.setLinkCreator(linkCreator);
             stack.setTemplateRenderContextFactory(templateRenderContextFactory);
 
-            for (Entry<String, StackEntry> resourceEntry : entry.getValue().entrySet())
-            {
+            for (Entry<String, StackEntry> resourceEntry : entry.getValue().entrySet()) {
                 stack.addResource(resourceEntry.getKey(), resourceEntry.getValue());
             }
 
@@ -91,56 +80,44 @@ public abstract class StacksBase<T extends StackBase>
 
     protected abstract T createNewInstance(String stackName, boolean noCaching);
 
-    public void refresh()
-    {
-        if (stacks == null)
-        {
+    public void refresh() {
+        if (stacks == null) {
             return;
         }
 
-        for (T stack : stacks.values())
-        {
-            try
-            {
+        for (T stack : stacks.values()) {
+            try {
                 stack.refreshTemplates();
-            }
-            catch (IOException ex)
-            {
+            } catch (IOException ex) {
                 LOG.error("Error refreshing styles", ex);
             }
         }
     }
 
-    public void setScanners(ResourceScanners scanners)
-    {
+    public void setScanners(ResourceScanners scanners) {
         this.scanners = scanners;
     }
 
-    public void setOptimizerChain(OptimizerChain optimizerChain)
-    {
+    public void setOptimizerChain(OptimizerChain optimizerChain) {
         this.optimizerChain = optimizerChain;
     }
 
-    public void setAppConfig(ApplicationConfiguration appConfig)
-    {
+    public void setAppConfig(ApplicationConfiguration appConfig) {
         this.appConfig = appConfig;
     }
 
     @Autowired
-    public void setTemplateFactory(TemplateFactory templateFactory)
-    {
+    public void setTemplateFactory(TemplateFactory templateFactory) {
         this.templateFactory = templateFactory;
     }
 
     @Autowired
-    public void setLinkCreator(LinkCreator linkCreator)
-    {
+    public void setLinkCreator(LinkCreator linkCreator) {
         this.linkCreator = linkCreator;
     }
 
     @Autowired
-    public void setTemplateRenderContextFactory(TemplateRenderContextFactory templateRenderContextFactory)
-    {
+    public void setTemplateRenderContextFactory(TemplateRenderContextFactory templateRenderContextFactory) {
         this.templateRenderContextFactory = templateRenderContextFactory;
     }
 }

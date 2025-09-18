@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
@@ -9,8 +9,7 @@ import org.springframework.util.MimeType;
 /**
  * @author Daniel Furtlehner
  */
-public interface ResourceTypeRegistry
-{
+public interface ResourceTypeRegistry {
     /**
      * @param resource the resource
      * @param mimeType the resources mime type

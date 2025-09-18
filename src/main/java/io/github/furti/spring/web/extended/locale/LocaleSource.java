@@ -15,11 +15,9 @@
  */
 package io.github.furti.spring.web.extended.locale;
 
-import java.util.Locale;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import java.util.Locale;
 import org.springframework.web.servlet.LocaleResolver;
 
 /**
@@ -28,8 +26,6 @@ import org.springframework.web.servlet.LocaleResolver;
  *
  */
 @Deprecated
-public interface LocaleSource
-{
-
+public interface LocaleSource {
     Locale getLocale(HttpServletRequest request, HttpServletResponse response);
 }

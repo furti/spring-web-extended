@@ -7,17 +7,18 @@ import static org.hamcrest.MatcherAssert.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
 import org.junit.jupiter.api.Test;
 
-public class LocaleUtilsTest
-{
-    private static final List<Locale> SUPPORTED =
-        Arrays.asList(new Locale("de"), new Locale("de", "DE"), new Locale("en"));
+public class LocaleUtilsTest {
+
+    private static final List<Locale> SUPPORTED = Arrays.asList(
+        new Locale("de"),
+        new Locale("de", "DE"),
+        new Locale("en")
+    );
 
     @Test
-    public void closestSupportedLocaleTest()
-    {
+    public void closestSupportedLocaleTest() {
         assertThat(closestSupportedLocale(null, (Locale) null), equalTo(null));
         assertThat(closestSupportedLocale(Arrays.asList(), (Locale) null), equalTo(null));
         assertThat(closestSupportedLocale(Arrays.asList(Locale.getDefault()), (Locale) null), equalTo(null));
@@ -31,8 +32,7 @@ public class LocaleUtilsTest
     }
 
     @Test
-    public void closestSupportedLocaleString()
-    {
+    public void closestSupportedLocaleString() {
         assertThat(closestSupportedLocale(null, (String) null), equalTo(null));
         assertThat(closestSupportedLocale(Arrays.asList(), (String) null), equalTo(null));
         assertThat(closestSupportedLocale(Arrays.asList(Locale.getDefault()), (String) null), equalTo(null));

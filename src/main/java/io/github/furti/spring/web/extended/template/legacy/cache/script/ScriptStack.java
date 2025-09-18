@@ -18,12 +18,9 @@ package io.github.furti.spring.web.extended.template.legacy.cache.script;
 import io.github.furti.spring.web.extended.io.ResourceType;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackBase;
 
-public class ScriptStack extends StackBase
-{
+public class ScriptStack extends StackBase {
 
-    public ScriptStack(String stackName, boolean noCaching)
-    {
+    public ScriptStack(String stackName, boolean noCaching) {
         super(ResourceType.SCRIPT, stackName, noCaching);
     }
-
 }

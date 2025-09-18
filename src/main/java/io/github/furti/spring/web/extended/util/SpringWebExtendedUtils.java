@@ -15,26 +15,19 @@
  */
 package io.github.furti.spring.web.extended.util;
 
-public final class SpringWebExtendedUtils
-{
+public final class SpringWebExtendedUtils {
 
-    private SpringWebExtendedUtils()
-    {
+    private SpringWebExtendedUtils() {}
 
-    }
-
-    public static String[] parseExpression(String expression)
-    {
-        if (expression == null)
-        {
-            return new String[]{};
+    public static String[] parseExpression(String expression) {
+        if (expression == null) {
+            return new String[] {};
         }
 
         int index = expression.indexOf(":");
 
-        if (index == -1)
-        {
-            return new String[]{"", expression};
+        if (index == -1) {
+            return new String[] { "", expression };
         }
 
         String[] split = new String[2];
@@ -45,8 +38,7 @@ public final class SpringWebExtendedUtils
         return split;
     }
 
-    public static String stripPrefix(String expression)
-    {
+    public static String stripPrefix(String expression) {
         return parseExpression(expression)[1];
     }
 }

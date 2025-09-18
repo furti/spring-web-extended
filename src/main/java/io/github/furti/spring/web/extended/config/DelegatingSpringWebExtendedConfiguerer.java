@@ -15,11 +15,6 @@
  */
 package io.github.furti.spring.web.extended.config;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import io.github.furti.spring.web.extended.asset.CdnConfig;
 import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
@@ -27,91 +22,76 @@ import io.github.furti.spring.web.extended.locale.LocaleSource;
 import io.github.furti.spring.web.extended.messagesource.MessageSourceConfig;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackConfig;
 import io.github.furti.spring.web.extended.template.legacy.optimize.OptimizerConfig;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Daniel Furtlehner
  */
-public class DelegatingSpringWebExtendedConfiguerer implements SpringWebExtendedConfigurer
-{
+public class DelegatingSpringWebExtendedConfiguerer implements SpringWebExtendedConfigurer {
 
     private final List<SpringWebExtendedConfigurer> configurers = new ArrayList<>();
 
-    public void addConfigurers(Collection<SpringWebExtendedConfigurer> configurers)
-    {
-        if (configurers != null)
-        {
+    public void addConfigurers(Collection<SpringWebExtendedConfigurer> configurers) {
+        if (configurers != null) {
             this.configurers.addAll(configurers);
         }
     }
 
     @Override
-    public void configureMessageSource(MessageSourceConfig config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureMessageSource(MessageSourceConfig config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureMessageSource(config);
         }
     }
 
     @Override
-    public void configureStyles(StackConfig config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureStyles(StackConfig config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureStyles(config);
         }
     }
 
     @Override
-    public void configureScripts(StackConfig config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureScripts(StackConfig config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureScripts(config);
         }
     }
 
     @Override
-    public void configureApplication(ApplicationConfiguration config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureApplication(ApplicationConfiguration config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureApplication(config);
         }
     }
 
     @Override
-    public void configureOptimizers(OptimizerConfig config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureOptimizers(OptimizerConfig config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureOptimizers(config);
         }
     }
 
     @Override
-    public void configureResourceScanners(Map<String, ResourceScanner> config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureResourceScanners(Map<String, ResourceScanner> config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureResourceScanners(config);
         }
     }
 
     @Override
-    public void configureExpressionHandlers(Map<String, ExpressionHandler> config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureExpressionHandlers(Map<String, ExpressionHandler> config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureExpressionHandlers(config);
         }
     }
 
     @Override
-    public void configureHtmlTemplates(StackConfig config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureHtmlTemplates(StackConfig config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureHtmlTemplates(config);
         }
     }
@@ -120,28 +100,22 @@ public class DelegatingSpringWebExtendedConfiguerer implements SpringWebExtended
      * @param sources
      */
     @Override
-    public void configureLocaleSources(List<LocaleSource> sources)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureLocaleSources(List<LocaleSource> sources) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureLocaleSources(sources);
         }
     }
 
     @Override
-    public void configureCDN(CdnConfig config)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureCDN(CdnConfig config) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureCDN(config);
         }
     }
 
     @Override
-    public void configureAssetWhitelist(List<String> whitelist)
-    {
-        for (SpringWebExtendedConfigurer configurer : configurers)
-        {
+    public void configureAssetWhitelist(List<String> whitelist) {
+        for (SpringWebExtendedConfigurer configurer : configurers) {
             configurer.configureAssetWhitelist(whitelist);
         }
     }

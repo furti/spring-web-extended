@@ -3,8 +3,12 @@ package io.github.furti.spring.web.extended.expression.legacy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import io.github.furti.spring.web.extended.io.ResourceType;
+import io.github.furti.spring.web.extended.template.legacy.DefaultTemplateRenderContext;
+import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContextHolder;
+import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlStack;
+import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlStacks;
 import java.util.Locale;
-
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.AfterAll;
@@ -12,31 +16,22 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
 
-import io.github.furti.spring.web.extended.io.ResourceType;
-import io.github.furti.spring.web.extended.template.legacy.DefaultTemplateRenderContext;
-import io.github.furti.spring.web.extended.template.legacy.TemplateRenderContextHolder;
-import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlStack;
-import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlStacks;
-
-public class InlineTemplateExpressionHandlerTest
-{
+public class InlineTemplateExpressionHandlerTest {
 
     @BeforeAll
-    public static void setupFactory()
-    {
-        TemplateRenderContextHolder
-            .setCurrentContext(new DefaultTemplateRenderContext(Locale.getDefault(), ResourceType.HTML));
+    public static void setupFactory() {
+        TemplateRenderContextHolder.setCurrentContext(
+            new DefaultTemplateRenderContext(Locale.getDefault(), ResourceType.HTML)
+        );
     }
 
     @AfterAll
-    public static void cleanup()
-    {
+    public static void cleanup() {
         TemplateRenderContextHolder.removeCurrentContext();
     }
 
     @Test
-    public void testSimpleProcessing()
-    {
+    public void testSimpleProcessing() {
         InlineTemplateExpressionHandler handler = createHandler("testtemplate.html", "Test Content");
         String result = handler.process("testTemplate");
 
@@ -44,8 +39,7 @@ public class InlineTemplateExpressionHandlerTest
     }
 
     @Test
-    public void testUnknownTemplate()
-    {
+    public void testUnknownTemplate() {
         InlineTemplateExpressionHandler handler = createHandler("testtemplate.html", "Test Content");
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -54,17 +48,17 @@ public class InlineTemplateExpressionHandlerTest
     }
 
     @Test
-    public void testReplace()
-    {
-        InlineTemplateExpressionHandler handler =
-            createHandler("testtemplate.html", "\nThis\r\n\tis\t\ra\f\"T  E  S  T\".\r");
+    public void testReplace() {
+        InlineTemplateExpressionHandler handler = createHandler(
+            "testtemplate.html",
+            "\nThis\r\n\tis\t\ra\f\"T  E  S  T\".\r"
+        );
         String result = handler.process("testTemplate");
 
         MatcherAssert.assertThat(result, CoreMatchers.equalTo("This  is a &#34;T  E  S  T&#34;."));
     }
 
-    private InlineTemplateExpressionHandler createHandler(String templateName, String renderedTemplate)
-    {
+    private InlineTemplateExpressionHandler createHandler(String templateName, String renderedTemplate) {
         HtmlStack defaultStack = mock(HtmlStack.class);
 
         when(defaultStack.hasTemplate(templateName)).thenReturn(true);

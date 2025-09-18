@@ -21,9 +21,7 @@ import java.util.List;
  * @author Daniel Furtlehner
  *
  */
-public interface StackConfig
-{
-
+public interface StackConfig {
     /**
      * If the intervall is less than 1 no refresh will be performed.
      *
@@ -83,8 +81,13 @@ public interface StackConfig
      * @param skipProcessing
      * @return the stack config
      */
-    StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation,
-        boolean skipProcessing);
+    StackConfig addToStack(
+        String stackName,
+        String resourceName,
+        String location,
+        String minifiedLocation,
+        boolean skipProcessing
+    );
 
     /**
      * Uses the given pattern to scan for resources.
@@ -103,8 +106,7 @@ public interface StackConfig
      */
     StackConfig scanPattern(String stackName, String pattern, String basePath);
 
-    default StackConfig scanPattern(String stackName, String pattern)
-    {
+    default StackConfig scanPattern(String stackName, String pattern) {
         return scanPattern(stackName, pattern, null);
     }
 

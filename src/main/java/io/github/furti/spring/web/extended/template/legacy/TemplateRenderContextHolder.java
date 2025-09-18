@@ -18,8 +18,8 @@ package io.github.furti.spring.web.extended.template.legacy;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TemplateRenderContextHolder
-{
+public class TemplateRenderContextHolder {
+
     /*
      * We need more than one context per thread. For example if we have a script
      * file, that contains a inlinetemplate, the script file needs a context
@@ -28,48 +28,38 @@ public class TemplateRenderContextHolder
      */
     private static final ThreadLocal<List<TemplateRenderContext>> CONTEXT = new ThreadLocal<>();
 
-    private TemplateRenderContextHolder()
-    {
-    }
+    private TemplateRenderContextHolder() {}
 
-    public static TemplateRenderContext actualContext()
-    {
+    public static TemplateRenderContext actualContext() {
         List<TemplateRenderContext> list = CONTEXT.get();
 
-        if (list == null || list.size() == 0)
-        {
+        if (list == null || list.size() == 0) {
             return null;
         }
 
         return list.get(list.size() - 1);
     }
 
-    public static void setCurrentContext(TemplateRenderContext context)
-    {
-        if (CONTEXT.get() == null)
-        {
+    public static void setCurrentContext(TemplateRenderContext context) {
+        if (CONTEXT.get() == null) {
             CONTEXT.set(new ArrayList<TemplateRenderContext>());
         }
 
         CONTEXT.get().add(context);
     }
 
-    public static void removeCurrentContext()
-    {
+    public static void removeCurrentContext() {
         List<TemplateRenderContext> list = CONTEXT.get();
 
-        if (list == null)
-        {
+        if (list == null) {
             return;
         }
 
-        if (list.size() > 0)
-        {
+        if (list.size() > 0) {
             list.remove(list.size() - 1);
         }
 
-        if (list.size() == 0)
-        {
+        if (list.size() == 0) {
             CONTEXT.set(null);
         }
     }

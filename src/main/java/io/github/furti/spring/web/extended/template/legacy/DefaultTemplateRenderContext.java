@@ -15,47 +15,40 @@
  */
 package io.github.furti.spring.web.extended.template.legacy;
 
+import io.github.furti.spring.web.extended.io.ResourceType;
 import java.util.Locale;
 
-import io.github.furti.spring.web.extended.io.ResourceType;
+public class DefaultTemplateRenderContext implements TemplateRenderContext {
 
-public class DefaultTemplateRenderContext implements TemplateRenderContext
-{
     private Locale locale;
     private ResourceType resourceType;
 
-    public DefaultTemplateRenderContext(Locale locale, ResourceType resourceType)
-    {
+    public DefaultTemplateRenderContext(Locale locale, ResourceType resourceType) {
         super();
         this.locale = locale;
         this.resourceType = resourceType;
     }
 
     @Override
-    public Locale getLocale()
-    {
+    public Locale getLocale() {
         return locale;
     }
 
-    public void setLocale(Locale locale)
-    {
+    public void setLocale(Locale locale) {
         this.locale = locale;
     }
 
     @Override
-    public ResourceType getResourceType()
-    {
+    public ResourceType getResourceType() {
         return resourceType;
     }
 
-    public void setResourceType(ResourceType resourceType)
-    {
+    public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((locale == null) ? 0 : locale.hashCode());
@@ -64,41 +57,31 @@ public class DefaultTemplateRenderContext implements TemplateRenderContext
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (obj == null)
-        {
+        if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass())
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
 
         DefaultTemplateRenderContext other = (DefaultTemplateRenderContext) obj;
 
-        if (locale == null)
-        {
-            if (other.locale != null)
-            {
+        if (locale == null) {
+            if (other.locale != null) {
                 return false;
             }
-        }
-        else if (!locale.equals(other.locale))
-        {
+        } else if (!locale.equals(other.locale)) {
             return false;
         }
 
-        if (resourceType != other.resourceType)
-        {
+        if (resourceType != other.resourceType) {
             return false;
         }
 
         return true;
     }
-
 }

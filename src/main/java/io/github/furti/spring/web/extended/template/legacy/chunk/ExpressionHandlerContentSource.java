@@ -17,46 +17,40 @@ package io.github.furti.spring.web.extended.template.legacy.chunk;
 
 import com.x5.template.ContentSource;
 import com.x5.template.Snippet;
-
 import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
 
 /**
  * @author Daniel Furtlehner
  *
  */
-public class ExpressionHandlerContentSource implements ContentSource
-{
+public class ExpressionHandlerContentSource implements ContentSource {
+
     private final String handlerName;
     private final ExpressionHandler expressionHandler;
 
-    public ExpressionHandlerContentSource(String handlerName, ExpressionHandler expressionHandler)
-    {
+    public ExpressionHandlerContentSource(String handlerName, ExpressionHandler expressionHandler) {
         super();
         this.handlerName = handlerName;
         this.expressionHandler = expressionHandler;
     }
 
     @Override
-    public String fetch(String itemName)
-    {
+    public String fetch(String itemName) {
         return expressionHandler.process(itemName);
     }
 
     @Override
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return handlerName;
     }
 
     @Override
-    public boolean provides(String itemName)
-    {
+    public boolean provides(String itemName) {
         return true;
     }
 
     @Override
-    public Snippet getSnippet(String snippetName)
-    {
+    public Snippet getSnippet(String snippetName) {
         return null;
     }
 }

@@ -25,15 +25,13 @@ import java.util.Map;
  * @author Daniel Furtlehner
  *
  */
-public class DefaultCdnConfig implements CdnConfig
-{
+public class DefaultCdnConfig implements CdnConfig {
+
     private final Map<String, Map<String, CdnEntry>> stacks = new HashMap<>();
 
     @Override
-    public CdnConfig addToStack(String stackName, String name, String location, String minifiedLocation)
-    {
-        if (!stacks.containsKey(stackName))
-        {
+    public CdnConfig addToStack(String stackName, String name, String location, String minifiedLocation) {
+        if (!stacks.containsKey(stackName)) {
             stacks.put(stackName, new LinkedHashMap<String, CdnEntry>());
         }
 
@@ -43,10 +41,8 @@ public class DefaultCdnConfig implements CdnConfig
     }
 
     @Override
-    public CdnConfig removeFromStack(String stackName, String name)
-    {
-        if (stacks.containsKey(stackName))
-        {
+    public CdnConfig removeFromStack(String stackName, String name) {
+        if (stacks.containsKey(stackName)) {
             stacks.get(stackName).remove(name);
         }
 
@@ -54,30 +50,25 @@ public class DefaultCdnConfig implements CdnConfig
     }
 
     @Override
-    public CdnConfig removeStack(String stackName)
-    {
+    public CdnConfig removeStack(String stackName) {
         stacks.remove(stackName);
         return this;
     }
 
     @Override
-    public List<CdnEntry> getEntries(String stackName)
-    {
+    public List<CdnEntry> getEntries(String stackName) {
         Map<String, CdnEntry> stack = stacks.get(stackName);
 
-        if (stack == null)
-        {
+        if (stack == null) {
             return null;
         }
 
         List<CdnEntry> entries = new ArrayList<>();
 
-        for (CdnEntry entry : stack.values())
-        {
+        for (CdnEntry entry : stack.values()) {
             entries.add(entry);
         }
 
         return entries;
     }
-
 }

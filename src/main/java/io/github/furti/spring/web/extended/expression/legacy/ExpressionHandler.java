@@ -15,9 +15,7 @@
  */
 package io.github.furti.spring.web.extended.expression.legacy;
 
-public interface ExpressionHandler
-{
-
+public interface ExpressionHandler {
     String process(String value);
 
     /**

@@ -3,13 +3,6 @@
  */
 package io.github.furti.spring.web.extended;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.context.i18n.LocaleContext;
-import org.springframework.util.MimeType;
-
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerRegistry;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
 import io.github.furti.spring.web.extended.locale.LocaleSource;
@@ -18,12 +11,16 @@ import io.github.furti.spring.web.extended.staticfolder.ResourceTypeRegistry;
 import io.github.furti.spring.web.extended.staticfolder.StaticFolderCache;
 import io.github.furti.spring.web.extended.staticfolder.StaticFoldersController;
 import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerRegistry;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.util.MimeType;
 
 /**
  * @author Daniel Furtlehner
  */
 public interface SpringWebExtendedConfigurer {
-
     /**
      * @param info the application info
      */
@@ -160,5 +157,4 @@ public interface SpringWebExtendedConfigurer {
     default void configureMimeTypeCaching(MimeTypeCacheRegistry mimeTypeCacheRegistry) {
         // Sublcasses override this for custom configuration
     }
-
 }

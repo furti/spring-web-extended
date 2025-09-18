@@ -8,8 +8,11 @@
  */
 package io.github.furti.spring.web.extended.template.legacy.cache.html;
 
+import io.github.furti.spring.web.extended.io.ResourceUtils;
+import io.github.furti.spring.web.extended.util.RequestUtils;
+import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.regex.Pattern;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -18,13 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import io.github.furti.spring.web.extended.io.ResourceUtils;
-import io.github.furti.spring.web.extended.util.RequestUtils;
-import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
-
 @Controller
 public class HtmlTemplateController {
+
     private static final String INDEX = "index.html";
 
     private static final Pattern PATH_PATTERN = Pattern.compile("^.*template/(.*)");
@@ -46,8 +45,11 @@ public class HtmlTemplateController {
         return renderDefaultTemplate(INDEX);
     }
 
-    @RequestMapping(value = { "/template/**", "/*/*/template/**",
-            "/*/*/*/template/**" }, method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    @RequestMapping(
+        value = { "/template/**", "/*/*/template/**", "/*/*/*/template/**" },
+        method = RequestMethod.GET,
+        produces = MediaType.TEXT_HTML_VALUE
+    )
     @ResponseBody
     public String handleTemplate(HttpServletRequest request) {
         String path = RequestUtils.getPathFromRegex(request, PATH_PATTERN).toLowerCase() + ".html";

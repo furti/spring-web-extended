@@ -15,9 +15,8 @@
  */
 package io.github.furti.spring.web.extended.template.legacy;
 
-import java.util.Locale;
-
 import io.github.furti.spring.web.extended.io.ResourceType;
+import java.util.Locale;
 
 /**
  * In the optimized mode the templatecache caches templates for each templaterendercontext and reuses them when they are
@@ -30,8 +29,7 @@ import io.github.furti.spring.web.extended.io.ResourceType;
  * @author Daniel Furtlehner
  *
  */
-public interface TemplateRenderContext
-{
+public interface TemplateRenderContext {
     Locale getLocale();
 
     ResourceType getResourceType();

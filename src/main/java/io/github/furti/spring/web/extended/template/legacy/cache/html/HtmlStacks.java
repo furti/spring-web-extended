@@ -18,16 +18,14 @@ package io.github.furti.spring.web.extended.template.legacy.cache.html;
 import io.github.furti.spring.web.extended.template.legacy.cache.DefaultStackConfig;
 import io.github.furti.spring.web.extended.template.legacy.cache.StacksBase;
 
-public class HtmlStacks extends StacksBase<HtmlStack>
-{
-    public HtmlStacks(DefaultStackConfig config)
-    {
+public class HtmlStacks extends StacksBase<HtmlStack> {
+
+    public HtmlStacks(DefaultStackConfig config) {
         super(config);
     }
 
     @Override
-    protected HtmlStack createNewInstance(String stackName, boolean noCaching)
-    {
+    protected HtmlStack createNewInstance(String stackName, boolean noCaching) {
         return new HtmlStack(stackName, noCaching);
     }
 }

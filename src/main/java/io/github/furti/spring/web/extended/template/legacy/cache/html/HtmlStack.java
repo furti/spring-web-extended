@@ -18,11 +18,9 @@ package io.github.furti.spring.web.extended.template.legacy.cache.html;
 import io.github.furti.spring.web.extended.io.ResourceType;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackBase;
 
-public class HtmlStack extends StackBase
-{
+public class HtmlStack extends StackBase {
 
-    public HtmlStack(String stackName, boolean noCaching)
-    {
+    public HtmlStack(String stackName, boolean noCaching) {
         super(ResourceType.HTML, stackName, noCaching);
     }
 }

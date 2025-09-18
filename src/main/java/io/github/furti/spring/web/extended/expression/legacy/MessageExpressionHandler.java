@@ -6,41 +6,33 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContext;
 import org.springframework.util.Assert;
 
-public class MessageExpressionHandler extends BaseExpressionHandler
-{
+public class MessageExpressionHandler extends BaseExpressionHandler {
 
     private MessageSource messageSource;
     private LocaleContext locale;
 
-    public MessageExpressionHandler()
-    {
+    public MessageExpressionHandler() {
         super(true);
     }
 
     @Override
-    public String doProcess(String value)
-    {
+    public String doProcess(String value) {
         Assert.notNull(messageSource, "Messagesource must not be null");
 
-        try
-        {
+        try {
             return messageSource.getMessage(value, null, locale.getLocale());
-        }
-        catch (NoSuchMessageException ex)
-        {
+        } catch (NoSuchMessageException ex) {
             return "{Message \"" + value + "\" not found}";
         }
     }
 
     @Autowired
-    public void setMessageSource(MessageSource messageSource)
-    {
+    public void setMessageSource(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
     @Autowired
-    public void setLocaleContext(LocaleContext locale)
-    {
+    public void setLocaleContext(LocaleContext locale) {
         this.locale = locale;
     }
 }

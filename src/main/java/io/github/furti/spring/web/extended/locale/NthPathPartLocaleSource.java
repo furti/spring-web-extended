@@ -25,30 +25,26 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author Daniel Furtlehner
  *
  */
-public abstract class NthPathPartLocaleSource extends AbstractLocaleSource
-{
+public abstract class NthPathPartLocaleSource extends AbstractLocaleSource {
+
     private final int partIndex;
 
-    protected NthPathPartLocaleSource(int partIndex)
-    {
+    protected NthPathPartLocaleSource(int partIndex) {
         this.partIndex = partIndex;
     }
 
     @Override
-    protected String getPossibleLocale(HttpServletRequest request, HttpServletResponse response)
-    {
+    protected String getPossibleLocale(HttpServletRequest request, HttpServletResponse response) {
         String path = getPath(request, response);
 
-        if (path == null)
-        {
+        if (path == null) {
             return null;
         }
 
         return extractPart(path);
     }
 
-    protected String extractPart(String path)
-    {
+    protected String extractPart(String path) {
         int index = path.startsWith("/") ? partIndex + 1 : partIndex;
         String[] split = path.split("/");
 
@@ -56,5 +52,4 @@ public abstract class NthPathPartLocaleSource extends AbstractLocaleSource
     }
 
     protected abstract String getPath(HttpServletRequest request, HttpServletResponse response);
-
 }

@@ -19,18 +19,15 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.springframework.context.annotation.Conditional;
 
 /**
  * @author Daniel Furtlehner
  *
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Conditional(DefaultBeanCondition.class)
-public @interface DefaultBean
-{
-
+public @interface DefaultBean {
     Class<?>[] value();
 }

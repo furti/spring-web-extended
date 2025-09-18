@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/furti/spring-web-extended.svg?branch=master)](https://travis-ci.org/furti/spring-web-extended)
 
-SpringWebExtended
-===================
+# SpringWebExtended
 
 SpringWebExtended extends the Spring Web Framework to some common functionality needed for creating a web application.
 

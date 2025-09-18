@@ -1,25 +1,21 @@
 package io.github.furti.spring.web.extended.asset;
 
-public class CdnEntry
-{
+public class CdnEntry {
 
     private final String location;
     private final String minifiedLocation;
 
-    public CdnEntry(String location, String minifiedLocation)
-    {
+    public CdnEntry(String location, String minifiedLocation) {
         super();
         this.location = location;
         this.minifiedLocation = minifiedLocation;
     }
 
-    public String getLocation()
-    {
+    public String getLocation() {
         return location;
     }
 
-    public String getMinifiedLocation()
-    {
+    public String getMinifiedLocation() {
         return minifiedLocation;
     }
 }

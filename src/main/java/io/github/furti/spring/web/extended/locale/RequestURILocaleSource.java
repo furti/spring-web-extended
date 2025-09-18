@@ -14,31 +14,25 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * @author Daniel Furtlehner
  */
-public class RequestURILocaleSource extends NthPathPartLocaleSource
-{
+public class RequestURILocaleSource extends NthPathPartLocaleSource {
 
-    public RequestURILocaleSource()
-    {
+    public RequestURILocaleSource() {
         super(0);
     }
 
-    public RequestURILocaleSource(int partIndex)
-    {
+    public RequestURILocaleSource(int partIndex) {
         super(partIndex);
     }
 
     @Override
-    protected String getPath(HttpServletRequest request, HttpServletResponse response)
-    {
+    protected String getPath(HttpServletRequest request, HttpServletResponse response) {
         StringBuilder builder = new StringBuilder();
 
-        if (request.getServletPath() != null)
-        {
+        if (request.getServletPath() != null) {
             builder.append(request.getServletPath());
         }
 
-        if (request.getPathInfo() != null)
-        {
+        if (request.getPathInfo() != null) {
             builder.append(request.getPathInfo());
         }
 

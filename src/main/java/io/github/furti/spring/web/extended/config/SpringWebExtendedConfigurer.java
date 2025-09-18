@@ -15,9 +15,6 @@
  */
 package io.github.furti.spring.web.extended.config;
 
-import java.util.List;
-import java.util.Map;
-
 import io.github.furti.spring.web.extended.asset.CdnConfig;
 import io.github.furti.spring.web.extended.expression.legacy.CdnExpressionHandler;
 import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
@@ -26,14 +23,15 @@ import io.github.furti.spring.web.extended.locale.LocaleSource;
 import io.github.furti.spring.web.extended.messagesource.MessageSourceConfig;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackConfig;
 import io.github.furti.spring.web.extended.template.legacy.optimize.OptimizerConfig;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Daniel Furtlehner
  * @deprecated use the static folder style instead
  */
 @Deprecated
-public interface SpringWebExtendedConfigurer
-{
+public interface SpringWebExtendedConfigurer {
     void configureMessageSource(MessageSourceConfig config);
 
     void configureStyles(StackConfig config);
@@ -45,18 +43,17 @@ public interface SpringWebExtendedConfigurer
     /**
      * Configure folders where assets are allowed to be served from. Only files inside this folders will be served by
      * the Asset controller. Every folder used in a asset expression should be contained in this list.
-     * 
+     *
      * @param whitelist the list of allowed folders.
      */
-    default void configureAssetWhitelist(List<String> whitelist)
-    {
+    default void configureAssetWhitelist(List<String> whitelist) {
         // Subclasses can override to add folders to the whitelist
     }
 
     /**
      * Works in combination with the {@link CdnExpressionHandler}. Is espessially usefull if you want to load javascript
      * libraries (e.g. jquery, angular,...) from their CDN location to optimize loading and caching of this resources.
-     * 
+     *
      * @param config
      */
     void configureCDN(CdnConfig config);

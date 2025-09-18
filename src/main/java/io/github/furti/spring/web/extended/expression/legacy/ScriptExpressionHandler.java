@@ -15,52 +15,43 @@
  */
 package io.github.furti.spring.web.extended.expression.legacy;
 
-import java.util.List;
-
-import org.springframework.util.Assert;
-
 import io.github.furti.spring.web.extended.config.ApplicationConfiguration;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackConfig;
 import io.github.furti.spring.web.extended.util.HtmlUtils;
+import java.util.List;
+import org.springframework.util.Assert;
 
-public class ScriptExpressionHandler extends UrlGeneratingExpressionHandler
-{
+public class ScriptExpressionHandler extends UrlGeneratingExpressionHandler {
+
     private final StackConfig scriptConfig;
     private final ApplicationConfiguration config;
 
-    public ScriptExpressionHandler(StackConfig scriptConfig, ApplicationConfiguration config)
-    {
+    public ScriptExpressionHandler(StackConfig scriptConfig, ApplicationConfiguration config) {
         super();
         this.scriptConfig = scriptConfig;
         this.config = config;
     }
 
     @Override
-    public String process(String value)
-    {
+    public String process(String value) {
         Assert.notNull(scriptConfig, "No scriptstack defined");
         Assert.isTrue(scriptConfig.hasStack(value), "ScriptStack " + value + " not found");
 
-        if (config.isOptimizeResources())
-        {
+        if (config.isOptimizeResources()) {
             return HtmlUtils.buildScriptLink(generateUrl("script/stack", value));
-        }
-        else
-        {
+        } else {
             return buildDevelopmentScripts(value);
         }
     }
 
-    private String buildDevelopmentScripts(String stackName)
-    {
+    private String buildDevelopmentScripts(String stackName) {
         List<String> scriptNames = scriptConfig.getResourceNamesForStack(stackName);
 
         Assert.notEmpty(scriptNames, "No script defined in stack " + stackName);
 
         StringBuilder builder = new StringBuilder();
 
-        for (String styleName : scriptNames)
-        {
+        for (String styleName : scriptNames) {
             builder.append(HtmlUtils.buildScriptLink(generateUrl("script/single", stackName, styleName))).append("\n");
         }
 
@@ -68,8 +59,7 @@ public class ScriptExpressionHandler extends UrlGeneratingExpressionHandler
     }
 
     @Override
-    public boolean valueNeeded()
-    {
+    public boolean valueNeeded() {
         return true;
     }
 }

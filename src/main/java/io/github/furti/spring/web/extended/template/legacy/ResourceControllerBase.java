@@ -15,39 +15,31 @@
  */
 package io.github.furti.spring.web.extended.template.legacy;
 
+import io.github.furti.spring.web.extended.config.ApplicationConfiguration;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
-
-import io.github.furti.spring.web.extended.config.ApplicationConfiguration;
 
 /**
  * @author Daniel Furtlehner
  *
  */
-public abstract class ResourceControllerBase
-{
+public abstract class ResourceControllerBase {
 
     private ApplicationConfiguration appConfig;
 
-    protected void handleCaching(HttpServletResponse response, boolean noCaching)
-    {
-        if (appConfig.isOptimizeResources() && !noCaching)
-        {
+    protected void handleCaching(HttpServletResponse response, boolean noCaching) {
+        if (appConfig.isOptimizeResources() && !noCaching) {
             response.setHeader("Cache-Control", "public, max-age=31536000");
             response.setHeader("Pragma", "cache");
-        }
-        else
-        {
+        } else {
             response.setHeader("Cache-Control", "no-store, max-age=0, must-revalidate");
             response.setHeader("Pragma", "no-cache");
         }
     }
 
     @Autowired
-    public void setAppConfig(ApplicationConfiguration appConfig)
-    {
+    public void setAppConfig(ApplicationConfiguration appConfig) {
         Assert.notNull(appConfig, "appConfig must not be null");
 
         this.appConfig = appConfig;

@@ -1,51 +1,42 @@
 package io.github.furti.spring.web.extended.expression.legacy;
 
-import java.util.List;
-
-import org.springframework.util.Assert;
-
 import io.github.furti.spring.web.extended.config.ApplicationConfiguration;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackConfig;
 import io.github.furti.spring.web.extended.util.HtmlUtils;
+import java.util.List;
+import org.springframework.util.Assert;
 
-public class StyleExpressionHandler extends UrlGeneratingExpressionHandler
-{
+public class StyleExpressionHandler extends UrlGeneratingExpressionHandler {
+
     private final StackConfig styleConfig;
     private final ApplicationConfiguration config;
 
-    public StyleExpressionHandler(StackConfig styleConfig, ApplicationConfiguration config)
-    {
+    public StyleExpressionHandler(StackConfig styleConfig, ApplicationConfiguration config) {
         super();
         this.styleConfig = styleConfig;
         this.config = config;
     }
 
     @Override
-    public String process(String value)
-    {
+    public String process(String value) {
         Assert.notNull(styleConfig, "No stylestack defined");
         Assert.isTrue(styleConfig.hasStack(value), "StyleStack " + value + " not found");
 
-        if (config.isOptimizeResources())
-        {
+        if (config.isOptimizeResources()) {
             return HtmlUtils.buildStyleLink(generateUrl("style/stack", value));
-        }
-        else
-        {
+        } else {
             return buildDevelopmentStyles(value);
         }
     }
 
-    private String buildDevelopmentStyles(String stackName)
-    {
+    private String buildDevelopmentStyles(String stackName) {
         List<String> styleNames = styleConfig.getResourceNamesForStack(stackName);
 
         Assert.notEmpty(styleNames, "No styles defined in stack " + stackName);
 
         StringBuilder builder = new StringBuilder();
 
-        for (String styleName : styleNames)
-        {
+        for (String styleName : styleNames) {
             builder.append(HtmlUtils.buildStyleLink(generateUrl("style/single", stackName, styleName))).append("\n");
         }
 
@@ -53,8 +44,7 @@ public class StyleExpressionHandler extends UrlGeneratingExpressionHandler
     }
 
     @Override
-    public boolean valueNeeded()
-    {
+    public boolean valueNeeded() {
         return true;
     }
 }

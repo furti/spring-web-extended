@@ -21,56 +21,48 @@ import java.util.Set;
 /**
  * @author Daniel Furtlehner
  */
-public class DefaultMessageSourceConfig implements MessageSourceConfig
-{
+public class DefaultMessageSourceConfig implements MessageSourceConfig {
+
     private Integer cacheSeconds;
     private final Set<String> baseNames;
     private String defaultEncoding;
 
-    public DefaultMessageSourceConfig()
-    {
+    public DefaultMessageSourceConfig() {
         baseNames = new HashSet<>();
     }
 
     @Override
-    public Integer getCacheSeconds()
-    {
+    public Integer getCacheSeconds() {
         return cacheSeconds;
     }
 
     @Override
-    public Set<String> getBaseNames()
-    {
+    public Set<String> getBaseNames() {
         return baseNames;
     }
 
     @Override
-    public void addBaseName(String baseName)
-    {
+    public void addBaseName(String baseName) {
         baseNames.add(baseName);
     }
 
     @Override
-    public void removeBaseName(String baseName)
-    {
+    public void removeBaseName(String baseName) {
         baseNames.remove(baseName);
     }
 
     @Override
-    public void setCacheSeconds(Integer seconds)
-    {
+    public void setCacheSeconds(Integer seconds) {
         cacheSeconds = seconds;
     }
 
     @Override
-    public String getDefaultEncoding()
-    {
+    public String getDefaultEncoding() {
         return defaultEncoding;
     }
 
     @Override
-    public void setDefaultEncoding(String defaultEncoding)
-    {
+    public void setDefaultEncoding(String defaultEncoding) {
         this.defaultEncoding = defaultEncoding;
     }
 }

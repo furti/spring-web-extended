@@ -15,26 +15,23 @@
  */
 package io.github.furti.spring.web.extended.expression.legacy;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import io.github.furti.spring.web.extended.http.LinkCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Daniel Furtlehner
  *
  */
-public abstract class UrlGeneratingExpressionHandler implements ExpressionHandler
-{
+public abstract class UrlGeneratingExpressionHandler implements ExpressionHandler {
+
     private LinkCreator linkCreator;
 
-    protected String generateUrl(String... parts)
-    {
+    protected String generateUrl(String... parts) {
         return linkCreator.createLink(parts);
     }
 
     @Autowired
-    public void setLinkCreator(LinkCreator linkCreator)
-    {
+    public void setLinkCreator(LinkCreator linkCreator) {
         this.linkCreator = linkCreator;
     }
 }

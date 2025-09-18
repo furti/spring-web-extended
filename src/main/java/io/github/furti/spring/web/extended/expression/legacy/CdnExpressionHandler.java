@@ -15,22 +15,19 @@
  */
 package io.github.furti.spring.web.extended.expression.legacy;
 
-import java.util.List;
-
-import org.springframework.util.Assert;
-
 import io.github.furti.spring.web.extended.asset.CdnConfig;
 import io.github.furti.spring.web.extended.asset.CdnEntry;
 import io.github.furti.spring.web.extended.config.ApplicationConfiguration;
 import io.github.furti.spring.web.extended.util.HtmlUtils;
+import java.util.List;
+import org.springframework.util.Assert;
 
-public class CdnExpressionHandler extends UrlGeneratingExpressionHandler
-{
+public class CdnExpressionHandler extends UrlGeneratingExpressionHandler {
+
     private final ApplicationConfiguration config;
     private final CdnConfig cdnConfig;
 
-    public CdnExpressionHandler(ApplicationConfiguration config, CdnConfig cdnConfig)
-    {
+    public CdnExpressionHandler(ApplicationConfiguration config, CdnConfig cdnConfig) {
         super();
         Assert.notNull(config, "ApplicationConfiguration is required");
         Assert.notNull(cdnConfig, "CdnConfiguration is required");
@@ -40,24 +37,21 @@ public class CdnExpressionHandler extends UrlGeneratingExpressionHandler
     }
 
     @Override
-    public String process(String value)
-    {
+    public String process(String value) {
         List<CdnEntry> entries = cdnConfig.getEntries(value);
 
         Assert.notNull(entries, "Stack " + value + " not found in CdnConfiguration");
 
         StringBuilder resourceLinks = new StringBuilder();
 
-        for (CdnEntry entry : entries)
-        {
+        for (CdnEntry entry : entries) {
             resourceLinks.append(buildLink(entry)).append("\n");
         }
 
         return resourceLinks.toString();
     }
 
-    private String buildLink(CdnEntry entry)
-    {
+    private String buildLink(CdnEntry entry) {
         String link = config.isOptimizeResources() ? entry.getMinifiedLocation() : entry.getLocation();
 
         int index = link.lastIndexOf(".");
@@ -66,23 +60,17 @@ public class CdnExpressionHandler extends UrlGeneratingExpressionHandler
 
         String ending = link.substring(index + 1);
 
-        if ("js".equals(ending))
-        {
+        if ("js".equals(ending)) {
             return HtmlUtils.buildScriptLink(link);
-        }
-        else if ("css".equals(ending))
-        {
+        } else if ("css".equals(ending)) {
             return HtmlUtils.buildStyleLink(link);
-        }
-        else
-        {
+        } else {
             throw new IllegalArgumentException("Ending ." + ending + " not known");
         }
     }
 
     @Override
-    public boolean valueNeeded()
-    {
+    public boolean valueNeeded() {
         return true;
     }
 }

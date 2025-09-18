@@ -1,12 +1,10 @@
 package io.github.furti.spring.web.extended.template.legacy.optimize;
 
-import java.util.List;
-
 import io.github.furti.spring.web.extended.io.ResourceType;
+import java.util.List;
 import ro.isdc.wro.model.resource.processor.ResourcePreProcessor;
 
-public interface OptimizerConfig
-{
+public interface OptimizerConfig {
     // TODO: hier sollte noch die möglichkeit rein das man die optimizer
     // sortieren kann. Sowas wie "before:anotheroptimizer"
     /*

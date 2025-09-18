@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.expression;
 
@@ -12,14 +12,13 @@ import java.util.Objects;
 /**
  * @author Daniel Furtlehner
  */
-public class DefaultExpressionHandlerRegistry implements ExpressionHandlerRegistry
-{
+public class DefaultExpressionHandlerRegistry implements ExpressionHandlerRegistry {
+
     private final List<ExpressionHandler> expressionHandlers = new ArrayList<>();
 
     @Override
     public ExpressionHandlerRegistry registerExpressionHandler(ExpressionHandler expressionHandler)
-        throws IllegalArgumentException
-    {
+        throws IllegalArgumentException {
         assertUnique(expressionHandler);
 
         expressionHandlers.add(expressionHandler);
@@ -28,16 +27,13 @@ public class DefaultExpressionHandlerRegistry implements ExpressionHandlerRegist
     }
 
     @Override
-    public ExpressionHandlerRegistry removeExpressionHandler(String prefix)
-    {
+    public ExpressionHandlerRegistry removeExpressionHandler(String prefix) {
         Iterator<ExpressionHandler> iterator = expressionHandlers.iterator();
 
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             ExpressionHandler handler = iterator.next();
 
-            if (Objects.equals(handler.getPrefix(), prefix))
-            {
+            if (Objects.equals(handler.getPrefix(), prefix)) {
                 iterator.remove();
 
                 break;
@@ -48,18 +44,14 @@ public class DefaultExpressionHandlerRegistry implements ExpressionHandlerRegist
     }
 
     @Override
-    public List<ExpressionHandler> getExpressionHandlers()
-    {
+    public List<ExpressionHandler> getExpressionHandlers() {
         return Collections.unmodifiableList(expressionHandlers);
     }
 
     @Override
-    public ExpressionHandler getExpressionHandler(String prefix)
-    {
-        for (ExpressionHandler expressionHandler : expressionHandlers)
-        {
-            if (Objects.equals(prefix, expressionHandler.getPrefix()))
-            {
+    public ExpressionHandler getExpressionHandler(String prefix) {
+        for (ExpressionHandler expressionHandler : expressionHandlers) {
+            if (Objects.equals(prefix, expressionHandler.getPrefix())) {
                 return expressionHandler;
             }
         }
@@ -67,14 +59,15 @@ public class DefaultExpressionHandlerRegistry implements ExpressionHandlerRegist
         return null;
     }
 
-    private void assertUnique(ExpressionHandler expressionHandler)
-    {
-        for (ExpressionHandler registeredHandler : expressionHandlers)
-        {
-            if (Objects.equals(registeredHandler.getPrefix(), expressionHandler.getPrefix()))
-            {
-                throw new IllegalArgumentException(String.format(
-                    "A ExpressionHandler with prefix %s is already registered.", expressionHandler.getPrefix()));
+    private void assertUnique(ExpressionHandler expressionHandler) {
+        for (ExpressionHandler registeredHandler : expressionHandlers) {
+            if (Objects.equals(registeredHandler.getPrefix(), expressionHandler.getPrefix())) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "A ExpressionHandler with prefix %s is already registered.",
+                        expressionHandler.getPrefix()
+                    )
+                );
             }
         }
     }

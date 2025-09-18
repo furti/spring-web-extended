@@ -15,58 +15,55 @@
  */
 package io.github.furti.spring.web.extended.template.legacy.chunk;
 
+import com.x5.template.Chunk;
+import com.x5.template.Theme;
+import io.github.furti.spring.web.extended.io.ResourceType;
+import io.github.furti.spring.web.extended.template.legacy.BaseTemplate;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 
-import com.x5.template.Chunk;
-import com.x5.template.Theme;
+public class ChunkTemplate extends BaseTemplate {
 
-import io.github.furti.spring.web.extended.io.ResourceType;
-import io.github.furti.spring.web.extended.template.legacy.BaseTemplate;
-
-public class ChunkTemplate extends BaseTemplate
-{
     private final Resource resource;
     private final Theme theme;
     private String templateContent;
 
-    public ChunkTemplate(ResourceType type, String templateName, String location, boolean alreadyOptimized,
-        Resource resource, Theme theme)
-    {
+    public ChunkTemplate(
+        ResourceType type,
+        String templateName,
+        String location,
+        boolean alreadyOptimized,
+        Resource resource,
+        Theme theme
+    ) {
         super(type, templateName, alreadyOptimized, location);
         this.resource = resource;
         this.theme = theme;
     }
 
     @Override
-    protected String getContent() throws IOException
-    {
+    protected String getContent() throws IOException {
         Chunk chunk = buildChunk();
         return chunk.toString();
     }
 
     @Override
-    protected void doRefresh() throws IOException
-    {
-        try (Reader reader = new InputStreamReader(resource.getInputStream(), Charset.forName("UTF-8")))
-        {
+    protected void doRefresh() throws IOException {
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), Charset.forName("UTF-8"))) {
             templateContent = IOUtils.toString(reader);
         }
     }
 
     @Override
-    protected long getLastModified() throws IOException
-    {
+    protected long getLastModified() throws IOException {
         return resource.lastModified();
     }
 
-    private Chunk buildChunk()
-    {
+    private Chunk buildChunk() {
         Chunk chunk = theme.makeChunk();
         chunk.append(templateContent);
 

@@ -15,22 +15,19 @@
  */
 package io.github.furti.spring.web.extended.config;
 
+import io.github.furti.spring.web.extended.annotation.EnableSpringWebExtended;
+import io.github.furti.spring.web.extended.asset.AssetController;
+import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTemplateController;
+import io.github.furti.spring.web.extended.template.legacy.cache.script.ScriptController;
+import io.github.furti.spring.web.extended.template.legacy.cache.style.StyleController;
 import java.util.Map;
-
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.Assert;
 
-import io.github.furti.spring.web.extended.annotation.EnableSpringWebExtended;
-import io.github.furti.spring.web.extended.asset.AssetController;
-import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTemplateController;
-import io.github.furti.spring.web.extended.template.legacy.cache.script.ScriptController;
-import io.github.furti.spring.web.extended.template.legacy.cache.style.StyleController;
-
-public class SpringWebExtendedRegistrar implements ImportBeanDefinitionRegistrar
-{
+public class SpringWebExtendedRegistrar implements ImportBeanDefinitionRegistrar {
 
     private static final String TEMPLATECONTROLLER_KEY = "htmlTemplateControllerConfig";
     private static final String TEMPLATECONTROLLERREGISTER_KEY = "registerHtmlTemplateController";
@@ -40,15 +37,13 @@ public class SpringWebExtendedRegistrar implements ImportBeanDefinitionRegistrar
     private static final String SCRIPTCONTROLLER_KEY = "registerScriptController";
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry)
-    {
-
-        Map<String, Object> annotationAttributes =
-            annotationMetadata.getAnnotationAttributes(EnableSpringWebExtended.class.getName());
+    public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
+        Map<String, Object> annotationAttributes = annotationMetadata.getAnnotationAttributes(
+            EnableSpringWebExtended.class.getName()
+        );
 
         // Guard against calls for sub-classes
-        if (annotationAttributes == null)
-        {
+        if (annotationAttributes == null) {
             return;
         }
 
@@ -59,75 +54,64 @@ public class SpringWebExtendedRegistrar implements ImportBeanDefinitionRegistrar
     }
 
     @SuppressWarnings("unchecked")
-    private void handleTemplateController(Map<String, Object> annotationAttributes, BeanDefinitionRegistry registry)
-    {
-        Map<String, Object> templateControllerConfig =
-            (Map<String, Object>) annotationAttributes.get(TEMPLATECONTROLLER_KEY);
+    private void handleTemplateController(Map<String, Object> annotationAttributes, BeanDefinitionRegistry registry) {
+        Map<String, Object> templateControllerConfig = (Map<String, Object>) annotationAttributes.get(
+            TEMPLATECONTROLLER_KEY
+        );
 
         Assert.notNull(templateControllerConfig, "No config for TemplateController found in EnableSpringWebExtended");
 
         Boolean register = (Boolean) templateControllerConfig.get(TEMPLATECONTROLLERREGISTER_KEY);
         Boolean fallback = (Boolean) templateControllerConfig.get(TEMPLATECONTROLLERFALLBACK_KEY);
 
-        if (register != null && register.booleanValue())
-        {
+        if (register != null && register.booleanValue()) {
             registerTemplateController(registry, fallback);
         }
     }
 
-    private void handleAssetController(Map<String, Object> annotationAttributes, BeanDefinitionRegistry registry)
-    {
+    private void handleAssetController(Map<String, Object> annotationAttributes, BeanDefinitionRegistry registry) {
         Boolean register = (Boolean) annotationAttributes.get(ASSETCONTROLLER_KEY);
 
-        if (register != null && register.booleanValue())
-        {
+        if (register != null && register.booleanValue()) {
             registerAssetController(registry);
         }
     }
 
-    private void handleStyleController(Map<String, Object> annotationAttributes, BeanDefinitionRegistry registry)
-    {
+    private void handleStyleController(Map<String, Object> annotationAttributes, BeanDefinitionRegistry registry) {
         Boolean register = (Boolean) annotationAttributes.get(STYLECONTROLLER_KEY);
 
-        if (register != null && register.booleanValue())
-        {
+        if (register != null && register.booleanValue()) {
             registerStyleController(registry);
         }
     }
 
-    private void handleScriptController(Map<String, Object> annotationAttributes, BeanDefinitionRegistry registry)
-    {
+    private void handleScriptController(Map<String, Object> annotationAttributes, BeanDefinitionRegistry registry) {
         Boolean register = (Boolean) annotationAttributes.get(SCRIPTCONTROLLER_KEY);
 
-        if (register != null && register.booleanValue())
-        {
+        if (register != null && register.booleanValue()) {
             registerScriptController(registry);
         }
     }
 
-    private void registerAssetController(BeanDefinitionRegistry registry)
-    {
+    private void registerAssetController(BeanDefinitionRegistry registry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(AssetController.class);
 
         registry.registerBeanDefinition("assetController", builder.getBeanDefinition());
     }
 
-    private void registerStyleController(BeanDefinitionRegistry registry)
-    {
+    private void registerStyleController(BeanDefinitionRegistry registry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(StyleController.class);
 
         registry.registerBeanDefinition("styleController", builder.getBeanDefinition());
     }
 
-    private void registerScriptController(BeanDefinitionRegistry registry)
-    {
+    private void registerScriptController(BeanDefinitionRegistry registry) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(ScriptController.class);
 
         registry.registerBeanDefinition("scriptController", builder.getBeanDefinition());
     }
 
-    private void registerTemplateController(BeanDefinitionRegistry registry, Boolean fallback)
-    {
+    private void registerTemplateController(BeanDefinitionRegistry registry, Boolean fallback) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(HtmlTemplateController.class);
         builder.addConstructorArgValue(fallback);
 

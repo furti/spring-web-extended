@@ -1,48 +1,41 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
 import static java.util.Objects.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-
-import org.springframework.util.MimeType;
-
 import io.github.furti.spring.web.extended.util.DefaultMimetypeCacheConfig;
 import io.github.furti.spring.web.extended.util.MimeTypeCacheConfig;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.util.MimeType;
 
 /**
  * @author Daniel Furtlehner
  */
-public class MimeTypeCacheRegistry
-{
+public class MimeTypeCacheRegistry {
+
     private MimeTypeCacheConfig defaultCacheConfig = new DefaultMimetypeCacheConfig();
     private Map<MimeType, MimeTypeCacheConfig> mimeTypeCacheConfigs = new HashMap<>();
 
-    public MimeTypeCacheConfig getDefaultCacheConfig()
-    {
+    public MimeTypeCacheConfig getDefaultCacheConfig() {
         return defaultCacheConfig;
     }
 
-    public MimeTypeCacheRegistry defaultCacheConfig(@Nonnull MimeTypeCacheConfig defaultCacheConfig)
-    {
+    public MimeTypeCacheRegistry defaultCacheConfig(@Nonnull MimeTypeCacheConfig defaultCacheConfig) {
         this.defaultCacheConfig = requireNonNull(defaultCacheConfig, "The default cache config must not be null");
 
         return this;
     }
 
-    public Map<MimeType, MimeTypeCacheConfig> getMimeTypeCacheConfigs()
-    {
+    public Map<MimeType, MimeTypeCacheConfig> getMimeTypeCacheConfigs() {
         return mimeTypeCacheConfigs;
     }
 
-    public MimeTypeCacheRegistry mimeTypeCacheConfig(MimeType mimeType, @Nullable MimeTypeCacheConfig cacheConfig)
-    {
+    public MimeTypeCacheRegistry mimeTypeCacheConfig(MimeType mimeType, @Nullable MimeTypeCacheConfig cacheConfig) {
         mimeTypeCacheConfigs.put(mimeType, cacheConfig);
 
         return this;

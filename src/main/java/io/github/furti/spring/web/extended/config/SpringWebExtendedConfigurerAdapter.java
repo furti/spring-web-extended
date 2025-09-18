@@ -15,9 +15,6 @@
  */
 package io.github.furti.spring.web.extended.config;
 
-import java.util.List;
-import java.util.Map;
-
 import io.github.furti.spring.web.extended.asset.CdnConfig;
 import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
 import io.github.furti.spring.web.extended.io.ResourceScanner;
@@ -25,71 +22,62 @@ import io.github.furti.spring.web.extended.locale.LocaleSource;
 import io.github.furti.spring.web.extended.messagesource.MessageSourceConfig;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackConfig;
 import io.github.furti.spring.web.extended.template.legacy.optimize.OptimizerConfig;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Daniel Furtlehner
  *
  */
-public abstract class SpringWebExtendedConfigurerAdapter implements SpringWebExtendedConfigurer
-{
+public abstract class SpringWebExtendedConfigurerAdapter implements SpringWebExtendedConfigurer {
 
     @Override
-    public void configureMessageSource(MessageSourceConfig config)
-    {
+    public void configureMessageSource(MessageSourceConfig config) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureStyles(StackConfig config)
-    {
+    public void configureStyles(StackConfig config) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureScripts(StackConfig config)
-    {
+    public void configureScripts(StackConfig config) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureApplication(ApplicationConfiguration config)
-    {
+    public void configureApplication(ApplicationConfiguration config) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureOptimizers(OptimizerConfig config)
-    {
+    public void configureOptimizers(OptimizerConfig config) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureResourceScanners(Map<String, ResourceScanner> config)
-    {
+    public void configureResourceScanners(Map<String, ResourceScanner> config) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureExpressionHandlers(Map<String, ExpressionHandler> config)
-    {
+    public void configureExpressionHandlers(Map<String, ExpressionHandler> config) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureHtmlTemplates(StackConfig htmlConfig)
-    {
+    public void configureHtmlTemplates(StackConfig htmlConfig) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureLocaleSources(List<LocaleSource> sources)
-    {
+    public void configureLocaleSources(List<LocaleSource> sources) {
         // Subclasses may override this to add configurations
     }
 
     @Override
-    public void configureCDN(CdnConfig config)
-    {
+    public void configureCDN(CdnConfig config) {
         // Subclasses may override this to add own configurations
     }
 }

@@ -1,91 +1,93 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
 import static org.hamcrest.MatcherAssert.*;
 
+import io.github.furti.spring.web.extended.template.StringResource;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.MimeType;
 
-import io.github.furti.spring.web.extended.template.StringResource;
-
 /**
  * @author Daniel Furtlehner
  */
-public class DefaultResourceTypeRegistryTest
-{
+public class DefaultResourceTypeRegistryTest {
 
     @Test
-    public void testEmptyRegistry()
-    {
+    public void testEmptyRegistry() {
         ResourceTypeRegistry registry = new DefaultResourceTypeRegistry();
 
-        ResourceType resourceType =
-            registry.getResourceType(new StringResource("test.ico", ""), MimeType.valueOf("image/x-icon"));
+        ResourceType resourceType = registry.getResourceType(
+            new StringResource("test.ico", ""),
+            MimeType.valueOf("image/x-icon")
+        );
 
         assertThat(resourceType, CoreMatchers.equalTo(ResourceType.BINARY));
     }
 
     @Test
-    public void testFallbackToDefault()
-    {
+    public void testFallbackToDefault() {
         ResourceTypeRegistry registry = buildRegistry();
 
-        ResourceType resourceType =
-            registry.getResourceType(new StringResource("test.ico", ""), MimeType.valueOf("image/x-icon"));
+        ResourceType resourceType = registry.getResourceType(
+            new StringResource("test.ico", ""),
+            MimeType.valueOf("image/x-icon")
+        );
 
         assertThat(resourceType, CoreMatchers.equalTo(ResourceType.BINARY));
     }
 
     @Test
-    public void testHtmlMimeType()
-    {
+    public void testHtmlMimeType() {
         ResourceTypeRegistry registry = buildRegistry();
 
-        ResourceType resourceType =
-            registry.getResourceType(new StringResource("test.html", ""), MimeType.valueOf("text/html"));
+        ResourceType resourceType = registry.getResourceType(
+            new StringResource("test.html", ""),
+            MimeType.valueOf("text/html")
+        );
 
         assertThat(resourceType, CoreMatchers.equalTo(ResourceType.TEMPLATE));
     }
 
     @Test
-    public void testJavascriptMimeType()
-    {
+    public void testJavascriptMimeType() {
         ResourceTypeRegistry registry = buildRegistry();
 
-        ResourceType resourceType =
-            registry.getResourceType(new StringResource("test.js", ""), MimeType.valueOf("application/javascript"));
+        ResourceType resourceType = registry.getResourceType(
+            new StringResource("test.js", ""),
+            MimeType.valueOf("application/javascript")
+        );
 
         assertThat(resourceType, CoreMatchers.equalTo(ResourceType.TEMPLATE));
     }
 
     @Test
-    public void testJsonFile()
-    {
+    public void testJsonFile() {
         ResourceTypeRegistry registry = buildRegistry();
 
-        ResourceType resourceType =
-            registry.getResourceType(new StringResource("test.json", ""), MimeType.valueOf("application/json"));
+        ResourceType resourceType = registry.getResourceType(
+            new StringResource("test.json", ""),
+            MimeType.valueOf("application/json")
+        );
 
         assertThat(resourceType, CoreMatchers.equalTo(ResourceType.TEMPLATE));
     }
 
     @Test
-    public void testBinaryFile()
-    {
+    public void testBinaryFile() {
         ResourceTypeRegistry registry = buildRegistry();
 
-        ResourceType resourceType = registry
-            .getResourceType(new StringResource("/some/path/binary.js", ""),
-                MimeType.valueOf("application/javascript"));
+        ResourceType resourceType = registry.getResourceType(
+            new StringResource("/some/path/binary.js", ""),
+            MimeType.valueOf("application/javascript")
+        );
 
         assertThat(resourceType, CoreMatchers.equalTo(ResourceType.BINARY));
     }
 
-    private ResourceTypeRegistry buildRegistry()
-    {
+    private ResourceTypeRegistry buildRegistry() {
         DefaultResourceTypeRegistry registry = new DefaultResourceTypeRegistry();
 
         registry.resourceTypeByMimeType("text/.*", ResourceType.TEMPLATE);

@@ -18,9 +18,7 @@ package io.github.furti.spring.web.extended.config;
 import java.util.List;
 import java.util.Locale;
 
-public interface ApplicationConfiguration
-{
-
+public interface ApplicationConfiguration {
     String getVersion();
 
     ApplicationConfiguration setVersion(String version);
@@ -45,7 +43,7 @@ public interface ApplicationConfiguration
 
     /**
      * Scans all messages found by this location for supported locales
-     * 
+     *
      * @param messageLocation the location
      * @return the configuration
      */

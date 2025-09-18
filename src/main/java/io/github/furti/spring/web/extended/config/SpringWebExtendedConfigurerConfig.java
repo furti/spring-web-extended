@@ -8,20 +8,6 @@
  */
 package io.github.furti.spring.web.extended.config;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
-import org.springframework.util.CollectionUtils;
-
 import io.github.furti.spring.web.extended.asset.AssetFolderWhitelist;
 import io.github.furti.spring.web.extended.asset.CdnConfig;
 import io.github.furti.spring.web.extended.asset.DefaultCdnConfig;
@@ -35,6 +21,18 @@ import io.github.furti.spring.web.extended.messagesource.MessageSourceConfig;
 import io.github.furti.spring.web.extended.template.legacy.cache.DefaultStackConfig;
 import io.github.furti.spring.web.extended.template.legacy.optimize.DefaultOptimizerConfig;
 import io.github.furti.spring.web.extended.template.legacy.optimize.OptimizerConfig;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
+import org.springframework.util.CollectionUtils;
 import ro.isdc.wro.extensions.processor.css.YUICssCompressorProcessor;
 import ro.isdc.wro.model.resource.processor.impl.js.JSMinProcessor;
 import ro.isdc.wro.util.Base64;
@@ -46,8 +44,8 @@ import ro.isdc.wro.util.Base64;
  */
 @Configuration
 @Deprecated
-public class SpringWebExtendedConfigurerConfig
-{
+public class SpringWebExtendedConfigurerConfig {
+
     private static final Integer DEFAULT_REFRESH_INTERVALL = Integer.valueOf(5);
 
     @Autowired
@@ -61,13 +59,11 @@ public class SpringWebExtendedConfigurerConfig
     private AssetFolderWhitelist assetWhitelist;
 
     @Autowired(required = false)
-    public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
-    {
+    public void setConfigurers(List<SpringWebExtendedConfigurer> configurers) {
         configurer.addConfigurers(configurers);
     }
 
-    public DefaultApplicationConfiguration appConfig()
-    {
+    public DefaultApplicationConfiguration appConfig() {
         DefaultApplicationConfiguration config = new DefaultApplicationConfiguration();
 
         // Set the default optimize flag
@@ -77,17 +73,13 @@ public class SpringWebExtendedConfigurerConfig
 
         configurer.configureApplication(config);
 
-        if (config.getVersion() == null)
-        {
+        if (config.getVersion() == null) {
             byte[] bytes = new byte[15];
             new Random().nextBytes(bytes);
 
-            try
-            {
+            try {
                 config.setVersion(Base64.encodeBytes(bytes, Base64.URL_SAFE));
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -96,15 +88,12 @@ public class SpringWebExtendedConfigurerConfig
     }
 
     @Bean
-    public LocaleSource requestUriLocaleSource()
-    {
+    public LocaleSource requestUriLocaleSource() {
         return new RequestURILocaleSource();
     }
 
-    public DefaultStackConfig getStyleConfig()
-    {
-        if (styleConfig == null)
-        {
+    public DefaultStackConfig getStyleConfig() {
+        if (styleConfig == null) {
             ApplicationConfiguration appConfig = appConfig();
 
             styleConfig = new DefaultStackConfig();
@@ -117,10 +106,8 @@ public class SpringWebExtendedConfigurerConfig
         return styleConfig;
     }
 
-    public DefaultStackConfig getHtmlConfig()
-    {
-        if (htmlConfig == null)
-        {
+    public DefaultStackConfig getHtmlConfig() {
+        if (htmlConfig == null) {
             ApplicationConfiguration appConfig = appConfig();
 
             htmlConfig = new DefaultStackConfig();
@@ -134,10 +121,8 @@ public class SpringWebExtendedConfigurerConfig
         return htmlConfig;
     }
 
-    public CdnConfig getCdnConfig()
-    {
-        if (cdnConfig == null)
-        {
+    public CdnConfig getCdnConfig() {
+        if (cdnConfig == null) {
             cdnConfig = new DefaultCdnConfig();
 
             configurer.configureCDN(cdnConfig);
@@ -146,25 +131,20 @@ public class SpringWebExtendedConfigurerConfig
         return cdnConfig;
     }
 
-    public AssetFolderWhitelist getAssetWhitelist()
-    {
-        if (assetWhitelist == null)
-        {
+    public AssetFolderWhitelist getAssetWhitelist() {
+        if (assetWhitelist == null) {
             List<String> whitelist = new ArrayList<String>();
 
             configurer.configureAssetWhitelist(whitelist);
 
             assetWhitelist = new AssetFolderWhitelist(whitelist);
-
         }
 
         return assetWhitelist;
     }
 
-    public DefaultStackConfig getScriptConfig()
-    {
-        if (scriptConfig == null)
-        {
+    public DefaultStackConfig getScriptConfig() {
+        if (scriptConfig == null) {
             ApplicationConfiguration appConfig = appConfig();
 
             scriptConfig = new DefaultStackConfig();
@@ -177,11 +157,8 @@ public class SpringWebExtendedConfigurerConfig
         return scriptConfig;
     }
 
-    public OptimizerConfig getOptimizerConfig()
-    {
-        if (optimizerConfig == null)
-        {
-
+    public OptimizerConfig getOptimizerConfig() {
+        if (optimizerConfig == null) {
             optimizerConfig = new DefaultOptimizerConfig();
 
             /*
@@ -198,8 +175,7 @@ public class SpringWebExtendedConfigurerConfig
         return optimizerConfig;
     }
 
-    public void configureMessageSource(ReloadableResourceBundleMessageSource messageSource)
-    {
+    public void configureMessageSource(ReloadableResourceBundleMessageSource messageSource) {
         ApplicationConfiguration appConfig = appConfig();
 
         MessageSourceConfig config = new DefaultMessageSourceConfig();
@@ -211,16 +187,14 @@ public class SpringWebExtendedConfigurerConfig
 
         messageSource.setCacheSeconds(config.getCacheSeconds() != null ? config.getCacheSeconds() : -1);
 
-        if (!CollectionUtils.isEmpty(config.getBaseNames()))
-        {
+        if (!CollectionUtils.isEmpty(config.getBaseNames())) {
             messageSource.setBasenames(config.getBaseNames().toArray(new String[config.getBaseNames().size()]));
         }
 
         messageSource.setDefaultEncoding(config.getDefaultEncoding());
     }
 
-    public List<LocaleSource> getLocaleSources()
-    {
+    public List<LocaleSource> getLocaleSources() {
         List<LocaleSource> sources = new ArrayList<>();
 
         sources.add(requestUriLocaleSource());
@@ -229,13 +203,11 @@ public class SpringWebExtendedConfigurerConfig
         return sources;
     }
 
-    public void configureResourceScanners(Map<String, ResourceScanner> scanners)
-    {
+    public void configureResourceScanners(Map<String, ResourceScanner> scanners) {
         configurer.configureResourceScanners(scanners);
     }
 
-    public void configureExpressionHandlers(HashMap<String, ExpressionHandler> handlers)
-    {
+    public void configureExpressionHandlers(HashMap<String, ExpressionHandler> handlers) {
         configurer.configureExpressionHandlers(handlers);
     }
 }

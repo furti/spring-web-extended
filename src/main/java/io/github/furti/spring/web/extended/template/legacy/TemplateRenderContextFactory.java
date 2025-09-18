@@ -7,8 +7,6 @@ import java.util.Locale;
  *
  * @author Daniel Furtlehner
  */
-public interface TemplateRenderContextFactory
-{
-
+public interface TemplateRenderContextFactory {
     TemplateRenderContext createContext(Locale locale, Template template);
 }

@@ -10,12 +10,10 @@ import java.util.Locale;
  *
  * @author Daniel Furtlehner
  */
-public class DefaultTemplateRenderContextFactory implements TemplateRenderContextFactory
-{
+public class DefaultTemplateRenderContextFactory implements TemplateRenderContextFactory {
 
     @Override
-    public TemplateRenderContext createContext(Locale locale, Template template)
-    {
+    public TemplateRenderContext createContext(Locale locale, Template template) {
         return new DefaultTemplateRenderContext(locale, template.getType());
     }
 }

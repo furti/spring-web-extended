@@ -3,6 +3,7 @@ package io.github.furti.spring.web.extended.io;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
+import jakarta.servlet.ServletContext;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -15,9 +16,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import jakarta.servlet.ServletContext;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,15 +23,13 @@ import org.mockito.Mockito;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-public class ContextResourceScannerTest
-{
+public class ContextResourceScannerTest {
 
     private static final Path TMPDIR = Paths.get(System.getProperty("java.io.tmpdir"));
     private static final Path ROOTDIR = TMPDIR.resolve("springangularcontextscannertest");
 
     @BeforeEach
-    public void setup() throws IOException
-    {
+    public void setup() throws IOException {
         deleteDirectory(ROOTDIR);
         Files.createDirectory(ROOTDIR);
 
@@ -45,8 +41,7 @@ public class ContextResourceScannerTest
     }
 
     @Test
-    public void scanResources() throws IOException
-    {
+    public void scanResources() throws IOException {
         ContextResourceScanner scanner = new ContextResourceScanner();
         scanner.setServletContext(buildServletContext());
 
@@ -60,8 +55,7 @@ public class ContextResourceScannerTest
     }
 
     @Test
-    public void subDirectoriesShouldNotBeInTheList() throws IOException
-    {
+    public void subDirectoriesShouldNotBeInTheList() throws IOException {
         ContextResourceScanner scanner = new ContextResourceScanner();
         scanner.setServletContext(buildServletContext());
 
@@ -76,8 +70,7 @@ public class ContextResourceScannerTest
     }
 
     @Test
-    public void scanResourcesWithFileAndNoSubdirectories() throws IOException
-    {
+    public void scanResourcesWithFileAndNoSubdirectories() throws IOException {
         ContextResourceScanner scanner = new ContextResourceScanner();
         scanner.setServletContext(buildServletContext());
 
@@ -90,15 +83,12 @@ public class ContextResourceScannerTest
     }
 
     @AfterEach
-    public void tearDown() throws IOException
-    {
+    public void tearDown() throws IOException {
         deleteDirectory(ROOTDIR);
     }
 
-    private void deleteDirectory(Path rootdir) throws IOException
-    {
-        if (!Files.exists(rootdir))
-        {
+    private void deleteDirectory(Path rootdir) throws IOException {
+        if (!Files.exists(rootdir)) {
             return;
         }
 
@@ -107,21 +97,17 @@ public class ContextResourceScannerTest
         Files.walkFileTree(ROOTDIR, new DeleteFileVisitor());
     }
 
-    private void createFile(Path dir, String file, String content) throws IOException
-    {
+    private void createFile(Path dir, String file, String content) throws IOException {
         Path p = dir.resolve(file);
 
         Files.createDirectories(p.getParent());
 
         BufferedWriter writer = Files.newBufferedWriter(p, Charset.forName("UTF-8"), StandardOpenOption.CREATE);
 
-        try
-        {
+        try {
             writer.write(content);
             writer.flush();
-        }
-        finally
-        {
+        } finally {
             writer.close();
         }
     }
@@ -130,14 +116,12 @@ public class ContextResourceScannerTest
      * @return
      * @throws MalformedURLException
      */
-    private ServletContext buildServletContext() throws MalformedURLException
-    {
+    private ServletContext buildServletContext() throws MalformedURLException {
         ServletContext context = Mockito.mock(ServletContext.class);
         Mockito.when(context.getResource(Mockito.anyString())).then(invocation -> {
             String path = (String) invocation.getArguments()[0];
 
-            if (!path.startsWith("/"))
-            {
+            if (!path.startsWith("/")) {
                 throw new IllegalArgumentException("Path " + path + " must start with a / ");
             }
 
@@ -146,8 +130,7 @@ public class ContextResourceScannerTest
 
             Path fullPath = TMPDIR.resolve(path);
 
-            if (!Files.exists(fullPath))
-            {
+            if (!Files.exists(fullPath)) {
                 return null;
             }
 
@@ -157,8 +140,7 @@ public class ContextResourceScannerTest
         Mockito.when(context.getResourcePaths(Mockito.anyString())).then(invocation -> {
             String path = (String) invocation.getArguments()[0];
 
-            if (!path.startsWith("/"))
-            {
+            if (!path.startsWith("/")) {
                 throw new IllegalArgumentException("Path " + path + " must start with a / ");
             }
 
@@ -167,18 +149,13 @@ public class ContextResourceScannerTest
 
             Set<String> paths = new HashSet<>();
 
-            try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(TMPDIR.resolve(path));)
-            {
-                for (Path dirPath : dirStream)
-                {
+            try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(TMPDIR.resolve(path))) {
+                for (Path dirPath : dirStream) {
                     Path relative = TMPDIR.relativize(dirPath);
 
-                    if (Files.isDirectory(dirPath))
-                    {
+                    if (Files.isDirectory(dirPath)) {
                         paths.add("/" + relative.toString().replace("\\", "/") + "/");
-                    }
-                    else
-                    {
+                    } else {
                         paths.add("/" + relative.toString().replace("\\", "/"));
                     }
                 }

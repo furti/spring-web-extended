@@ -19,21 +19,15 @@ package io.github.furti.spring.web.extended.util;
  * @author Daniel Furtlehner
  *
  */
-public final class HtmlUtils
-{
+public final class HtmlUtils {
 
-    private HtmlUtils()
-    {
+    private HtmlUtils() {}
 
-    }
-
-    public static String buildScriptLink(String url)
-    {
+    public static String buildScriptLink(String url) {
         return "<script src=\"" + (url != null ? url : "") + "\" type=\"text/javascript\"></script>";
     }
 
-    public static String buildStyleLink(String url)
-    {
+    public static String buildStyleLink(String url) {
         return "<link href=\"" + (url != null ? url : "") + "\" type=\"text/css\" rel=\"stylesheet\">";
     }
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
@@ -7,22 +7,18 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import io.github.furti.spring.web.extended.StaticFolder;
 import java.nio.charset.Charset;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
-
-import io.github.furti.spring.web.extended.StaticFolder;
 
 /**
  * @author Daniel Furtlehner
  */
-public class DefaultStaticFolderRegistryTest
-{
+public class DefaultStaticFolderRegistryTest {
 
     @Test
-    public void refreshFlagShouldBeSet()
-    {
+    public void refreshFlagShouldBeSet() {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
         registry.reloadOnMissingResource(false);
@@ -33,8 +29,7 @@ public class DefaultStaticFolderRegistryTest
     }
 
     @Test
-    public void foldersShouldBeAdded()
-    {
+    public void foldersShouldBeAdded() {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
         registry.registerFolder("/first", "classpath:first/");
         registry.registerFolder("/second", "file:second/", Charset.forName("ISO8859-1"));
@@ -56,8 +51,7 @@ public class DefaultStaticFolderRegistryTest
     }
 
     @Test
-    public void locationMustEndWithSlash()
-    {
+    public void locationMustEndWithSlash() {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -66,8 +60,7 @@ public class DefaultStaticFolderRegistryTest
     }
 
     @Test
-    public void pathMustStartWithSlash()
-    {
+    public void pathMustStartWithSlash() {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -76,8 +69,7 @@ public class DefaultStaticFolderRegistryTest
     }
 
     @Test
-    public void charsetMustBeSet()
-    {
+    public void charsetMustBeSet() {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
         assertThrows(NullPointerException.class, () -> {

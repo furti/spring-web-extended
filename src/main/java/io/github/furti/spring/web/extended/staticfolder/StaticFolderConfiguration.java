@@ -3,22 +3,6 @@
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.i18n.LocaleContext;
-import org.springframework.context.support.DelegatingMessageSource;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import io.github.furti.spring.web.extended.MessageRegistry;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
 import io.github.furti.spring.web.extended.expression.ExpressionHandlerConfig;
@@ -33,6 +17,20 @@ import io.github.furti.spring.web.extended.template.TemplateFactory;
 import io.github.furti.spring.web.extended.template.simple.ContentEscapeHandlerRegistry;
 import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 import jakarta.servlet.ServletContext;
+import java.util.Collection;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.support.DelegatingMessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * A Configuration that enables static folder style. Static folder style means,
@@ -56,23 +54,38 @@ public class StaticFolderConfiguration implements WebMvcConfigurer {
     private LocaleHandlerInterceptor localeHandlerInterceptor;
 
     @Bean
-    public StaticFolderCache staticFolderCache(ResourceScanners scanners, MimeTypeHandler mimeTypeHandler,
-            TemplateFactory templateFactory, TemplateContextFactory contextFactory,
-            ResourceTypeRegistry resourceTypeRegistry) {
+    public StaticFolderCache staticFolderCache(
+        ResourceScanners scanners,
+        MimeTypeHandler mimeTypeHandler,
+        TemplateFactory templateFactory,
+        TemplateContextFactory contextFactory,
+        ResourceTypeRegistry resourceTypeRegistry
+    ) {
         StaticFolderRegistry staticFolderRegistry = configurerConfiguration.getStaticFolderRegistry();
 
-        return new StaticFolderCache(staticFolderRegistry, scanners, mimeTypeHandler, templateFactory, contextFactory,
-                resourceTypeRegistry, configurerConfiguration.getApplicationInfo(),
-                configurerConfiguration.getCompressionManager());
+        return new StaticFolderCache(
+            staticFolderRegistry,
+            scanners,
+            mimeTypeHandler,
+            templateFactory,
+            contextFactory,
+            resourceTypeRegistry,
+            configurerConfiguration.getApplicationInfo(),
+            configurerConfiguration.getCompressionManager()
+        );
     }
 
     @Bean
     public MimeTypeHandler mimeTypeHandler(ServletContext servletContext) {
         MimeTypeCacheRegistry registry = configurerConfiguration.getMimetypCacheRegistry();
 
-        return new MimeTypeHandler(servletContext, configurerConfiguration.getMimeTypes(),
-                configurerConfiguration.getCachableMimeTypes(), registry.getDefaultCacheConfig(),
-                registry.getMimeTypeCacheConfigs());
+        return new MimeTypeHandler(
+            servletContext,
+            configurerConfiguration.getMimeTypes(),
+            configurerConfiguration.getCachableMimeTypes(),
+            registry.getDefaultCacheConfig(),
+            registry.getMimeTypeCacheConfigs()
+        );
     }
 
     @Bean

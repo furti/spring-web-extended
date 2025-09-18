@@ -1,23 +1,18 @@
 package io.github.furti.spring.web.extended.util;
 
-public final class PathUtils
-{
+public final class PathUtils {
 
-    public static String join(String path, String... subPaths)
-    {
-        if (subPaths.length == 0)
-        {
+    public static String join(String path, String... subPaths) {
+        if (subPaths.length == 0) {
             return path;
         }
 
         StringBuilder fullPath = new StringBuilder(removeTrailingSlashes(path));
 
-        for (int i = 0; i < subPaths.length; i++)
-        {
+        for (int i = 0; i < subPaths.length; i++) {
             String subPath = subPaths[i];
 
-            if (i < subPaths.length - 1)
-            {
+            if (i < subPaths.length - 1) {
                 subPath = removeTrailingSlashes(subPath);
             }
 
@@ -27,35 +22,27 @@ public final class PathUtils
         return fullPath.toString();
     }
 
-    public static String removeLeadingSlashes(String path)
-    {
-        while (path.startsWith("/"))
-        {
+    public static String removeLeadingSlashes(String path) {
+        while (path.startsWith("/")) {
             path = path.substring(1);
         }
 
         return path;
     }
 
-    public static final String removeTrailingSlashes(String path)
-    {
-        while (path.endsWith("/"))
-        {
+    public static final String removeTrailingSlashes(String path) {
+        while (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
 
         return path;
-
     }
 
-    public static String ensureLeadingSlash(String path)
-    {
-        if (!path.startsWith("/"))
-        {
+    public static String ensureLeadingSlash(String path) {
+        if (!path.startsWith("/")) {
             return "/" + path;
         }
 
         return path;
     }
-
 }

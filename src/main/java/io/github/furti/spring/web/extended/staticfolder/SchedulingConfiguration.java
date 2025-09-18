@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
@@ -14,8 +14,8 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
  */
 @Configuration
 @EnableScheduling
-public class SchedulingConfiguration implements SchedulingConfigurer
-{
+public class SchedulingConfiguration implements SchedulingConfigurer {
+
     @Autowired
     private StaticFolderConfigurerConfiguration configurerConfiguration;
 
@@ -23,12 +23,10 @@ public class SchedulingConfiguration implements SchedulingConfigurer
     private StaticFolderCache staticFolderCache;
 
     @Override
-    public void configureTasks(ScheduledTaskRegistrar taskRegistrar)
-    {
+    public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         long interval = configurerConfiguration.getStaticFolderRegistry().getResourceRefreshInterval();
 
-        if (interval > 0)
-        {
+        if (interval > 0) {
             taskRegistrar.addFixedDelayTask(() -> staticFolderCache.refreshFolders(false), interval * 1000);
         }
     }

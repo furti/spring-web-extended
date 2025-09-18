@@ -9,11 +9,10 @@ import io.github.furti.spring.web.extended.util.AssetUtils;
  *
  * @author Daniel Furtlehner
  */
-public class AssetExpressionHandler extends UrlGeneratingExpressionHandler
-{
+public class AssetExpressionHandler extends UrlGeneratingExpressionHandler {
+
     @Override
-    public String process(String value)
-    {
+    public String process(String value) {
         String[] assetParts = AssetUtils.createAssetParts(prepareResourceHandlerSeparator(value));
 
         return generateUrl(assetParts);
@@ -23,10 +22,8 @@ public class AssetExpressionHandler extends UrlGeneratingExpressionHandler
      * @param value the expression value
      * @return the expression value with "#" replaced by ":"
      */
-    private String prepareResourceHandlerSeparator(String value)
-    {
-        if (value == null)
-        {
+    private String prepareResourceHandlerSeparator(String value) {
+        if (value == null) {
             return null;
         }
 
@@ -34,8 +31,7 @@ public class AssetExpressionHandler extends UrlGeneratingExpressionHandler
     }
 
     @Override
-    public boolean valueNeeded()
-    {
+    public boolean valueNeeded() {
         return true;
     }
 }

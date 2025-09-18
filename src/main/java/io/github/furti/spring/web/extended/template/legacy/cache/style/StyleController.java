@@ -8,6 +8,9 @@
  */
 package io.github.furti.spring.web.extended.template.legacy.cache.style;
 
+import io.github.furti.spring.web.extended.template.legacy.ResourceControllerBase;
+import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,19 +18,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import io.github.furti.spring.web.extended.template.legacy.ResourceControllerBase;
-import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
-import jakarta.servlet.http.HttpServletResponse;
-
 @Controller
 @RequestMapping(value = { "/style", "/*/*/style", "/*/*/*/style" })
 public class StyleController extends ResourceControllerBase {
+
     private StyleStacks stacks;
 
-    @RequestMapping(value = "/single/{stackId}/{styleName}", method = RequestMethod.GET, produces = "text/css; charset=UTF-8")
+    @RequestMapping(
+        value = "/single/{stackId}/{styleName}",
+        method = RequestMethod.GET,
+        produces = "text/css; charset=UTF-8"
+    )
     @ResponseBody
-    public String handleStylesheet(@PathVariable("stackId") String stackId, @PathVariable("styleName") String styleName,
-            HttpServletResponse response) {
+    public String handleStylesheet(
+        @PathVariable("stackId") String stackId,
+        @PathVariable("styleName") String styleName,
+        HttpServletResponse response
+    ) {
         if (stacks == null || !stacks.hasStack(stackId)) {
             throw new ResourceNotFoundException(String.format("%s:%s", stackId, styleName));
         }

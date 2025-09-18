@@ -22,47 +22,36 @@ import java.util.Objects;
 /**
  * @author Daniel Furtlehner
  */
-public final class LocaleUtils
-{
+public final class LocaleUtils {
 
-    private LocaleUtils()
-    {
+    private LocaleUtils() {}
 
-    }
-
-    public static Locale closestSupportedLocale(List<Locale> supportedLocales, String languageTag)
-    {
+    public static Locale closestSupportedLocale(List<Locale> supportedLocales, String languageTag) {
         Locale locale = languageTag != null ? Locale.forLanguageTag(languageTag) : null;
 
         return closestSupportedLocale(supportedLocales, locale);
     }
 
-    public static Locale closestSupportedLocale(List<Locale> supportedLocales, Locale locale)
-    {
-        if (locale == null || supportedLocales == null)
-        {
+    public static Locale closestSupportedLocale(List<Locale> supportedLocales, Locale locale) {
+        if (locale == null || supportedLocales == null) {
             return null;
         }
 
         Locale closest = null;
         int closestMatches = 0;
 
-        for (Locale l : supportedLocales)
-        {
+        for (Locale l : supportedLocales) {
             int matches = 0;
 
             // If the language does not match no more processing is needed
-            if (Objects.equals(l.getLanguage(), locale.getLanguage()))
-            {
+            if (Objects.equals(l.getLanguage(), locale.getLanguage())) {
                 matches++;
 
                 // if the country does not match no more processing is needed
-                if (Objects.equals(l.getCountry(), locale.getCountry()))
-                {
+                if (Objects.equals(l.getCountry(), locale.getCountry())) {
                     matches++;
 
-                    if (Objects.equals(l.getVariant(), locale.getVariant()))
-                    {
+                    if (Objects.equals(l.getVariant(), locale.getVariant())) {
                         matches++;
                     }
                 }
@@ -72,13 +61,11 @@ public final class LocaleUtils
              * If language, country and variant match, we have our locale and no
              * more iteration is needed
              */
-            if (matches == 3)
-            {
+            if (matches == 3) {
                 return l;
             }
 
-            if (matches > closestMatches)
-            {
+            if (matches > closestMatches) {
                 closestMatches = matches;
                 closest = l;
             }

@@ -21,9 +21,7 @@ import java.util.List;
  * @author Daniel Furtlehner
  *
  */
-public interface CdnConfig
-{
-
+public interface CdnConfig {
     CdnConfig addToStack(String stackName, String name, String location, String minifiedLocation);
 
     CdnConfig removeFromStack(String stackName, String name);

@@ -15,20 +15,18 @@
  */
 package io.github.furti.spring.web.extended.template.legacy;
 
+import io.github.furti.spring.web.extended.io.ResourceType;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import io.github.furti.spring.web.extended.io.ResourceType;
+public abstract class BaseTemplate implements Template {
 
-public abstract class BaseTemplate implements Template
-{
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
     protected ResourceType type;
@@ -39,8 +37,7 @@ public abstract class BaseTemplate implements Template
     private final ReadLock readLock = lock.readLock();
     private final WriteLock writeLock = lock.writeLock();
 
-    public BaseTemplate(ResourceType type, String templateName, boolean alreadyOptimized, String location)
-    {
+    public BaseTemplate(ResourceType type, String templateName, boolean alreadyOptimized, String location) {
         this.type = type;
         this.templateName = templateName;
         this.alreadyOptimized = alreadyOptimized;
@@ -48,51 +45,42 @@ public abstract class BaseTemplate implements Template
     }
 
     @Override
-    public String render() throws IOException
-    {
+    public String render() throws IOException {
         logger.trace("Thread " + Thread.currentThread().getName() + " obtains readLock for template " + getName());
 
         readLock.lock();
-        try
-        {
+        try {
             String template = getContent();
 
-            if (!StringUtils.hasText(template))
-            {
+            if (!StringUtils.hasText(template)) {
                 return template;
             }
 
             return template;
-        }
-        finally
-        {
+        } finally {
             logger.trace("Thread " + Thread.currentThread().getName() + " releases readLock for template " + getName());
             readLock.unlock();
         }
     }
 
     @Override
-    public boolean isChanged(Date since) throws IOException
-    {
+    public boolean isChanged(Date since) throws IOException {
         long lastmodified = getLastModified();
 
         return lastmodified > since.getTime();
     }
 
     @Override
-    public void refresh() throws IOException
-    {
+    public void refresh() throws IOException {
         logger.debug("Thread " + Thread.currentThread().getName() + " obtains writeLock for template " + getName());
 
         writeLock.lock();
-        try
-        {
+        try {
             doRefresh();
-        }
-        finally
-        {
-            logger
-                .debug("Thread " + Thread.currentThread().getName() + " releases writeLock for template " + getName());
+        } finally {
+            logger.debug(
+                "Thread " + Thread.currentThread().getName() + " releases writeLock for template " + getName()
+            );
 
             writeLock.unlock();
         }
@@ -105,26 +93,22 @@ public abstract class BaseTemplate implements Template
     protected abstract long getLastModified() throws IOException;
 
     @Override
-    public ResourceType getType()
-    {
+    public ResourceType getType() {
         return type;
     }
 
     @Override
-    public boolean isAlreadyOptimized()
-    {
+    public boolean isAlreadyOptimized() {
         return alreadyOptimized;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return templateName;
     }
 
     @Override
-    public String getLocation()
-    {
+    public String getLocation() {
         return location;
     }
 }

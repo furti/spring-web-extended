@@ -15,13 +15,6 @@
  */
 package io.github.furti.spring.web.extended.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import io.github.furti.spring.web.extended.expression.legacy.AssetExpressionHandler;
 import io.github.furti.spring.web.extended.expression.legacy.CdnExpressionHandler;
 import io.github.furti.spring.web.extended.expression.legacy.ExpressionHandler;
@@ -30,65 +23,61 @@ import io.github.furti.spring.web.extended.expression.legacy.InlineTemplateExpre
 import io.github.furti.spring.web.extended.expression.legacy.MessageExpressionHandler;
 import io.github.furti.spring.web.extended.expression.legacy.ScriptExpressionHandler;
 import io.github.furti.spring.web.extended.expression.legacy.StyleExpressionHandler;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Daniel Furtlehner
  *
  */
 @Configuration
-public class ExpressionHandlerConfig
-{
+public class ExpressionHandlerConfig {
+
     @Autowired
     private SpringWebExtendedConfigurerConfig configurerConfig;
 
     private HashMap<String, ExpressionHandler> handlers;
 
     @Bean
-    public ExpressionHandlers expressionHandlers()
-    {
+    public ExpressionHandlers expressionHandlers() {
         return new ExpressionHandlers(getExpressionHandlers());
     }
 
     @Bean
-    public MessageExpressionHandler messageExpressionHandler()
-    {
+    public MessageExpressionHandler messageExpressionHandler() {
         return new MessageExpressionHandler();
     }
 
     @Bean
-    public AssetExpressionHandler assetExpressionHandler()
-    {
+    public AssetExpressionHandler assetExpressionHandler() {
         return new AssetExpressionHandler();
     }
 
     @Bean
-    public StyleExpressionHandler styleExpressionHandler()
-    {
+    public StyleExpressionHandler styleExpressionHandler() {
         return new StyleExpressionHandler(configurerConfig.getStyleConfig(), configurerConfig.appConfig());
     }
 
     @Bean
-    public ScriptExpressionHandler scriptExpressionHandler()
-    {
+    public ScriptExpressionHandler scriptExpressionHandler() {
         return new ScriptExpressionHandler(configurerConfig.getScriptConfig(), configurerConfig.appConfig());
     }
 
     @Bean
-    public InlineTemplateExpressionHandler inlineTemplateExpressionHandler()
-    {
+    public InlineTemplateExpressionHandler inlineTemplateExpressionHandler() {
         return new InlineTemplateExpressionHandler();
     }
 
     @Bean
-    public CdnExpressionHandler cdnExpressionHandler()
-    {
+    public CdnExpressionHandler cdnExpressionHandler() {
         return new CdnExpressionHandler(configurerConfig.appConfig(), configurerConfig.getCdnConfig());
     }
 
-    public Map<String, ExpressionHandler> getExpressionHandlers()
-    {
-        if (handlers == null)
-        {
+    public Map<String, ExpressionHandler> getExpressionHandlers() {
+        if (handlers == null) {
             handlers = new HashMap<>();
             handlers.put("message", messageExpressionHandler());
             handlers.put("asset", assetExpressionHandler());

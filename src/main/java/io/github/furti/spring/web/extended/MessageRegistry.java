@@ -1,23 +1,20 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended;
 
 import java.util.Collection;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 /**
  * @author Daniel Furtlehner
  */
-public interface MessageRegistry
-{
-
+public interface MessageRegistry {
     /**
      * Id a message source is set it will be used. Otherwise a {@link ReloadableResourceBundleMessageSource} will be
      * created with the configuration of this registry.
-     * 
+     *
      * @param messageSource the message source to use.
      */
     void setMessageSource(MessageSource messageSource);
@@ -54,5 +51,4 @@ public interface MessageRegistry
      * @return basenames to add to the default message source
      */
     Collection<String> getBasenames();
-
 }

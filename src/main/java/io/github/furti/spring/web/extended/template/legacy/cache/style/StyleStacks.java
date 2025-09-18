@@ -18,17 +18,14 @@ package io.github.furti.spring.web.extended.template.legacy.cache.style;
 import io.github.furti.spring.web.extended.template.legacy.cache.DefaultStackConfig;
 import io.github.furti.spring.web.extended.template.legacy.cache.StacksBase;
 
-public class StyleStacks extends StacksBase<StyleStack>
-{
+public class StyleStacks extends StacksBase<StyleStack> {
 
-    public StyleStacks(DefaultStackConfig config)
-    {
+    public StyleStacks(DefaultStackConfig config) {
         super(config);
     }
 
     @Override
-    protected StyleStack createNewInstance(String stackName, boolean noCaching)
-    {
+    protected StyleStack createNewInstance(String stackName, boolean noCaching) {
         return new StyleStack(stackName, noCaching);
     }
 }

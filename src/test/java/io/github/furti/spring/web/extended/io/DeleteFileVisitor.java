@@ -7,14 +7,11 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-public class DeleteFileVisitor extends SimpleFileVisitor<Path>
-{
+public class DeleteFileVisitor extends SimpleFileVisitor<Path> {
 
     @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
-    {
-        if (attrs.isRegularFile())
-        {
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        if (attrs.isRegularFile()) {
             Files.delete(file);
         }
 
@@ -22,16 +19,13 @@ public class DeleteFileVisitor extends SimpleFileVisitor<Path>
     }
 
     @Override
-    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException
-    {
+    public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
-    {
+    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
         Files.delete(dir);
         return FileVisitResult.CONTINUE;
     }
-
 }

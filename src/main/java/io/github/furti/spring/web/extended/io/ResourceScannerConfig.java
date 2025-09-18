@@ -15,22 +15,20 @@
  */
 package io.github.furti.spring.web.extended.io;
 
+import io.github.furti.spring.web.extended.config.SpringWebExtendedConfigurerConfig;
+import io.github.furti.spring.web.extended.staticfolder.StaticFolderConfigurerConfiguration;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import io.github.furti.spring.web.extended.config.SpringWebExtendedConfigurerConfig;
-import io.github.furti.spring.web.extended.staticfolder.StaticFolderConfigurerConfiguration;
 
 /**
  * @author Daniel Furtlehner
  */
 @Configuration
-public class ResourceScannerConfig
-{
+public class ResourceScannerConfig {
+
     @Autowired(required = false)
     private SpringWebExtendedConfigurerConfig configurerConfig;
 
@@ -38,43 +36,36 @@ public class ResourceScannerConfig
     private StaticFolderConfigurerConfiguration staticConfigurerConfig;
 
     @Bean
-    public ResourceScanners resourceScanners()
-    {
+    public ResourceScanners resourceScanners() {
         return new ResourceScanners(getScanners());
     }
 
     @Bean
-    public ContextResourceScanner contextResourceScanner()
-    {
+    public ContextResourceScanner contextResourceScanner() {
         return new ContextResourceScanner();
     }
 
     @Bean
-    public ClasspathResourceScanner classpathResourceScanner()
-    {
+    public ClasspathResourceScanner classpathResourceScanner() {
         return new ClasspathResourceScanner();
     }
 
     @Bean
-    public WebJarResourceScanner webJarResourceScanner()
-    {
+    public WebJarResourceScanner webJarResourceScanner() {
         return new WebJarResourceScanner();
     }
 
-    public Map<String, ResourceScanner> getScanners()
-    {
+    public Map<String, ResourceScanner> getScanners() {
         Map<String, ResourceScanner> scanners = new HashMap<>();
         scanners.put("", contextResourceScanner());
         scanners.put("classpath", classpathResourceScanner());
         scanners.put("webjar", webJarResourceScanner());
 
-        if (configurerConfig != null)
-        {
+        if (configurerConfig != null) {
             configurerConfig.configureResourceScanners(scanners);
         }
 
-        if (staticConfigurerConfig != null)
-        {
+        if (staticConfigurerConfig != null) {
             staticConfigurerConfig.configureResourceScanners(scanners);
         }
 

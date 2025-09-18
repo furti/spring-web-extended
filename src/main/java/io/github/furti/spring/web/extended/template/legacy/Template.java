@@ -15,14 +15,11 @@
  */
 package io.github.furti.spring.web.extended.template.legacy;
 
+import io.github.furti.spring.web.extended.io.ResourceType;
 import java.io.IOException;
 import java.util.Date;
 
-import io.github.furti.spring.web.extended.io.ResourceType;
-
-public interface Template
-{
-
+public interface Template {
     String render() throws IOException;
 
     void refresh() throws IOException;

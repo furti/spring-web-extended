@@ -22,18 +22,14 @@ import io.github.furti.spring.web.extended.template.legacy.cache.StacksBase;
  * @author Daniel Furtlehner
  *
  */
-public class ScriptStacks extends StacksBase<ScriptStack>
-{
+public class ScriptStacks extends StacksBase<ScriptStack> {
 
-    public ScriptStacks(DefaultStackConfig config)
-    {
+    public ScriptStacks(DefaultStackConfig config) {
         super(config);
     }
 
     @Override
-    protected ScriptStack createNewInstance(String stackName, boolean noCaching)
-    {
+    protected ScriptStack createNewInstance(String stackName, boolean noCaching) {
         return new ScriptStack(stackName, noCaching);
     }
-
 }

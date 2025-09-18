@@ -25,58 +25,50 @@ import java.util.Set;
  * @author Daniel Furtlehner
  *
  */
-public class DefaultStackConfig implements StackConfig
-{
+public class DefaultStackConfig implements StackConfig {
+
     private int refreshIntervall;
     private final LinkedHashMap<String, LinkedHashMap<String, StackEntry>> stacks = new LinkedHashMap<>();
     private final Set<String> noCachingStacks = new HashSet<>();
 
-    public DefaultStackConfig()
-    {
+    public DefaultStackConfig() {
         super();
     }
 
     @Override
-    public StackConfig setRefreshIntervall(int intervall)
-    {
+    public StackConfig setRefreshIntervall(int intervall) {
         refreshIntervall = intervall;
 
         return this;
     }
 
     @Override
-    public int getRefreshIntervall()
-    {
+    public int getRefreshIntervall() {
         return refreshIntervall;
     }
 
     @Override
-    public StackConfig removeStack(String stackName)
-    {
+    public StackConfig removeStack(String stackName) {
         stacks.remove(stackName);
 
         return this;
     }
 
     @Override
-    public StackConfig addToStack(String stackName, String resourceName, String location)
-    {
+    public StackConfig addToStack(String stackName, String resourceName, String location) {
         addToStack(stackName, resourceName, location, null);
 
         return this;
     }
 
     @Override
-    public StackConfig addToStack(String stackName, String resourceName, String location, boolean skipProcessing)
-    {
+    public StackConfig addToStack(String stackName, String resourceName, String location, boolean skipProcessing) {
         return addToStack(stackName, resourceName, location, null, skipProcessing);
     }
 
     @Override
-    public StackConfig removeFromStack(String stackName, String resourceName)
-    {
-        if (!hasStack(stackName))
-        {
+    public StackConfig removeFromStack(String stackName, String resourceName) {
+        if (!hasStack(stackName)) {
             return this;
         }
 
@@ -86,39 +78,37 @@ public class DefaultStackConfig implements StackConfig
     }
 
     @Override
-    public boolean hasStack(String stackName)
-    {
+    public boolean hasStack(String stackName) {
         return stacks.containsKey(stackName);
     }
 
     @Override
-    public List<String> getResourceNamesForStack(String stackName)
-    {
-        if (!hasStack(stackName))
-        {
+    public List<String> getResourceNamesForStack(String stackName) {
+        if (!hasStack(stackName)) {
             return null;
         }
 
         return new ArrayList<>(stacks.get(stackName).keySet());
     }
 
-    public LinkedHashMap<String, LinkedHashMap<String, StackEntry>> getStacks()
-    {
+    public LinkedHashMap<String, LinkedHashMap<String, StackEntry>> getStacks() {
         return stacks;
     }
 
     @Override
-    public StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation)
-    {
+    public StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation) {
         return addToStack(stackName, resourceName, location, minifiedLocation, false);
     }
 
     @Override
-    public StackConfig addToStack(String stackName, String resourceName, String location, String minifiedLocation,
-        boolean skipProcessing)
-    {
-        if (!hasStack(stackName))
-        {
+    public StackConfig addToStack(
+        String stackName,
+        String resourceName,
+        String location,
+        String minifiedLocation,
+        boolean skipProcessing
+    ) {
+        if (!hasStack(stackName)) {
             stacks.put(stackName, new LinkedHashMap<String, StackEntry>());
         }
 
@@ -128,10 +118,8 @@ public class DefaultStackConfig implements StackConfig
     }
 
     @Override
-    public StackConfig scanPattern(String stackName, String pattern, String basePath)
-    {
-        if (!hasStack(stackName))
-        {
+    public StackConfig scanPattern(String stackName, String pattern, String basePath) {
+        if (!hasStack(stackName)) {
             stacks.put(stackName, new LinkedHashMap<String, StackEntry>());
         }
 
@@ -141,16 +129,14 @@ public class DefaultStackConfig implements StackConfig
     }
 
     @Override
-    public StackConfig noCaching(String stackName)
-    {
+    public StackConfig noCaching(String stackName) {
         noCachingStacks.add(stackName);
 
         return this;
     }
 
     @Override
-    public boolean isNoCaching(String stackName)
-    {
+    public boolean isNoCaching(String stackName) {
         return noCachingStacks.contains(stackName);
     }
 }

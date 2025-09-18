@@ -8,54 +8,45 @@
  */
 package io.github.furti.spring.web.extended.locale;
 
-import java.util.List;
-import java.util.Locale;
-
+import io.github.furti.spring.web.extended.util.LocaleUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import java.util.List;
+import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import io.github.furti.spring.web.extended.util.LocaleUtils;
-
 /**
  * @author Daniel Furtlehner
  */
-public class LocaleHandlerInterceptor implements HandlerInterceptor
-{
+public class LocaleHandlerInterceptor implements HandlerInterceptor {
 
     private final List<LocaleSource> sources;
     private List<Locale> availableLocales;
 
-    public LocaleHandlerInterceptor(List<LocaleSource> sources)
-    {
+    public LocaleHandlerInterceptor(List<LocaleSource> sources) {
         super();
-
         this.sources = sources;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
-    {
-        if (handleLocaleSources(request, response))
-        {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+        throws Exception {
+        if (handleLocaleSources(request, response)) {
             return true;
         }
 
         // If no Locale is available we simply use the one from the request
-        if (availableLocales == null || availableLocales.size() == 0)
-        {
+        if (availableLocales == null || availableLocales.size() == 0) {
             return true;
         }
 
         // If no locale was found we check if the one from the request is
         // supported
         Locale locale = LocaleUtils.closestSupportedLocale(availableLocales, LocaleContextHolder.getLocale());
-        if (locale != null)
-        {
+        if (locale != null) {
             LocaleContextHolder.setLocale(locale);
             return true;
         }
@@ -67,14 +58,11 @@ public class LocaleHandlerInterceptor implements HandlerInterceptor
         return true;
     }
 
-    private boolean handleLocaleSources(HttpServletRequest request, HttpServletResponse response)
-    {
-        for (LocaleSource source : sources)
-        {
+    private boolean handleLocaleSources(HttpServletRequest request, HttpServletResponse response) {
+        for (LocaleSource source : sources) {
             Locale locale = source.getLocale(request, response);
 
-            if (locale != null)
-            {
+            if (locale != null) {
                 LocaleContextHolder.setLocale(locale, true);
 
                 return true;
@@ -85,8 +73,7 @@ public class LocaleHandlerInterceptor implements HandlerInterceptor
     }
 
     @Autowired
-    public void setAvailableLocales(List<Locale> availableLocales)
-    {
+    public void setAvailableLocales(List<Locale> availableLocales) {
         Assert.notNull(availableLocales, "No supported locales are configured. Please configure at least one locale");
 
         this.availableLocales = availableLocales;

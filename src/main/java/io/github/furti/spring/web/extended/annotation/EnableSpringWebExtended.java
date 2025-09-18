@@ -15,22 +15,20 @@
  */
 package io.github.furti.spring.web.extended.annotation;
 
-//CHECKSTYLE:OFF
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
 import io.github.furti.spring.web.extended.config.SpringWebExtendedConfig;
 import io.github.furti.spring.web.extended.config.SpringWebExtendedConfigurer;
 import io.github.furti.spring.web.extended.config.SpringWebExtendedConfigurerAdapter;
 import io.github.furti.spring.web.extended.config.SpringWebExtendedImportSelector;
 import io.github.furti.spring.web.extended.config.SpringWebExtendedRegistrar;
 import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTemplateController;
+//CHECKSTYLE:OFF
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 //CHECKSTYLE:ON
 
@@ -62,12 +60,10 @@ import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTempla
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import(value = {SpringWebExtendedRegistrar.class, SpringWebExtendedImportSelector.class})
+@Import(value = { SpringWebExtendedRegistrar.class, SpringWebExtendedImportSelector.class })
 @EnableWebMvc
 @Deprecated
-public @interface EnableSpringWebExtended
-{
-
+public @interface EnableSpringWebExtended {
     /**
      * @return the configuration for the {@link HtmlTemplateController}
      */

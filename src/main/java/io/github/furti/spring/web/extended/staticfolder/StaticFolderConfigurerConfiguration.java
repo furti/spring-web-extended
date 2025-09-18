@@ -1,21 +1,7 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
-import org.springframework.http.MediaType;
-import org.springframework.util.MimeType;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.MessageRegistry;
@@ -30,13 +16,25 @@ import io.github.furti.spring.web.extended.template.DefaultContentEscapeHandlerR
 import io.github.furti.spring.web.extended.template.escape.HtmlEscapeHandler;
 import io.github.furti.spring.web.extended.template.escape.JavascriptEscapeHandler;
 import io.github.furti.spring.web.extended.template.simple.ContentEscapeHandlerRegistry;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.springframework.http.MediaType;
+import org.springframework.util.MimeType;
 
 /**
  * @author Daniel Furtlehner
  */
 @Configuration
-public class StaticFolderConfigurerConfiguration
-{
+public class StaticFolderConfigurerConfiguration {
+
     @Autowired
     private Environment env;
 
@@ -53,15 +51,12 @@ public class StaticFolderConfigurerConfiguration
     private MimeTypeCacheRegistry mimeTypeCacheRegistry;
 
     @Autowired(required = false)
-    public void setConfigurers(List<SpringWebExtendedConfigurer> configurers)
-    {
+    public void setConfigurers(List<SpringWebExtendedConfigurer> configurers) {
         configurer.addConfigurers(configurers);
     }
 
-    public ApplicationInfo getApplicationInfo()
-    {
-        if (applicationInfo == null)
-        {
+    public ApplicationInfo getApplicationInfo() {
+        if (applicationInfo == null) {
             applicationInfo = new DefaultApplicationInfo();
 
             applicationInfo.productionMode(env.acceptsProfiles(Profiles.of("optimizeresources", "prod", "production")));
@@ -72,10 +67,8 @@ public class StaticFolderConfigurerConfiguration
         return applicationInfo;
     }
 
-    public StaticFolderRegistry getStaticFolderRegistry()
-    {
-        if (staticFolderRegistry == null)
-        {
+    public StaticFolderRegistry getStaticFolderRegistry() {
+        if (staticFolderRegistry == null) {
             staticFolderRegistry = new DefaultStaticFolderRegistry();
 
             boolean productionMode = getApplicationInfo().isProductionMode();
@@ -89,10 +82,8 @@ public class StaticFolderConfigurerConfiguration
         return staticFolderRegistry;
     }
 
-    public ContentEscapeHandlerRegistry getContentExceptHandlerRegistry()
-    {
-        if (contentEscapeHandlerRegistry == null)
-        {
+    public ContentEscapeHandlerRegistry getContentExceptHandlerRegistry() {
+        if (contentEscapeHandlerRegistry == null) {
             contentEscapeHandlerRegistry = new DefaultContentEscapeHandlerRegistry();
 
             JavascriptEscapeHandler javascriptHandler = new JavascriptEscapeHandler();
@@ -107,10 +98,8 @@ public class StaticFolderConfigurerConfiguration
         return contentEscapeHandlerRegistry;
     }
 
-    public CompressionManager getCompressionManager()
-    {
-        if (compressionManager == null)
-        {
+    public CompressionManager getCompressionManager() {
+        if (compressionManager == null) {
             List<MimeType> supportedMimeTypes = new ArrayList<>();
 
             supportedMimeTypes.add(MediaType.parseMediaType("text/*"));
@@ -126,10 +115,8 @@ public class StaticFolderConfigurerConfiguration
         return compressionManager;
     }
 
-    public Map<String, String> getMimeTypes()
-    {
-        if (mimeTypes == null)
-        {
+    public Map<String, String> getMimeTypes() {
+        if (mimeTypes == null) {
             mimeTypes = new HashMap<>();
 
             // Add some basic mime types
@@ -143,10 +130,8 @@ public class StaticFolderConfigurerConfiguration
         return mimeTypes;
     }
 
-    public Set<MimeType> getCachableMimeTypes()
-    {
-        if (cacheableMimeTypes == null)
-        {
+    public Set<MimeType> getCachableMimeTypes() {
+        if (cacheableMimeTypes == null) {
             cacheableMimeTypes = new HashSet<>();
 
             // Cache some resources by default
@@ -159,10 +144,8 @@ public class StaticFolderConfigurerConfiguration
         return cacheableMimeTypes;
     }
 
-    public MessageRegistry getMessageRegistry()
-    {
-        if (messageRegistry == null)
-        {
+    public MessageRegistry getMessageRegistry() {
+        if (messageRegistry == null) {
             messageRegistry = new DefaultMessageRegistry();
 
             configurer.configureMessages(messageRegistry);
@@ -171,10 +154,8 @@ public class StaticFolderConfigurerConfiguration
         return messageRegistry;
     }
 
-    public ResourceTypeRegistry getResourceTypeRegistry()
-    {
-        if (resourceTypeRegistry == null)
-        {
+    public ResourceTypeRegistry getResourceTypeRegistry() {
+        if (resourceTypeRegistry == null) {
             resourceTypeRegistry = new DefaultResourceTypeRegistry();
 
             resourceTypeRegistry.resourceTypeByMimeType("text/.*", ResourceType.TEMPLATE);
@@ -186,10 +167,8 @@ public class StaticFolderConfigurerConfiguration
         return resourceTypeRegistry;
     }
 
-    public MimeTypeCacheRegistry getMimetypCacheRegistry()
-    {
-        if (mimeTypeCacheRegistry == null)
-        {
+    public MimeTypeCacheRegistry getMimetypCacheRegistry() {
+        if (mimeTypeCacheRegistry == null) {
             mimeTypeCacheRegistry = new MimeTypeCacheRegistry();
 
             configurer.configureMimeTypeCaching(mimeTypeCacheRegistry);
@@ -198,10 +177,8 @@ public class StaticFolderConfigurerConfiguration
         return mimeTypeCacheRegistry;
     }
 
-    public List<LocaleSource> getLocaleSources()
-    {
-        if (localeSources == null)
-        {
+    public List<LocaleSource> getLocaleSources() {
+        if (localeSources == null) {
             localeSources = new ArrayList<>();
             // No default locale sources for now. Simply use the request locale.
 
@@ -211,13 +188,11 @@ public class StaticFolderConfigurerConfiguration
         return localeSources;
     }
 
-    public void configureResourceScanners(Map<String, ResourceScanner> scanners)
-    {
+    public void configureResourceScanners(Map<String, ResourceScanner> scanners) {
         configurer.configureResourceScanners(scanners);
     }
 
-    public void configureExpressionHandlers(ExpressionHandlerRegistry registry)
-    {
+    public void configureExpressionHandlers(ExpressionHandlerRegistry registry) {
         configurer.configureExpressionHandlers(registry);
     }
 }

@@ -8,23 +8,19 @@
  */
 package io.github.furti.spring.web.extended.http;
 
+import io.github.furti.spring.web.extended.config.ApplicationConfiguration;
+import io.github.furti.spring.web.extended.servlet.RequestResponseContextHolder;
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-import io.github.furti.spring.web.extended.config.ApplicationConfiguration;
-import io.github.furti.spring.web.extended.servlet.RequestResponseContextHolder;
+public class DefaultLinkCreator implements LinkCreator {
 
-public class DefaultLinkCreator implements LinkCreator
-{
     private ApplicationConfiguration appConfig;
 
     @Override
-    public String createLink(String... parts)
-    {
-        if (parts == null)
-        {
+    public String createLink(String... parts) {
+        if (parts == null) {
             return null;
         }
 
@@ -32,22 +28,18 @@ public class DefaultLinkCreator implements LinkCreator
 
         prefix(url);
 
-        if (url.length() == 0 || url.charAt(url.length() - 1) != '/')
-        {
+        if (url.length() == 0 || url.charAt(url.length() - 1) != '/') {
             url.append("/");
         }
 
         url.append(LocaleContextHolder.getLocale().toLanguageTag());
 
-        if (appConfig != null && appConfig.getVersion() != null)
-        {
+        if (appConfig != null && appConfig.getVersion() != null) {
             url.append("/").append(appConfig.getVersion());
         }
 
-        for (String part : parts)
-        {
-            if (!part.startsWith("/"))
-            {
+        for (String part : parts) {
+            if (!part.startsWith("/")) {
                 url.append("/");
             }
 
@@ -64,29 +56,25 @@ public class DefaultLinkCreator implements LinkCreator
      *
      * @param url the URL
      */
-    protected void prefix(StringBuilder url)
-    {
+    protected void prefix(StringBuilder url) {
         HttpServletRequest request = RequestResponseContextHolder.currentRequest();
 
-        if (request != null && request.getContextPath() != null)
-        {
+        if (request != null && request.getContextPath() != null) {
             url.append(request.getContextPath());
         }
-    };
+    }
 
     /**
      * Subclasses may add something to the url after the default url parts were added.
      *
      * @param url the URL
      */
-    protected void suffix(StringBuilder url)
-    {
+    protected void suffix(StringBuilder url) {
         // Nothing to do here
-    };
+    }
 
     @Autowired
-    public void setAppConfig(ApplicationConfiguration appConfig)
-    {
+    public void setAppConfig(ApplicationConfiguration appConfig) {
         this.appConfig = appConfig;
     }
 }

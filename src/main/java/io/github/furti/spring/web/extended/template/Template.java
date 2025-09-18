@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.template;
 
@@ -8,9 +8,7 @@ import java.io.IOException;
 /**
  * @author Daniel Furtlehner
  */
-public interface Template
-{
-
+public interface Template {
     /**
      * @return the rendered template with all expressions replaced. Never null.
      * @throws IOException when an exception occurs rendering the template.
@@ -25,7 +23,7 @@ public interface Template
     /**
      * This method is called whenever the content of the template needs to be refreshed. The template may decide not to
      * refresh because it is up to date.
-     * 
+     *
      * @return true when a refresh was performed. False otherwise.
      * @throws IOException when an expection occurs refreshing the template
      */
@@ -33,7 +31,7 @@ public interface Template
 
     /**
      * Forces a refresh of the template regardless of a change of the template itself.
-     * 
+     *
      * @throws IOException when an expection occurs refreshing the template
      */
     void forceRefresh() throws IOException;

@@ -1,23 +1,21 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.template;
 
+import io.github.furti.spring.web.extended.staticfolder.CommonContentCache;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
-
-import io.github.furti.spring.web.extended.staticfolder.CommonContentCache;
 
 /**
  * @author Daniel Furtlehner
  */
-public abstract class CacheableTemplate implements Template
-{
+public abstract class CacheableTemplate implements Template {
+
     private final Object lock = new Object();
 
     protected final Resource resource;
@@ -26,26 +24,21 @@ public abstract class CacheableTemplate implements Template
     private long lastModified;
     private long lastRefreshed;
 
-    public CacheableTemplate(Resource resource, Charset charset)
-    {
+    public CacheableTemplate(Resource resource, Charset charset) {
         super();
         this.resource = resource;
         this.charset = charset;
     }
 
     @Override
-    public String render() throws IOException
-    {
+    public String render() throws IOException {
         return content;
     }
 
     @Override
-    public boolean refreshIfNeeded() throws IOException
-    {
-        synchronized (lock)
-        {
-            if (lastModified == 0 || lastModified != resource.lastModified())
-            {
+    public boolean refreshIfNeeded() throws IOException {
+        synchronized (lock) {
+            if (lastModified == 0 || lastModified != resource.lastModified()) {
                 String newContent = doRender();
 
                 content = CommonContentCache.getCommonContent(newContent);
@@ -61,10 +54,8 @@ public abstract class CacheableTemplate implements Template
     }
 
     @Override
-    public void forceRefresh() throws IOException
-    {
-        synchronized (lock)
-        {
+    public void forceRefresh() throws IOException {
+        synchronized (lock) {
             String newContent = doRender();
 
             content = CommonContentCache.getCommonContent(newContent);
@@ -75,17 +66,14 @@ public abstract class CacheableTemplate implements Template
     }
 
     @Override
-    public long getLastRefreshed()
-    {
+    public long getLastRefreshed() {
         return lastRefreshed;
     }
 
     protected abstract String doRender() throws IOException;
 
-    protected String loadTemplate() throws IOException
-    {
-        try (Reader reader = new InputStreamReader(resource.getInputStream(), charset))
-        {
+    protected String loadTemplate() throws IOException {
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), charset)) {
             return IOUtils.toString(reader);
         }
     }

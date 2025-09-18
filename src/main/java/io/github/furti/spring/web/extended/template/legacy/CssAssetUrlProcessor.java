@@ -9,21 +9,18 @@ import ro.isdc.wro.model.resource.processor.impl.css.AbstractCssUrlRewritingProc
  * @author Daniel Furtlehner
  *
  */
-public class CssAssetUrlProcessor extends AbstractCssUrlRewritingProcessor
-{
+public class CssAssetUrlProcessor extends AbstractCssUrlRewritingProcessor {
+
     private final LinkCreator linkCreator;
 
-    public CssAssetUrlProcessor(LinkCreator linkCreator)
-    {
+    public CssAssetUrlProcessor(LinkCreator linkCreator) {
         super();
         this.linkCreator = linkCreator;
     }
 
     @Override
-    protected String replaceImageUrl(String cssUri, String imageUrl)
-    {
-        if (!imageUrl.startsWith(".."))
-        {
+    protected String replaceImageUrl(String cssUri, String imageUrl) {
+        if (!imageUrl.startsWith("..")) {
             return imageUrl;
         }
 
@@ -32,5 +29,4 @@ public class CssAssetUrlProcessor extends AbstractCssUrlRewritingProcessor
 
         return linkCreator.createLink(assetParts);
     }
-
 }

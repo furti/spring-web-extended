@@ -24,13 +24,10 @@ import org.springframework.core.type.AnnotationMetadata;
  * @author Daniel Furtlehner
  */
 @Order(Ordered.LOWEST_PRECEDENCE)
-public class SpringWebExtendedImportSelector implements DeferredImportSelector
-{
+public class SpringWebExtendedImportSelector implements DeferredImportSelector {
 
     @Override
-    public String[] selectImports(AnnotationMetadata importingClassMetadata)
-    {
-        return new String[]{SpringWebExtendedConfig.class.getName(), SpringWebExtendedDefaults.class.getName()};
+    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
+        return new String[] { SpringWebExtendedConfig.class.getName(), SpringWebExtendedDefaults.class.getName() };
     }
-
 }

@@ -20,57 +20,49 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class DefaultApplicationConfiguration implements ApplicationConfiguration
-{
+public class DefaultApplicationConfiguration implements ApplicationConfiguration {
+
     private String version;
     private boolean optimizeResources;
     private final List<Locale> supportedLocales = new ArrayList<>();
     private final List<String> messagesToScan = new ArrayList<>();
 
     @Override
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
     @Override
-    public boolean isOptimizeResources()
-    {
+    public boolean isOptimizeResources() {
         return optimizeResources;
     }
 
     @Override
-    public ApplicationConfiguration setOptimizeResources(boolean optimizeResources)
-    {
+    public ApplicationConfiguration setOptimizeResources(boolean optimizeResources) {
         this.optimizeResources = optimizeResources;
 
         return this;
     }
 
     @Override
-    public ApplicationConfiguration setVersion(String version)
-    {
+    public ApplicationConfiguration setVersion(String version) {
         this.version = version;
 
         return this;
     }
 
     @Override
-    public ApplicationConfiguration addLocale(String language)
-    {
-
+    public ApplicationConfiguration addLocale(String language) {
         return addLocale(language, "", "");
     }
 
     @Override
-    public ApplicationConfiguration addLocale(String language, String country)
-    {
+    public ApplicationConfiguration addLocale(String language, String country) {
         return addLocale(language, country, "");
     }
 
     @Override
-    public ApplicationConfiguration addLocale(String language, String country, String variant)
-    {
+    public ApplicationConfiguration addLocale(String language, String country, String variant) {
         Locale locale = new Locale(language, country, variant);
 
         supportedLocales.add(locale);
@@ -79,20 +71,17 @@ public class DefaultApplicationConfiguration implements ApplicationConfiguration
     }
 
     @Override
-    public ApplicationConfiguration removeLocale(String language)
-    {
+    public ApplicationConfiguration removeLocale(String language) {
         return removeLocale(language, null, null);
     }
 
     @Override
-    public ApplicationConfiguration removeLocale(String language, String country)
-    {
+    public ApplicationConfiguration removeLocale(String language, String country) {
         return removeLocale(language, country, null);
     }
 
     @Override
-    public ApplicationConfiguration removeLocale(String language, String country, String variant)
-    {
+    public ApplicationConfiguration removeLocale(String language, String country, String variant) {
         Locale locale = new Locale(language, country, variant);
 
         supportedLocales.remove(locale);
@@ -101,25 +90,21 @@ public class DefaultApplicationConfiguration implements ApplicationConfiguration
     }
 
     @Override
-    public List<Locale> getSupportedLocales()
-    {
+    public List<Locale> getSupportedLocales() {
         return Collections.unmodifiableList(supportedLocales);
     }
 
-    public List<Locale> getRawSupportedLocales()
-    {
+    public List<Locale> getRawSupportedLocales() {
         return supportedLocales;
     }
 
     @Override
-    public ApplicationConfiguration scanMessagesForLocale(String messageLocation)
-    {
+    public ApplicationConfiguration scanMessagesForLocale(String messageLocation) {
         messagesToScan.add(messageLocation);
         return this;
     }
 
-    public List<String> getMessagesToScan()
-    {
+    public List<String> getMessagesToScan() {
         return messagesToScan;
     }
 }

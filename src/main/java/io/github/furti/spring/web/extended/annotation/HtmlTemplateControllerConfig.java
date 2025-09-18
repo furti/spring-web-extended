@@ -15,14 +15,12 @@
  */
 package io.github.furti.spring.web.extended.annotation;
 
+import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTemplateController;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
 import org.springframework.context.ApplicationContext;
-
-import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTemplateController;
 
 /**
  * Annotation used to configure the default template controller
@@ -32,11 +30,10 @@ import io.github.furti.spring.web.extended.template.legacy.cache.html.HtmlTempla
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface HtmlTemplateControllerConfig
-{
+public @interface HtmlTemplateControllerConfig {
     /**
      * If set to true the default {@link HtmlTemplateController} is added to the {@link ApplicationContext}
-     * 
+     *
      * @return true if the default {@link HtmlTemplateController} should be registered, false otherwise
      */
     boolean registerHtmlTemplateController() default true;

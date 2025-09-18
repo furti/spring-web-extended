@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.util;
 
@@ -8,25 +8,22 @@ import static io.github.furti.spring.web.extended.util.DefaultMimetypeCacheConfi
 /**
  * @author Daniel Furtlehner
  */
-public class DefaultMimetypeCacheConfig implements MimeTypeCacheConfig
-{
+public class DefaultMimetypeCacheConfig implements MimeTypeCacheConfig {
+
     // Cache for a day. Then the client must revalidate
     private static final long DEFAULT_CACHE_TIME_IN_SECONDS = 24 * 60 * 60;
 
-    public enum CacheMode
-    {
+    public enum CacheMode {
         PUBLIC("public"),
         PRIVATE("private");
 
         private final String mode;
 
-        private CacheMode(String mode)
-        {
+        private CacheMode(String mode) {
             this.mode = mode;
         }
 
-        public String getMode()
-        {
+        public String getMode() {
             return mode;
         }
     }
@@ -35,44 +32,34 @@ public class DefaultMimetypeCacheConfig implements MimeTypeCacheConfig
     private final long cacheTimeInSeconds;
     private final boolean revalidate;
 
-    public DefaultMimetypeCacheConfig()
-    {
+    public DefaultMimetypeCacheConfig() {
         this(PUBLIC, DEFAULT_CACHE_TIME_IN_SECONDS, true);
     }
 
-    public DefaultMimetypeCacheConfig(CacheMode mode, long cacheTimeInSeconds, boolean revalidate)
-    {
+    public DefaultMimetypeCacheConfig(CacheMode mode, long cacheTimeInSeconds, boolean revalidate) {
         super();
-
         this.mode = mode;
         this.cacheTimeInSeconds = cacheTimeInSeconds;
         this.revalidate = revalidate;
     }
 
-    public DefaultMimetypeCacheConfig mode(CacheMode mode)
-    {
+    public DefaultMimetypeCacheConfig mode(CacheMode mode) {
         return new DefaultMimetypeCacheConfig(mode, cacheTimeInSeconds, revalidate);
     }
 
-    public DefaultMimetypeCacheConfig maxAge(long maxAgeInSeconds)
-    {
+    public DefaultMimetypeCacheConfig maxAge(long maxAgeInSeconds) {
         return new DefaultMimetypeCacheConfig(mode, maxAgeInSeconds, revalidate);
     }
 
-    public DefaultMimetypeCacheConfig mustRevalidate(boolean revalidate)
-    {
+    public DefaultMimetypeCacheConfig mustRevalidate(boolean revalidate) {
         return new DefaultMimetypeCacheConfig(mode, cacheTimeInSeconds, revalidate);
     }
 
     @Override
-    public String cacheConfig()
-    {
-        if (revalidate)
-        {
+    public String cacheConfig() {
+        if (revalidate) {
             return String.format("%s, max-age=%s, must-revalidate", mode.getMode(), cacheTimeInSeconds);
-        }
-        else
-        {
+        } else {
             return String.format("%s, max-age=%s", mode.getMode(), cacheTimeInSeconds);
         }
     }

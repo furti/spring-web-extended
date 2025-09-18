@@ -15,8 +15,6 @@
  */
 package io.github.furti.spring.web.extended.http;
 
-public interface LinkCreator
-{
-
+public interface LinkCreator {
     String createLink(String... parts);
 }

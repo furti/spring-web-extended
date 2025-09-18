@@ -1,22 +1,19 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended;
 
+import io.github.furti.spring.web.extended.io.ResourceScanner;
 import java.nio.charset.Charset;
 import java.util.List;
-
-import io.github.furti.spring.web.extended.io.ResourceScanner;
 
 /**
  * @author Daniel Furtlehner
  */
-public interface StaticFolderRegistry
-{
-
+public interface StaticFolderRegistry {
     /**
      * 0 means no caching at all. A negative number means infinite caching.
-     * 
+     *
      * @param intervalInSeconds the time between two resource refresh cycles. Defaults to no caching in development mode
      *            and a interval of 10 minutes in production mode.
      * @return the registry for a fluent api.
@@ -30,7 +27,7 @@ public interface StaticFolderRegistry
 
     /**
      * Calls {@link #registerFolder(String, String, Charset)} with UTF-8 as charset.
-     * 
+     *
      * @param basePath the request must start with this path for the resources from this location to be served.
      * @param location the folder to serve resources from. Can be anything a {@link ResourceScanner} can handle.
      * @param indexFallbacks Somethimes it is necessary that for some urls the index.html file should be served. E.g.
@@ -39,8 +36,7 @@ public interface StaticFolderRegistry
      *            fallback and support the frameworks routing mechanism.
      * @return the registry for a fluent api
      */
-    default StaticFolderRegistry registerFolder(String basePath, String location, String... indexFallbacks)
-    {
+    default StaticFolderRegistry registerFolder(String basePath, String location, String... indexFallbacks) {
         return registerFolder(basePath, location, Charset.forName("UTF-8"), indexFallbacks);
     }
 

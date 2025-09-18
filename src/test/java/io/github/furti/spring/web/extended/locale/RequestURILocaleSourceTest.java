@@ -3,21 +3,16 @@ package io.github.furti.spring.web.extended.locale;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
-import java.util.Locale;
-
+import io.github.furti.spring.web.extended.config.DefaultApplicationConfiguration;
 import jakarta.servlet.http.HttpServletRequest;
-
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import io.github.furti.spring.web.extended.config.DefaultApplicationConfiguration;
-
-public class RequestURILocaleSourceTest
-{
+public class RequestURILocaleSourceTest {
 
     @Test
-    public void getLocale()
-    {
+    public void getLocale() {
         performGetLocale(null, null, null);
         performGetLocale("", null, null);
         performGetLocale("", "", null);
@@ -31,8 +26,7 @@ public class RequestURILocaleSourceTest
         performGetLocale("/xy-AB", "/test", null);
     }
 
-    private void performGetLocale(String servletPath, String pathInfo, Locale expected)
-    {
+    private void performGetLocale(String servletPath, String pathInfo, Locale expected) {
         DefaultApplicationConfiguration appConfig = new DefaultApplicationConfiguration();
         appConfig.addLocale("de");
         appConfig.addLocale("de", "AT");
@@ -50,8 +44,7 @@ public class RequestURILocaleSourceTest
     }
 
     @Test
-    public void getPossibleLocale()
-    {
+    public void getPossibleLocale() {
         performGetPossibleLocale(null, null, "");
         performGetPossibleLocale("", null, "");
         performGetPossibleLocale("abc", null, "abc");
@@ -64,8 +57,7 @@ public class RequestURILocaleSourceTest
         performGetPossibleLocale("xy-AB", "/test/", "xy-AB");
     }
 
-    private void performGetPossibleLocale(String servletPath, String pathInfo, String expected)
-    {
+    private void performGetPossibleLocale(String servletPath, String pathInfo, String expected) {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         Mockito.when(request.getServletPath()).thenReturn(servletPath);
         Mockito.when(request.getPathInfo()).thenReturn(pathInfo);

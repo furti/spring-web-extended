@@ -18,11 +18,9 @@ package io.github.furti.spring.web.extended.template.legacy.cache.style;
 import io.github.furti.spring.web.extended.io.ResourceType;
 import io.github.furti.spring.web.extended.template.legacy.cache.StackBase;
 
-public class StyleStack extends StackBase
-{
+public class StyleStack extends StackBase {
 
-    public StyleStack(String stackName, boolean noCaching)
-    {
+    public StyleStack(String stackName, boolean noCaching) {
         super(ResourceType.STYLE, stackName, noCaching);
     }
 }

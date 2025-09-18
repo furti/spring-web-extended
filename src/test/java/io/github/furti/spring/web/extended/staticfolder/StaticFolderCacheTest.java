@@ -1,35 +1,11 @@
 /**
- * 
+ *
  */
 package io.github.furti.spring.web.extended.staticfolder;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.ByteArrayInputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.GZIPInputStream;
-
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.context.i18n.LocaleContext;
-import org.springframework.context.support.StaticMessageSource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.MimeType;
 
 import io.github.furti.spring.web.extended.ApplicationInfo;
 import io.github.furti.spring.web.extended.StaticFolderRegistry;
@@ -49,56 +25,93 @@ import io.github.furti.spring.web.extended.template.simple.SimpleTemplateFactory
 import io.github.furti.spring.web.extended.util.DefaultMimetypeCacheConfig;
 import io.github.furti.spring.web.extended.util.MimeTypeHandler;
 import io.github.furti.spring.web.extended.util.ResourceNotFoundException;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.GZIPInputStream;
+import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.support.StaticMessageSource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MimeType;
 
 /**
  * @author Daniel Furtlehner
  */
-public class StaticFolderCacheTest
-{
+public class StaticFolderCacheTest {
+
     /**
-     * 
+     *
      */
     private static final Charset UTF_8 = Charset.forName("UTF-8");
     private static final ThreadLocal<Locale> TEST_LOCALE = new ThreadLocal<>();
     private final String lineSeparator = System.lineSeparator();
 
     @Test
-    public void testRenderingInProductionMode()
-    {
-        StaticFolderRegistry registry =
-            buildRegistry(false, true, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
-                "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
+    public void testRenderingInProductionMode() {
+        StaticFolderRegistry registry = buildRegistry(
+            false,
+            true,
+            "/app",
+            "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+            "/indexfallback",
+            "/indexfallback/",
+            "/nextfallback/*",
+            "/lastfallback/**"
+        );
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
-            buildCompressionManager());
+        StaticFolderCache cache = new StaticFolderCache(
+            registry,
+            buildScanners(),
+            buildMimeTypeHandler(),
+            buildTemplateFactory(),
+            buildTemplateContextFactory(),
+            buildResourceTypeRegistry(),
+            buildAppInfo(true),
+            buildCompressionManager()
+        );
         cache.initialize();
 
-        try
-        {
+        try {
             {
                 TEST_LOCALE.set(Locale.ENGLISH);
                 // index.html default
                 HttpServletRequest request = buildRequest("/app");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -110,23 +123,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>Eine sehr nützliche Nachricht</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>Eine sehr nützliche Nachricht</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -138,23 +155,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -166,23 +187,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>Eine sehr nützliche Nachricht</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>Eine sehr nützliche Nachricht</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -194,23 +219,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/index.html");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -222,23 +251,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/indexfallback");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -250,23 +283,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/indexfallback/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -278,23 +315,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/nextfallback/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -306,23 +347,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/nextfallback/test");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -334,23 +379,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/nextfallback/blub");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -362,23 +411,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/lastfallback/blub");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -390,23 +443,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/lastfallback/blub/");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -418,23 +475,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequest("/app/lastfallback/blub/test");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -448,8 +509,10 @@ public class StaticFolderCacheTest
 
                 assertThat(new String(actualResponse.getBody(), UTF_8), equalTo("//#message:unknown#"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("application", "javascript", UTF_8)));
+                assertThat(
+                    actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("application", "javascript", UTF_8))
+                );
                 assertCacheable(actualResponse);
             }
 
@@ -461,54 +524,70 @@ public class StaticFolderCacheTest
 
                 assertThat(new String(actualResponse.getBody(), UTF_8), equalTo("//#message:unknown#"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("application", "javascript", UTF_8)));
+                assertThat(
+                    actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("application", "javascript", UTF_8))
+                );
                 assertCacheable(actualResponse);
             }
-        }
-        finally
-        {
+        } finally {
             TEST_LOCALE.remove();
         }
     }
 
     @Test
-    public void testRenderingInDevMode()
-    {
-        StaticFolderRegistry registry =
-            buildRegistry(false, false, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
-                "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
+    public void testRenderingInDevMode() {
+        StaticFolderRegistry registry = buildRegistry(
+            false,
+            false,
+            "/app",
+            "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+            "/indexfallback",
+            "/indexfallback/",
+            "/nextfallback/*",
+            "/lastfallback/**"
+        );
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(false),
-            buildCompressionManager());
+        StaticFolderCache cache = new StaticFolderCache(
+            registry,
+            buildScanners(),
+            buildMimeTypeHandler(),
+            buildTemplateFactory(),
+            buildTemplateContextFactory(),
+            buildResourceTypeRegistry(),
+            buildAppInfo(false),
+            buildCompressionManager()
+        );
         cache.initialize();
 
-        try
-        {
+        try {
             {
                 TEST_LOCALE.set(Locale.ENGLISH);
                 // index.html default
                 HttpServletRequest request = buildRequest("/app");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertNotCacheable(actualResponse);
@@ -522,54 +601,70 @@ public class StaticFolderCacheTest
 
                 assertThat(new String(actualResponse.getBody(), UTF_8), equalTo("//#message:unknown#"));
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("application", "javascript", UTF_8)));
+                assertThat(
+                    actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("application", "javascript", UTF_8))
+                );
                 assertNotCacheable(actualResponse);
             }
-        }
-        finally
-        {
+        } finally {
             TEST_LOCALE.remove();
         }
     }
 
     @Test
-    public void testRenderingWithDifferentCompressionTypesInProdMode()
-    {
-        StaticFolderRegistry registry =
-            buildRegistry(false, true, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
-                "/indexfallback", "/indexfallback/", "/nextfallback/*", "/lastfallback/**");
+    public void testRenderingWithDifferentCompressionTypesInProdMode() {
+        StaticFolderRegistry registry = buildRegistry(
+            false,
+            true,
+            "/app",
+            "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+            "/indexfallback",
+            "/indexfallback/",
+            "/nextfallback/*",
+            "/lastfallback/**"
+        );
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
-            buildCompressionManager());
+        StaticFolderCache cache = new StaticFolderCache(
+            registry,
+            buildScanners(),
+            buildMimeTypeHandler(),
+            buildTemplateFactory(),
+            buildTemplateContextFactory(),
+            buildResourceTypeRegistry(),
+            buildAppInfo(true),
+            buildCompressionManager()
+        );
         cache.initialize();
 
-        try
-        {
+        try {
             {
                 TEST_LOCALE.set(Locale.ENGLISH);
                 // index.html default no compression
                 HttpServletRequest request = buildRequest("/app");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertThat(actualResponse.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING), nullValue());
@@ -582,23 +677,27 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequestWithCompression("/app", "gzip");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("<!doctype html>"
-                        + lineSeparator
-                        + lineSeparator
-                        + "<html>"
-                        + lineSeparator
-                        + "<head></head>"
-                        + lineSeparator
-                        + "<body>"
-                        + lineSeparator
-                        + "    <p>A very useful message</p>"
-                        + lineSeparator
-                        + "    <p>Some Text with special chars äöü.</p>"
-                        + lineSeparator
-                        + "</body>"
-                        + lineSeparator
-                        + "</html>"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "<!doctype html>" +
+                            lineSeparator +
+                            lineSeparator +
+                            "<html>" +
+                            lineSeparator +
+                            "<head></head>" +
+                            lineSeparator +
+                            "<body>" +
+                            lineSeparator +
+                            "    <p>A very useful message</p>" +
+                            lineSeparator +
+                            "    <p>Some Text with special chars äöü.</p>" +
+                            lineSeparator +
+                            "</body>" +
+                            lineSeparator +
+                            "</html>"
+                    )
+                );
 
                 assertThat(actualResponse.getHeaders().getContentType(), equalTo(new MediaType("text", "html", UTF_8)));
                 assertThat(actualResponse.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING), nullValue());
@@ -613,67 +712,73 @@ public class StaticFolderCacheTest
 
                 byte[] unzipped = gunzip(actualResponse.getBody());
 
-                assertThat(new String(unzipped, UTF_8),
-                    equalTo("function doSomething() {"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "}"));
+                assertThat(
+                    new String(unzipped, UTF_8),
+                    equalTo(
+                        "function doSomething() {" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "}"
+                    )
+                );
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("application", "javascript", UTF_8)));
+                assertThat(
+                    actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("application", "javascript", UTF_8))
+                );
                 assertThat(actualResponse.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING), equalTo("gzip"));
                 assertCacheable(actualResponse);
             }
@@ -685,110 +790,118 @@ public class StaticFolderCacheTest
                 HttpServletRequest request = buildRequestWithCompression("/app/big.nocompress", "gzip");
                 ResponseEntity<byte[]> actualResponse = cache.render(request);
 
-                assertThat(new String(actualResponse.getBody(), UTF_8),
-                    equalTo("function doSomething() {"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "console.log('Data: abcdefghijklmnopqrst');"
-                        + lineSeparator
-                        + "console.log('Data: ABCDEFGHIJKLMNOPQRST');"
-                        + lineSeparator
-                        + "}"));
+                assertThat(
+                    new String(actualResponse.getBody(), UTF_8),
+                    equalTo(
+                        "function doSomething() {" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "console.log('Data: abcdefghijklmnopqrst');" +
+                            lineSeparator +
+                            "console.log('Data: ABCDEFGHIJKLMNOPQRST');" +
+                            lineSeparator +
+                            "}"
+                    )
+                );
 
-                assertThat(actualResponse.getHeaders().getContentType(),
-                    equalTo(new MediaType("test", "nocompress", UTF_8)));
+                assertThat(
+                    actualResponse.getHeaders().getContentType(),
+                    equalTo(new MediaType("test", "nocompress", UTF_8))
+                );
                 assertThat(actualResponse.getHeaders().getFirst(HttpHeaders.CONTENT_ENCODING), nullValue());
                 assertNotCacheable(actualResponse);
             }
-        }
-        finally
-        {
+        } finally {
             TEST_LOCALE.remove();
         }
     }
 
-    private byte[] gunzip(byte[] zippedBytes)
-    {
-        try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(zippedBytes)))
-        {
+    private byte[] gunzip(byte[] zippedBytes) {
+        try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(zippedBytes))) {
             return IOUtils.toByteArray(input);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException("Error unzipping bytes " + zippedBytes, e);
         }
     }
 
-    private void assertCacheable(ResponseEntity<byte[]> actualResponse)
-    {
+    private void assertCacheable(ResponseEntity<byte[]> actualResponse) {
         assertThat(actualResponse.getHeaders().getCacheControl(), equalTo("public, max-age=86400, must-revalidate"));
         assertThat(actualResponse.getHeaders().getPragma(), equalTo("cache"));
     }
 
-    private void assertNotCacheable(ResponseEntity<byte[]> actualResponse)
-    {
+    private void assertNotCacheable(ResponseEntity<byte[]> actualResponse) {
         assertThat(actualResponse.getHeaders().getCacheControl(), equalTo("no-store, max-age=0, must-revalidate"));
         assertThat(actualResponse.getHeaders().getPragma(), equalTo("no-cache"));
     }
 
     @Test
-    public void testMissingFolder()
-    {
-        StaticFolderRegistry registry =
-            buildRegistry(false, true, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
+    public void testMissingFolder() {
+        StaticFolderRegistry registry = buildRegistry(
+            false,
+            true,
+            "/app",
+            "classpath:io/github/furti/spring/web/extended/staticfolder/app/"
+        );
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
-            buildCompressionManager());
+        StaticFolderCache cache = new StaticFolderCache(
+            registry,
+            buildScanners(),
+            buildMimeTypeHandler(),
+            buildTemplateFactory(),
+            buildTemplateContextFactory(),
+            buildResourceTypeRegistry(),
+            buildAppInfo(true),
+            buildCompressionManager()
+        );
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/something");
@@ -799,14 +912,25 @@ public class StaticFolderCacheTest
     }
 
     @Test
-    public void testMissingFallback()
-    {
-        StaticFolderRegistry registry = buildRegistry(false, true, "/app",
-            "classpath:io/github/furti/spring/web/extended/staticfolder/app/", "/fallback/*");
+    public void testMissingFallback() {
+        StaticFolderRegistry registry = buildRegistry(
+            false,
+            true,
+            "/app",
+            "classpath:io/github/furti/spring/web/extended/staticfolder/app/",
+            "/fallback/*"
+        );
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
-            buildCompressionManager());
+        StaticFolderCache cache = new StaticFolderCache(
+            registry,
+            buildScanners(),
+            buildMimeTypeHandler(),
+            buildTemplateFactory(),
+            buildTemplateContextFactory(),
+            buildResourceTypeRegistry(),
+            buildAppInfo(true),
+            buildCompressionManager()
+        );
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/fallback/test/all");
@@ -817,14 +941,24 @@ public class StaticFolderCacheTest
     }
 
     @Test
-    public void testMissingResource()
-    {
-        StaticFolderRegistry registry =
-            buildRegistry(false, true, "/app", "classpath:io/github/furti/spring/web/extended/staticfolder/app/");
+    public void testMissingResource() {
+        StaticFolderRegistry registry = buildRegistry(
+            false,
+            true,
+            "/app",
+            "classpath:io/github/furti/spring/web/extended/staticfolder/app/"
+        );
 
-        StaticFolderCache cache = new StaticFolderCache(registry, buildScanners(), buildMimeTypeHandler(),
-            buildTemplateFactory(), buildTemplateContextFactory(), buildResourceTypeRegistry(), buildAppInfo(true),
-            buildCompressionManager());
+        StaticFolderCache cache = new StaticFolderCache(
+            registry,
+            buildScanners(),
+            buildMimeTypeHandler(),
+            buildTemplateFactory(),
+            buildTemplateContextFactory(),
+            buildResourceTypeRegistry(),
+            buildAppInfo(true),
+            buildCompressionManager()
+        );
         cache.initialize();
 
         HttpServletRequest request = buildRequest("/app/missing.js");
@@ -834,13 +968,11 @@ public class StaticFolderCacheTest
         });
     }
 
-    private ApplicationInfo buildAppInfo(boolean productionMode)
-    {
+    private ApplicationInfo buildAppInfo(boolean productionMode) {
         return new DefaultApplicationInfo().productionMode(productionMode);
     }
 
-    private ResourceTypeRegistry buildResourceTypeRegistry()
-    {
+    private ResourceTypeRegistry buildResourceTypeRegistry() {
         DefaultResourceTypeRegistry registry = new DefaultResourceTypeRegistry();
 
         registry.resourceTypeByMimeType("application/javascript", ResourceType.TEMPLATE);
@@ -850,8 +982,7 @@ public class StaticFolderCacheTest
         return registry;
     }
 
-    private MimeTypeHandler buildMimeTypeHandler()
-    {
+    private MimeTypeHandler buildMimeTypeHandler() {
         Map<String, String> mimeTypes = new HashMap<>();
         mimeTypes.put(".js", "application/javascript");
         mimeTypes.put(".html", "text/html");
@@ -860,21 +991,29 @@ public class StaticFolderCacheTest
         Set<MimeType> cacheable = new HashSet<>();
         cacheable.add(MimeType.valueOf("application/javascript"));
 
-        return new MimeTypeHandler(Mockito.mock(ServletContext.class), mimeTypes, cacheable,
-            new DefaultMimetypeCacheConfig(), new HashMap<>());
+        return new MimeTypeHandler(
+            Mockito.mock(ServletContext.class),
+            mimeTypes,
+            cacheable,
+            new DefaultMimetypeCacheConfig(),
+            new HashMap<>()
+        );
     }
 
-    private ResourceScanners buildScanners()
-    {
+    private ResourceScanners buildScanners() {
         Map<String, ResourceScanner> scanners = new HashMap<>();
         scanners.put("classpath", new ClasspathResourceScanner());
 
         return new ResourceScanners(scanners);
     }
 
-    private StaticFolderRegistry buildRegistry(boolean reloadMissingResources, boolean productionMode, String basePath,
-        String location, String... indexFallbacks)
-    {
+    private StaticFolderRegistry buildRegistry(
+        boolean reloadMissingResources,
+        boolean productionMode,
+        String basePath,
+        String location,
+        String... indexFallbacks
+    ) {
         DefaultStaticFolderRegistry registry = new DefaultStaticFolderRegistry();
 
         registry.reloadOnMissingResource(reloadMissingResources);
@@ -884,13 +1023,11 @@ public class StaticFolderCacheTest
         return registry;
     }
 
-    private HttpServletRequest buildRequest(String requestURI)
-    {
+    private HttpServletRequest buildRequest(String requestURI) {
         return buildRequest(requestURI, "");
     }
 
-    private HttpServletRequest buildRequest(String requestURI, String contextPath)
-    {
+    private HttpServletRequest buildRequest(String requestURI, String contextPath) {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 
         Mockito.when(request.getRequestURI()).thenReturn(requestURI);
@@ -899,8 +1036,7 @@ public class StaticFolderCacheTest
         return request;
     }
 
-    private HttpServletRequest buildRequestWithCompression(String requestURI, String encodingType)
-    {
+    private HttpServletRequest buildRequestWithCompression(String requestURI, String encodingType) {
         HttpServletRequest request = buildRequest(requestURI);
 
         Mockito.when(request.getHeader("Accept-Encoding")).thenReturn(encodingType);
@@ -908,13 +1044,11 @@ public class StaticFolderCacheTest
         return request;
     }
 
-    private TemplateContextFactory buildTemplateContextFactory()
-    {
+    private TemplateContextFactory buildTemplateContextFactory() {
         return new DefaultTemplateContextFactory(buildMimeTypeHandler(), new ThreadLocalLocaleContext());
     }
 
-    private TemplateFactory buildTemplateFactory()
-    {
+    private TemplateFactory buildTemplateFactory() {
         StaticMessageSource messageSource = new StaticMessageSource();
         messageSource.addMessage("test", Locale.ENGLISH, "A very useful message");
         messageSource.addMessage("test", Locale.GERMAN, "Eine sehr nützliche Nachricht");
@@ -925,8 +1059,7 @@ public class StaticFolderCacheTest
         return new SimpleTemplateFactory(registry, new DefaultContentEscapeHandlerRegistry(), '#', ':', '#');
     }
 
-    private CompressionManager buildCompressionManager()
-    {
+    private CompressionManager buildCompressionManager() {
         List<MimeType> supportedMimeTypes = new ArrayList<>();
         supportedMimeTypes.add(MediaType.parseMediaType("text/*"));
         supportedMimeTypes.add(MediaType.APPLICATION_JSON);
@@ -939,12 +1072,10 @@ public class StaticFolderCacheTest
     /**
      * @author Daniel Furtlehner
      */
-    private class ThreadLocalLocaleContext implements LocaleContext
-    {
+    private class ThreadLocalLocaleContext implements LocaleContext {
 
         @Override
-        public Locale getLocale()
-        {
+        public Locale getLocale() {
             return TEST_LOCALE.get();
         }
     }

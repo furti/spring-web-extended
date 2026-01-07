@@ -1063,7 +1063,6 @@ public class StaticFolderCacheTest {
         List<MimeType> supportedMimeTypes = new ArrayList<>();
         supportedMimeTypes.add(MediaType.parseMediaType("text/*"));
         supportedMimeTypes.add(MediaType.APPLICATION_JSON);
-        supportedMimeTypes.add(MediaType.APPLICATION_JSON_UTF8);
         supportedMimeTypes.add(MediaType.parseMediaType("application/javascript"));
 
         return new DefaultCompressionManager(supportedMimeTypes);

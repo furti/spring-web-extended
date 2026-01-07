@@ -28,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeType;
-import org.springframework.util.MultiValueMap;
 
 /**
  * @author Daniel Furtlehner
@@ -61,7 +60,6 @@ public class StaticFolderCache {
         ApplicationInfo appInfo,
         CompressionManager compressionManager
     ) {
-        super();
         this.registry = registry;
         this.scanners = scanners;
         this.mimeTypeHandler = mimeTypeHandler;
@@ -154,7 +152,7 @@ public class StaticFolderCache {
         );
     }
 
-    private MultiValueMap<String, String> buildHeaders(
+    private HttpHeaders buildHeaders(
         RenderEntry entry,
         HttpServletRequest request,
         Map<String, String> additionalHeaders
@@ -237,7 +235,6 @@ public class StaticFolderCache {
         String file;
 
         RenderEntry(StaticFolderCacheEntry entry, String basePath, String file) {
-            super();
             this.entry = entry;
             this.basePath = basePath;
 

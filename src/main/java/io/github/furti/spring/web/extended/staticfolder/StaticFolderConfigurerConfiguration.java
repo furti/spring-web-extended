@@ -104,7 +104,6 @@ public class StaticFolderConfigurerConfiguration {
 
             supportedMimeTypes.add(MediaType.parseMediaType("text/*"));
             supportedMimeTypes.add(MediaType.APPLICATION_JSON);
-            supportedMimeTypes.add(MediaType.APPLICATION_JSON_UTF8);
             supportedMimeTypes.add(MediaType.parseMediaType("application/javascript"));
 
             configurer.configureCompressableMimeTypes(supportedMimeTypes);
